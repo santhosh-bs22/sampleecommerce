@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -6,32 +6,88 @@ import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Minus, Plus } from 'lucide-react';
-import { mockProducts } from '../mockData';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { formatCurrency, formatDiscountPrice, calculateDiscount } from '../utils/currency';
 import { useToast } from '../hooks/use-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { Product } from '../types'; 
+import { fetchProductById, getSimilarProducts } from '../api/productApi';
+import ProductCard from '../components/ProductCard'; 
+import { cn } from '../lib/utils'; 
 
 const ProductDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>(); 
   const navigate = useNavigate();
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  // FIX: Destructure toast from useToast hook
   const { toast } = useToast();
   
+  const [product, setProduct] = useState<Product | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
 
-  const product = mockProducts.find(p => p.id === parseInt(id || '0'));
+  const fetchProduct = useCallback(async (combinedId: string) => {
+    setIsLoading(true);
+    setProduct(null);
+    setSimilarProducts([]);
+    setSelectedImage(0); 
+    setQuantity(1); 
+    setActiveTab('description');
+
+    // Parse the composite ID: "source-id"
+    const [source, productIdStr] = combinedId.split('-');
+    const pid = parseInt(productIdStr || '0');
+    
+    if (pid === 0 || !source) {
+        setIsLoading(false);
+        return;
+    }
+    
+    // Fetch individual product details from the correct API
+    const fetchedProduct = await fetchProductById(pid, source as Product['source']);
+    
+    if (fetchedProduct) {
+      setProduct(fetchedProduct);
+      // Fetch similar products (now async)
+      const similar = await getSimilarProducts(fetchedProduct, 4);
+      setSimilarProducts(similar);
+    }
+    
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct(id);
+    }
+    // Re-fetch when ID changes (important for similar product links)
+  }, [id, fetchProduct]);
+
+  // Reset quantity state on product change
+  useEffect(() => {
+    if (product) {
+      setQuantity(1); 
+    }
+  }, [product]);
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <LoadingSpinner size="lg" />
+        <p className="mt-4 text-muted-foreground">Loading product details...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
-        <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist.</p>
+        <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist or could not be fetched.</p>
         <Link to="/">
           <Button>
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -46,9 +102,7 @@ const ProductDetails: React.FC = () => {
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(product);
-    }
+    addItem(product, quantity);
     toast({
       title: "Added to cart",
       description: `${quantity} ${product.title} has been added to your cart.`,
@@ -87,6 +141,9 @@ const ProductDetails: React.FC = () => {
       setQuantity(quantity - 1);
     }
   };
+  
+  // Convert specifications object to an array of [key, value] pairs
+  const specificationsArray = Object.entries(product.specifications || {});
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -94,31 +151,32 @@ const ProductDetails: React.FC = () => {
       <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground">Home</Link>
         <span>/</span>
-        <Link to="/" className="hover:text-foreground capitalize">{product.category}</Link>
+        <Link to="/" className="hover:text-foreground capitalize">{product.category.replace('-', ' ')}</Link>
         <span>/</span>
-        <span className="text-foreground">{product.title}</span>
+        <span className="text-foreground line-clamp-1">{product.title}</span>
       </nav>
 
+      {/* Product View (Desktop: 2 Columns, Mobile: 1 Column - Responsive) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Product Images */}
+        {/* Product Images (Responsive) */}
         <div className="space-y-4">
           {/* Main Image */}
           <div className="aspect-square overflow-hidden rounded-lg border">
             <img
-              src={product.images[selectedImage]}
+              src={product.images[selectedImage]} 
               alt={product.title}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-300"
             />
           </div>
           
-          {/* Thumbnail Images */}
-          <div className="grid grid-cols-4 gap-4">
+          {/* Thumbnail Images - Responsive grid with scrolling. Minimum 7 images guaranteed by API wrapper */}
+          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-3 overflow-x-auto pb-2">
             {product.images.map((image, index) => (
               <button
                 key={index}
-                className={`aspect-square overflow-hidden rounded-lg border-2 ${
-                  selectedImage === index ? 'border-primary' : 'border-transparent'
-                }`}
+                className={cn(`aspect-square overflow-hidden rounded-lg border-2 transition-all shrink-0`,
+                  selectedImage === index ? 'border-primary shadow-md' : 'border-transparent hover:border-muted'
+                )}
                 onClick={() => setSelectedImage(index)}
               >
                 <img
@@ -134,12 +192,15 @@ const ProductDetails: React.FC = () => {
         {/* Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-            <div className="flex items-center gap-4 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
+            {/* Removed the API source badge/watermark here */}
+            <p className="text-lg text-muted-foreground">{product.description}</p>
+            
+            <div className="flex items-center gap-4 my-4">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{product.rating}</span>
-                <span className="text-muted-foreground">({Math.floor(Math.random() * 1000) + 100} reviews)</span>
+                <span className="text-muted-foreground">({Math.floor(Math.random() * 1000) + 100} ratings)</span>
               </div>
               <Badge variant="secondary" className="bg-green-100 text-green-800">
                 {product.stock} in stock
@@ -159,7 +220,7 @@ const ProductDetails: React.FC = () => {
                     {formatCurrency(product.price)}
                   </span>
                   <Badge variant="destructive" className="text-lg">
-                    {product.discountPercentage}% OFF
+                    {Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 </>
               )}
@@ -168,17 +229,36 @@ const ProductDetails: React.FC = () => {
           </div>
 
           {/* Brand and Category */}
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <div>
               <span className="text-muted-foreground">Brand: </span>
-              <span className="font-medium">{product.brand}</span>
+              <span className="font-medium text-foreground">{product.brand}</span>
             </div>
             <div>
               <span className="text-muted-foreground">Category: </span>
-              <span className="font-medium capitalize">{product.category.replace('-', ' ')}</span>
+              <span className="font-medium capitalize text-foreground">{product.category.replace('-', ' ')}</span>
             </div>
           </div>
 
+          <Separator />
+          
+          {/* Key Features */}
+          <div className="space-y-2">
+            <h3 className="font-semibold text-lg">Key Features</h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 text-sm">
+              {product.features && product.features.length > 0 ? product.features.map((feature, index) => (
+                <li key={index} className="flex items-center text-muted-foreground">
+                  <svg className="h-4 w-4 text-primary mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clipRule="evenodd" />
+                  </svg>
+                  {feature}
+                </li>
+              )) : (
+                <li className="text-muted-foreground">No specific features listed. Check specifications.</li>
+              )}
+            </ul>
+          </div>
+          
           <Separator />
 
           {/* Quantity Selector */}
@@ -212,12 +292,12 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4">
+          {/* Action Buttons (Responsive) */}
+          <div className="flex flex-col sm:flex-row gap-4">
             <Button 
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="flex-1"
+              className="flex-1 h-12 text-lg"
               size="lg"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
@@ -227,7 +307,7 @@ const ProductDetails: React.FC = () => {
               onClick={handleBuyNow}
               disabled={product.stock === 0}
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-12 text-lg"
               size="lg"
             >
               Buy Now
@@ -236,26 +316,26 @@ const ProductDetails: React.FC = () => {
               variant="outline"
               size="icon"
               onClick={handleWishlistToggle}
-              className="h-12 w-12"
+              className="h-12 w-12 shrink-0"
             >
               <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
             </Button>
           </div>
 
-          {/* Features */}
+          {/* Service Guarantees (Responsive grid) */}
           <Card>
             <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <Truck className="h-4 w-4 text-green-600" />
+                  <Truck className="h-4 w-4 text-green-600 flex-shrink-0" />
                   <span>Free delivery</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-blue-600" />
+                  <Shield className="h-4 w-4 text-blue-600 flex-shrink-0" />
                   <span>1 year warranty</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-4 w-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                   <span>7-day returns</span>
@@ -278,24 +358,25 @@ const ProductDetails: React.FC = () => {
           <TabsContent value="description" className="mt-6">
             <Card>
               <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-4">Detailed Overview</h3>
                 <p className="text-lg leading-relaxed">{product.description}</p>
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                   <div>
-                    <h4 className="font-semibold mb-2">Key Features</h4>
+                    <h4 className="font-semibold mb-2 text-primary">Key Selling Points</h4>
                     <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                      <li>High-quality materials</li>
-                      <li>Excellent performance</li>
-                      <li>Long-lasting durability</li>
-                      <li>Customer favorite</li>
+                      <li>Free & Fast Delivery</li>
+                      <li>Secure Payment Methods</li>
+                      <li>Verified Customer Ratings</li>
+                      <li>Easy Returns & Exchanges</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">What's in the box</h4>
+                    <h4 className="font-semibold mb-2 text-primary">What's in the box</h4>
                     <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                       <li>1 x {product.title}</li>
-                      <li>User manual</li>
-                      <li>Warranty card</li>
-                      <li>Original accessories</li>
+                      <li>Necessary accessories (cables/manual)</li>
+                      <li>{product.specifications.Warranty || 'Standard Warranty'}</li>
+                      <li>Quick Start Guide</li>
                     </ul>
                   </div>
                 </div>
@@ -306,44 +387,21 @@ const ProductDetails: React.FC = () => {
           <TabsContent value="specifications" className="mt-6">
             <Card>
               <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-semibold mb-3">Product Details</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Brand</span>
-                          <span>{product.brand}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Model</span>
-                          <span>{product.title}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Category</span>
-                          <span className="capitalize">{product.category.replace('-', ' ')}</span>
-                        </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {specificationsArray.map(([key, value]) => (
+                      <div key={key} className="space-y-1">
+                        <h4 className="font-semibold text-muted-foreground">{key}</h4>
+                        <span className="text-lg font-medium text-foreground">{value || 'N/A'}</span>
+                        <Separator />
                       </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-3">Additional Info</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Warranty</span>
-                          <span>1 Year</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Return Policy</span>
-                          <span>7 Days</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Delivery</span>
-                          <span>2-3 Days</span>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
+                {specificationsArray.length === 0 && (
+                    <p className="text-muted-foreground">Detailed specifications are not available for this product.</p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -352,7 +410,7 @@ const ProductDetails: React.FC = () => {
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-6">
-                  {/* Review Summary */}
+                  {/* Review Summary (Mocked) */}
                   <div className="flex items-center gap-8">
                     <div className="text-center">
                       <div className="text-4xl font-bold">{product.rating}</div>
@@ -374,7 +432,7 @@ const ProductDetails: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Sample Reviews */}
+                  {/* Sample Reviews (Mocked) */}
                   <div className="space-y-4">
                     <div className="border rounded-lg p-4">
                       <div className="flex items-center gap-4 mb-2">
@@ -427,6 +485,24 @@ const ProductDetails: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Similar Products Section (Responsive) */}
+      <section className="mt-12">
+        <h2 className="text-3xl font-bold mb-6">Similar Products</h2>
+        {similarProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {similarProducts.map(similarProduct => (
+              <ProductCard 
+                key={`${similarProduct.source}-${similarProduct.id}`} 
+                product={similarProduct} 
+                className="hover:shadow-xl"
+              />
+            ))}
+          </div>
+        ) : (
+            <p className="text-muted-foreground">No similar products found for this item.</p>
+        )}
+      </section>
     </div>
   );
 };

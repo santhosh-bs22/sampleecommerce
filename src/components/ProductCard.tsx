@@ -28,6 +28,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isWishlisted = isInWishlist(product.id);
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
   const savings = product.price - discountedPrice;
+  
+  // New: Define product link using composite ID (source-id)
+  const productLink = `/product/${product.source}-${product.id}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -65,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       "group overflow-hidden transition-all duration-300 hover:shadow-lg border-2 hover:border-primary/20 h-full flex flex-col",
       className
     )}>
-      <Link to={`/product/${product.id}`} className="block flex-1">
+      <Link to={productLink} className="block flex-1">
         <div className="relative aspect-square overflow-hidden bg-muted/20">
           <img
             src={product.thumbnail}
@@ -89,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <div className="absolute top-2 right-2 flex flex-col gap-1">
             <Badge variant="secondary" className="bg-green-500 text-white">
-              {product.rating} ★
+              {product.rating.toFixed(1)} ★
             </Badge>
             {product.discountPercentage > 0 && (
               <Badge variant="destructive">
@@ -126,7 +129,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
 
           {/* Limited Stock Banner */}
-          {product.stock > 0 && product.stock <= 3 && (
+          {product.stock > 0 && product.stock <= 5 && (
             <div className="absolute bottom-2 left-2 right-2">
               <div className="bg-red-500 text-white text-xs text-center py-1 px-2 rounded-full font-semibold">
                 ⚡ Only {product.stock} left!
@@ -137,7 +140,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         
         <CardContent className="p-4 flex-1 flex flex-col">
           <div className="mb-3">
-            <Link to={`/product/${product.id}`}>
+            <Link to={productLink}>
               <h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-primary transition-colors leading-tight">
                 {product.title}
               </h3>
@@ -171,7 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
             
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="font-semibold text-foreground bg-secondary px-2 py-1 rounded-full">
+              <span className="font-semibold text-foreground bg-secondary px-2 py-1 rounded-full capitalize">
                 {product.brand}
               </span>
               <div className="flex items-center gap-1">

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Button } from '../components/ui/button';
@@ -6,79 +6,97 @@ import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent } from '../components/ui/card';
 import { Search, Filter, Grid3X3, List, SlidersHorizontal, X } from 'lucide-react';
-import { mockProducts, categories } from '../mockData';
+import { categories } from '../mockData'; 
 import { Product } from '../types';
+import LoadingSpinner from '../components/LoadingSpinner'; 
+import { fetchProducts } from '../api/productApi'; 
+import { cn } from '../lib/utils';
+
+
+// Define state for paginated products
+interface ProductsState {
+  products: Product[];
+  currentPage: number;
+  totalProducts: number;
+  hasMore: boolean;
+  isLoading: boolean;
+}
 
 const Home: React.FC = () => {
+  const MAX_PRICE = 300000;
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'rating' | 'popular'>('popular');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
   const [showFilters, setShowFilters] = useState(false);
+  
+  const [productsState, setProductsState] = useState<ProductsState>({
+    products: [],
+    currentPage: 0,
+    totalProducts: 0,
+    hasMore: true,
+    isLoading: false,
+  });
 
-  const filteredProducts = useMemo(() => {
-    let filtered = mockProducts;
+  const { products, currentPage, totalProducts, hasMore, isLoading } = productsState;
+  
+  const debouncedSearchTerm = useMemo(() => searchTerm, [searchTerm]);
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  const fetchProductsData = useCallback(async (isInitialLoad: boolean = false) => {
+    if (!hasMore && !isInitialLoad) return;
+    if (isLoading) return; 
+
+    setProductsState(prev => ({ ...prev, isLoading: true }));
+    
+    const pageToFetch = isInitialLoad ? 0 : currentPage;
+    
+    try {
+      const data = await fetchProducts(pageToFetch, 8, { 
+        searchTerm: debouncedSearchTerm,
+        category: selectedCategory,
+        priceRange: priceRange,
+        sortBy: sortBy,
+      });
+
+      setProductsState(prev => ({
+        products: isInitialLoad ? data.products : [...prev.products, ...data.products],
+        currentPage: pageToFetch + 1,
+        totalProducts: data.total,
+        hasMore: data.hasMore,
+        isLoading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      setProductsState(prev => ({ ...prev, isLoading: false }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedCategory, sortBy, priceRange, hasMore, isLoading]);
 
-    // Filter by category
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category === selectedCategory);
+  useEffect(() => {
+    setProductsState(prev => ({ ...prev, currentPage: 0, hasMore: true, products: [] }));
+    fetchProductsData(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange)]);
+  
+  const handleLoadMore = () => {
+    if (hasMore && !isLoading) {
+      fetchProductsData(false);
     }
-
-    // Filter by price range
-    filtered = filtered.filter(product => 
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
-
-    // Sort products
-    switch (sortBy) {
-      case 'price-low':
-        filtered = filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-high':
-        filtered = filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        filtered = filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      case 'name':
-        filtered = filtered.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'popular':
-      default:
-        // Sort by rating and discount (popular items)
-        filtered = filtered.sort((a, b) => {
-          const scoreA = a.rating * 20 + a.discountPercentage;
-          const scoreB = b.rating * 20 + b.discountPercentage;
-          return scoreB - scoreA;
-        });
-        break;
-    }
-
-    return filtered;
-  }, [searchTerm, selectedCategory, sortBy, priceRange]);
+  };
 
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedCategory('all');
-    setPriceRange([0, 300000]);
+    setPriceRange([0, MAX_PRICE]);
     setSortBy('popular');
   };
 
   const activeFiltersCount = [
     searchTerm,
     selectedCategory !== 'all',
-    priceRange[0] > 0 || priceRange[1] < 300000
+    priceRange[0] > 0 || priceRange[1] < MAX_PRICE
   ].filter(Boolean).length;
 
   return (
@@ -118,7 +136,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Categories & Filters */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Shop by Category</h2>
@@ -137,6 +155,7 @@ const Home: React.FC = () => {
           </Button>
         </div>
         
+        {/* Responsive Category Badges */}
         <div className="flex flex-wrap gap-2">
           <Badge
             variant={selectedCategory === 'all' ? 'default' : 'outline'}
@@ -163,7 +182,7 @@ const Home: React.FC = () => {
           ))}
         </div>
 
-        {/* Advanced Filters */}
+        {/* Advanced Filters (Responsive grid) */}
         {showFilters && (
           <Card className="mt-4">
             <CardContent className="p-4">
@@ -177,7 +196,7 @@ const Home: React.FC = () => {
                     <input
                       type="range"
                       min="0"
-                      max="300000"
+                      max={MAX_PRICE}
                       step="1000"
                       value={priceRange[0]}
                       onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
@@ -186,7 +205,7 @@ const Home: React.FC = () => {
                     <input
                       type="range"
                       min="0"
-                      max="300000"
+                      max={MAX_PRICE}
                       step="1000"
                       value={priceRange[1]}
                       onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
@@ -240,7 +259,7 @@ const Home: React.FC = () => {
             {selectedCategory === 'all' ? 'All Products' : selectedCategory.replace('-', ' ')}
           </h2>
           <p className="text-muted-foreground">
-            {filteredProducts.length} products found
+            {totalProducts > 0 ? `${totalProducts} products found` : (isLoading ? 'Searching...' : '0 products found')}
             {searchTerm && ` for "${searchTerm}"`}
           </p>
         </div>
@@ -270,19 +289,42 @@ const Home: React.FC = () => {
 
       {/* Products Grid/List */}
       <section>
-        {filteredProducts.length > 0 ? (
-          <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-            : 'space-y-6'
-          }>
-            {filteredProducts.map(product => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                viewMode={viewMode}
-              />
-            ))}
-          </div>
+        {products.length > 0 ? (
+          <>
+            <div className={viewMode === 'grid' 
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+              : 'space-y-6'
+            }>
+              {products.map(product => (
+                <ProductCard 
+                  key={`${product.source}-${product.id}`} 
+                  product={product} 
+                  viewMode={viewMode}
+                />
+              ))}
+            </div>
+            
+            {/* Infinite Load Button */}
+            <div className="mt-8 text-center">
+              {isLoading && products.length === 0 ? (
+                <LoadingSpinner size="lg" className="h-32" />
+              ) : hasMore ? (
+                <Button
+                  onClick={handleLoadMore}
+                  disabled={isLoading}
+                  size="lg"
+                  className="w-full max-w-sm"
+                >
+                  {isLoading ? <LoadingSpinner size="sm" className='mr-2' /> : null}
+                  {isLoading ? 'Loading More...' : 'Load More Products'}
+                </Button>
+              ) : (
+                <p className="text-muted-foreground">You've reached the end of the available products.</p>
+              )}
+            </div>
+          </>
+        ) : isLoading ? (
+           <LoadingSpinner size="lg" className="h-64" />
         ) : (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">
@@ -310,7 +352,7 @@ const Home: React.FC = () => {
           {['Apple', 'Samsung', 'Sony', 'Nike', 'Canon', 'Dell'].map((brand) => (
             <Card key={brand} className="text-center p-4 hover:shadow-lg transition-shadow cursor-pointer">
               <CardContent className="p-2">
-                <div className="text-2xl mb-2">
+                <div className="2xl mb-2">
                   {brand === 'Apple' && '🍎'}
                   {brand === 'Samsung' && '📱'}
                   {brand === 'Sony' && '🎧'}

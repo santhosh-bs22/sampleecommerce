@@ -12,6 +12,12 @@ export interface Product {
   images: string[];
   tags?: string[];
   features?: string[];
+  // Updated specification field for flexibility with external API data
+  specifications: {
+    [key: string]: string | number | undefined;
+  };
+  // New: Source API to ensure unique IDs across multiple sources
+  source: 'dummyjson' | 'platzi' | 'mock';
 }
 
 export interface CartItem {
