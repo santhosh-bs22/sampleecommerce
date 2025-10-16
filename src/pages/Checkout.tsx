@@ -1,10 +1,10 @@
-// src/pages/Checkout.tsx
+// santhosh-bs22/sampleecommerce/sampleecommerce-63bc78e91cd4ea948c5abc2c3fed71363e6bd765/src/pages/Checkout.tsx
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod'; // FIX 1: Use namespace import for Zod
+import * as z from 'zod'; // FIX: Use namespace import, relying on tsconfig.json to resolve module interop
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -73,8 +73,7 @@ const Checkout: React.FC = () => {
   const tax = subtotal * 0.18;
   const total = subtotal + shipping + tax;
 
-  // FIX 2: Explicitly type 'data' parameter to resolve implicit any (code 7006)
-  const onSubmit = async (data: CheckoutForm) => {
+  const onSubmit = async (data: CheckoutForm) => { // TS7006 fix retained
     if (items.length === 0) {
       toast({
         title: "Cart is empty",

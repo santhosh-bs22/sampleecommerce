@@ -51,10 +51,13 @@
 
 @layer base {
   * {
-    @apply border-border;
+    /* FIX 1: Use direct CSS property instead of @apply for border-color */
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    /* FIX 2: Use direct CSS properties instead of @apply for background/text colors */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
