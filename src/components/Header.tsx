@@ -1,3 +1,5 @@
+// santhosh-bs22/sampleecommerce/sampleecommerce-84727adaf637574bd3a65d467f5a1d5f54624af3/src/components/Header.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
@@ -10,24 +12,26 @@ import {
   Moon, 
   Sun,
   Search,
-  Package
+  Package,
+  Sparkles
 } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useUserStore } from '../store/useUserStore';
 import { useThemeStore } from '../store/useThemeStore';
+import AIPersonalShopperDialog from './AIPersonalShopperDialog'; // 👈 Import new component
 
 const Header: React.FC = () => {
-  const { getTotalItems } = useCartStore();
-  const { items: wishlistItems } = useWishlistStore();
-  const { user, isAuthenticated, logout } = useUserStore();
-  const { isDark, toggleTheme } = useThemeStore();
+  const { getTotalItems } = useCartStore(); //
+  const { items: wishlistItems } = useWishlistStore(); //
+  const { user, isAuthenticated, logout } = useUserStore(); //
+  const { isDark, toggleTheme } = useThemeStore(); //
   
-  const cartItemsCount = getTotalItems();
-  const wishlistItemsCount = wishlistItems.length;
+  const cartItemsCount = getTotalItems(); //
+  const wishlistItemsCount = wishlistItems.length; //
 
   const handleLogout = () => {
-    logout();
+    logout(); //
   };
 
   return (
@@ -67,6 +71,10 @@ const Header: React.FC = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            
+            {/* AI Personal Shopper Trigger */}
+            <AIPersonalShopperDialog /> {/* 👈 New AI Shopper button */}
+
             {/* Theme Toggle */}
             <Button
               variant="ghost"
