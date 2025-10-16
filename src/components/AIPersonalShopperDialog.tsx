@@ -64,7 +64,7 @@ const AIPersonalShopperDialog: React.FC = () => {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); /* FIX: Changed from setIsSubmitting(false) to setIsLoading(false) */
     }
   };
   
@@ -93,7 +93,7 @@ const AIPersonalShopperDialog: React.FC = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          <Sparkles className="h-5 w-5 fill-blue-500 text-blue-500" />
+          <Sparkles className="h-5 w-5 fill-primary text-primary" />
           {/* New Feature indicator badge */}
           <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-yellow-400 border-yellow-500 animate-pulse" />
         </Button>
@@ -101,7 +101,7 @@ const AIPersonalShopperDialog: React.FC = () => {
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 fill-blue-500 text-blue-500" />
+            <Sparkles className="h-5 w-5 fill-primary text-primary" />
             AI Personal Shopper
           </DialogTitle>
           <p className="text-sm text-muted-foreground">
@@ -188,7 +188,7 @@ const AIPersonalShopperDialog: React.FC = () => {
         {suggestedQuery && (
             <div className='flex justify-end'>
                 <Button onClick={handleSearchNavigation}>
-                    Search on FlipStore
+                    Search on EcomX
                 </Button>
             </div>
         )}

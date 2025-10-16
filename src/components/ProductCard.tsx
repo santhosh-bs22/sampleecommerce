@@ -6,9 +6,11 @@ import { Badge } from './ui/badge';
 import { Product } from '../types';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
+import { useComparisonStore } from '../store/useComparisonStore'; // 👈 Imported
 import { formatCurrency, calculateDiscount } from '../utils/currency';
 import { useToast } from '../hooks/use-toast';
 import { cn } from '../lib/utils';
+import { Scale } from 'lucide-react'; // 👈 Imported icon
 
 interface ProductCardProps {
   product: Product;
@@ -23,9 +25,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
+  const { addProduct: addToCompare, removeProduct: removeFromCompare, isInComparison } = useComparisonStore(); // 👈 Destructured
   const { toast } = useToast();
   
   const isWishlisted = isInWishlist(product.id);
+  const isCompared = isInComparison(product.id); // 👈 New state
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
   const savings = product.price - discountedPrice;
   
@@ -62,6 +66,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
+  // New: Handle Compare Toggle
+  const handleCompareToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isCompared) {
+      removeFromCompare(product.id);
+      toast({
+        title: "Removed from comparison",
+        description: `${product.title} removed from compare list.`,
+      });
+    } else {
+      addToCompare(product);
+      toast({
+        title: "Added to comparison",
+        description: `${product.title} added to compare list.`,
+      });
+    }
+  };
+
+
   // Grid View (Default)
   return (
     <Card className={cn(
@@ -77,6 +102,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
           />
           
           {/* Top Badges */}
+          <div className="absolute top-2 right-2 flex flex-col gap-1">
+            <Badge variant="secondary" className="bg-green-500 text-white">
+              {product.rating.toFixed(1)} ★
+            </Badge>
+            {product.discountPercentage > 0 && (
+              <Badge variant="destructive">
+                -{Math.round(product.discountPercentage)}%
+              </Badge>
+            )}
+          </div>
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.discountPercentage > 20 && (
               <Badge variant="destructive" className="text-xs">
@@ -90,34 +125,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
 
-          <div className="absolute top-2 right-2 flex flex-col gap-1">
-            <Badge variant="secondary" className="bg-green-500 text-white">
-              {product.rating.toFixed(1)} ★
-            </Badge>
-            {product.discountPercentage > 0 && (
-              <Badge variant="destructive">
-                -{Math.round(product.discountPercentage)}%
-              </Badge>
-            )}
-          </div>
 
-          {/* Wishlist Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleWishlistToggle}
-            className={cn(
-              "absolute top-2 left-2 h-9 w-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm transition-all duration-300",
-              isWishlisted ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
-            )}
-          >
-            <span className={cn(
-              "text-lg transition-all",
-              isWishlisted ? "text-red-500 scale-110" : "text-gray-600"
-            )}>
-              {isWishlisted ? '❤️' : '🤍'}
-            </span>
-          </Button>
+          {/* Action Buttons (Wishlist & Compare) */}
+          <div className="absolute top-2 left-2 flex flex-col space-y-2">
+            {/* Wishlist Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleWishlistToggle}
+              className={cn(
+                "h-9 w-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm transition-all duration-300",
+                isWishlisted ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
+              )}
+            >
+              <span className={cn(
+                "text-lg transition-all",
+                isWishlisted ? "text-red-500 scale-110" : "text-gray-600"
+              )}>
+                {isWishlisted ? '❤️' : '🤍'}
+              </span>
+            </Button>
+            
+            {/* Compare Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleCompareToggle}
+              className={cn(
+                "h-9 w-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm transition-all duration-300",
+                isCompared ? "opacity-100 scale-100 text-primary" : "opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 text-gray-600"
+              )}
+            >
+              <Scale className="h-4 w-4" />
+            </Button>
+          </div>
 
           {/* Stock Overlay */}
           {product.stock === 0 && (

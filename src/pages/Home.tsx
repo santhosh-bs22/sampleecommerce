@@ -5,12 +5,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent } from '../components/ui/card';
-import { Search, Filter, Grid3X3, List, SlidersHorizontal, X } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, SlidersHorizontal, X, Scale, Minus } from 'lucide-react';
 import { categories } from '../mockData'; 
 import { Product } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner'; 
 import { fetchProducts } from '../api/productApi'; 
 import { cn } from '../lib/utils';
+import { useComparisonStore } from '../store/useComparisonStore'; // 👈 Imported
 
 
 // Define state for paginated products
@@ -31,6 +32,8 @@ const Home: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
   const [showFilters, setShowFilters] = useState(false);
+  
+  const { products: productsToCompare, removeProduct, clearComparison } = useComparisonStore(); // 👈 New Comparison State
   
   const [productsState, setProductsState] = useState<ProductsState>({
     products: [],
@@ -100,12 +103,13 @@ const Home: React.FC = () => {
   ].filter(Boolean).length;
 
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="text-center mb-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            Welcome to <span className="text-primary">FlipStore</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-violet-600 bg-clip-text text-transparent">
+            Welcome to <span className="text-primary">EcomX</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
             Discover amazing products at unbeatable prices. 
@@ -367,6 +371,51 @@ const Home: React.FC = () => {
         </div>
       </section>
     </div>
+    
+    {/* Comparison Bar (New Feature) */}
+    {productsToCompare.length > 0 && (
+      <div 
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-40 bg-card border-t shadow-2xl transition-all duration-300",
+          productsToCompare.length > 0 ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+        )}
+      >
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4 overflow-x-auto whitespace-nowrap">
+            <Scale className="h-6 w-6 text-primary" />
+            <span className="font-semibold text-sm">
+              {productsToCompare.length} {productsToCompare.length === 1 ? 'Item' : 'Items'} Selected for Comparison (Max 4)
+            </span>
+            <div className="flex space-x-2">
+              {productsToCompare.map(product => (
+                <Badge key={product.id} className="bg-primary/10 text-primary flex items-center gap-1">
+                  {product.title.split(' ').slice(0, 2).join(' ')}
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-4 w-4 p-0 text-primary hover:bg-primary/20"
+                    onClick={() => removeProduct(product.id)}
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={clearComparison}>
+              Clear
+            </Button>
+            <Button disabled={productsToCompare.length < 2} asChild>
+              <Link to="/compare-products" onClick={() => clearComparison()}> {/* Mocked link/navigation */}
+                Compare ({productsToCompare.length})
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

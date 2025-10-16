@@ -95,3 +95,12 @@ export interface CheckoutFormData {
   cvv?: string;
   upiId?: string;
 }
+
+// NEW: Comparison State Interface
+export interface ComparisonState {
+  products: Product[];
+  addProduct: (product: Product) => void;
+  removeProduct: (productId: number) => void;
+  clearComparison: () => void;
+  isInComparison: (productId: number) => boolean;
+}

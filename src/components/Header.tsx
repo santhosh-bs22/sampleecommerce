@@ -40,8 +40,8 @@ const Header: React.FC = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Package className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold">FlipStore</span>
+            <Package className="h-8 w-8 text-primary" />
+            <span className="text-xl font-bold">EcomX</span>
           </Link>
 
           {/* Navigation */}
@@ -50,7 +50,7 @@ const Header: React.FC = () => {
               Home
             </Link>
             <Link to="/products" className="text-sm font-medium transition-colors hover:text-primary">
-              Products
+              All Products
             </Link>
             <Link to="/categories" className="text-sm font-medium transition-colors hover:text-primary">
               Categories
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
