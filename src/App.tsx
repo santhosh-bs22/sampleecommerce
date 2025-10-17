@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion'; // 👈 Imported
+import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from './components/ui/toaster';
 import { useThemeStore } from './store/useThemeStore';
 import Header from './components/Header';
@@ -13,6 +13,8 @@ import Wishlist from './pages/Wishlist';
 import Orders from './pages/Orders';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import SocialProof from './components/SocialProof';
+import Chatbot from './components/Chatbot';
 import './App.css';
 
 // Component to handle smooth page transitions
@@ -29,7 +31,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageWrapper element={<Home />} pageTransition={pageTransition} />} />
-        <Route path="/products" element={<PageWrapper element={<Home />} pageTransition={pageTransition} />} /> {/* Added route for "All Products" */}
+        <Route path="/products" element={<PageWrapper element={<Home />} pageTransition={pageTransition} />} />
         <Route path="/product/:id" element={<PageWrapper element={<ProductDetails />} pageTransition={pageTransition} />} />
         <Route path="/cart" element={<PageWrapper element={<Cart />} pageTransition={pageTransition} />} />
         <Route path="/checkout" element={<PageWrapper element={<Checkout />} pageTransition={pageTransition} />} />
@@ -79,11 +81,13 @@ function App() {
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Router>
         <Header />
-        <main> {/* Adjusted to rely on PageWrapper for height */}
-          <AnimatedRoutes /> {/* Used AnimatedRoutes instead of direct Routes */}
+        <main>
+          <AnimatedRoutes />
         </main>
         <Footer />
         <Toaster />
+        <SocialProof />
+        <Chatbot />
       </Router>
     </div>
   );

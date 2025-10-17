@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: 'sampleecommerce', // 👈 use your repo name here
+  base: '/sampleecommerce',
   server: {
     host: true,
     port: 5173,
@@ -13,5 +13,8 @@ export default defineConfig({
     alias: {
       '@': '/src',
     },
+  },
+  define: {
+    'global': 'window', // 👈 Fix: Add this line to define global
   },
 })
