@@ -294,12 +294,12 @@ const ProductDetails: React.FC = () => {
 
       <div className="mt-12">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid aw-full grid-cols-3">
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specifications">Specifications</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="videos">Video Reviews</TabsTrigger>
-            <TabsTrigger value="demo">Interactive Demo</TabsTrigger>
+            {/* <TabsTrigger value="videos">Video Reviews</TabsTrigger>
+            <TabsTrigger value="demo">Interactive Demo</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="description" className="mt-6">
@@ -385,7 +385,7 @@ const ProductDetails: React.FC = () => {
                   </div>
             </div></CardContent></Card>
           </TabsContent>
-
+{/* 
           <TabsContent value="videos" className="mt-6">
             <Card>
               <CardContent className="p-6">
@@ -403,9 +403,9 @@ const ProductDetails: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
 
-          <TabsContent value="demo" className="mt-6">
+          {/* <TabsContent value="demo" className="mt-6">
             <Card>
               <CardContent className="p-6 text-center">
                 <h3 className="text-xl font-bold mb-4">Interactive Demo</h3>
@@ -413,7 +413,7 @@ const ProductDetails: React.FC = () => {
                 <p className="text-sm text-muted-foreground mt-2">(This is where you would embed a product-specific interactive element)</p>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
 
         </Tabs>
       </div>

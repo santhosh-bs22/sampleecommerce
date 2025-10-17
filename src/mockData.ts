@@ -16,11 +16,12 @@ const mobilePhones: Product[] = [
     images: [
       "https://m.media-amazon.com/images/I/71uqj6BKnRL._AC_UY327_FMwebp_QL65_.jpg",
       "https://m.media-amazon.com/images/I/71iRY9pUoVL._SX679_.jpg",
-      "https://m.media-amazon.com/images/I/71pDQ+941HL._SX679_.jpg",
       "https://m.media-amazon.com/images/I/71at7OMyP2L._SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/71PrkZz2itL._SX679_.jpg",
       "https://m.media-amazon.com/images/I/81gJVEFtA8L._SL1500_.jpg",
       "https://m.media-amazon.com/images/I/614I1ESo3RL._SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71PrkZz2itL._SX679_.jpg",
+
+      "https://m.media-amazon.com/images/I/71pDQ+941HL._SX679_.jpg",
     ],
     features: [
       "200MP Quad Camera",
@@ -3347,6 +3348,7 @@ const menClothing: Product[] = [
     stock: 120,
     brand: "Levi's",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/401/thumbnail.jpg",
     images: [
       "/images/401/1.jpg",
@@ -3377,6 +3379,7 @@ const menClothing: Product[] = [
     stock: 200,
     brand: "Nike",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL", "XXL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3412,6 +3415,7 @@ const menClothing: Product[] = [
     stock: 150,
     brand: "U.S. Polo Assn.",
     category: "mens-clothing",
+    sizes: ["30", "32", "34", "36", "38"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3442,6 +3446,7 @@ const menClothing: Product[] = [
     stock: 300,
     brand: "The Souled Store",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3477,6 +3482,7 @@ const menClothing: Product[] = [
     stock: 180,
     brand: "Adidas",
     category: "mens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3512,6 +3518,7 @@ const menClothing: Product[] = [
     stock: 100,
     brand: "Marks & Spencer",
     category: "mens-clothing",
+    sizes: ["M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3547,6 +3554,7 @@ const menClothing: Product[] = [
     stock: 130,
     brand: "Superdry",
     category: "mens-clothing",
+    sizes: ["32", "34", "36"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3582,6 +3590,7 @@ const menClothing: Product[] = [
     stock: 160,
     brand: "Puma",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3617,6 +3626,7 @@ const menClothing: Product[] = [
     stock: 140,
     brand: "Van Heusen",
     category: "mens-clothing",
+    sizes: ["30", "32", "34", "36", "38", "40"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3652,6 +3662,7 @@ const menClothing: Product[] = [
     stock: 250,
     brand: "Tommy Hilfiger",
     category: "mens-clothing",
+    sizes: ["Free Size"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3687,6 +3698,7 @@ const menClothing: Product[] = [
     stock: 180,
     brand: "Arrow",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3717,6 +3729,7 @@ const menClothing: Product[] = [
     stock: 220,
     brand: "Reebok",
     category: "mens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3752,6 +3765,7 @@ const menClothing: Product[] = [
     stock: 110,
     brand: "Jack & Jones",
     category: "mens-clothing",
+    sizes: ["M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3787,6 +3801,7 @@ const menClothing: Product[] = [
     stock: 150,
     brand: "Manyavar",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL", "XXL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3822,6 +3837,7 @@ const menClothing: Product[] = [
     stock: 300,
     brand: "Jockey",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3857,6 +3873,7 @@ const menClothing: Product[] = [
     stock: 130,
     brand: "United Colors of Benetton",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3887,6 +3904,7 @@ const menClothing: Product[] = [
     stock: 190,
     brand: "Flying Machine",
     category: "mens-clothing",
+    sizes: ["M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3922,6 +3940,7 @@ const menClothing: Product[] = [
     stock: 140,
     brand: "Lee",
     category: "mens-clothing",
+    sizes: ["30", "32", "34", "36", "38"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3957,6 +3976,7 @@ const menClothing: Product[] = [
     stock: 90,
     brand: "Blackberrys",
     category: "mens-clothing",
+    sizes: ["38", "40", "42", "44"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -3992,6 +4012,7 @@ const menClothing: Product[] = [
     stock: 250,
     brand: "Fruit of the Loom",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4022,6 +4043,7 @@ const menClothing: Product[] = [
     stock: 170,
     brand: "Calvin Klein",
     category: "mens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4057,6 +4079,7 @@ const menClothing: Product[] = [
     stock: 120,
     brand: "Under Armour",
     category: "mens-clothing",
+    sizes: ["M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4092,6 +4115,7 @@ const menClothing: Product[] = [
     stock: 200,
     brand: "WROGN",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4127,6 +4151,7 @@ const menClothing: Product[] = [
     stock: 100,
     brand: "Clarks",
     category: "footwear",
+    sizes: ["7", "8", "9", "10", "11"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4162,6 +4187,7 @@ const menClothing: Product[] = [
     stock: 150,
     brand: "Puma",
     category: "footwear",
+    sizes: ["7", "8", "9", "10"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4197,6 +4223,7 @@ const menClothing: Product[] = [
     stock: 180,
     brand: "Zara",
     category: "mens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4232,6 +4259,7 @@ const menClothing: Product[] = [
     stock: 130,
     brand: "Pepe Jeans",
     category: "mens-clothing",
+    sizes: ["30", "32", "34"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4267,6 +4295,7 @@ const menClothing: Product[] = [
     stock: 200,
     brand: "Louis Philippe",
     category: "mens-clothing",
+    sizes: ["38", "39", "40", "42", "44"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4297,6 +4326,7 @@ const menClothing: Product[] = [
     stock: 400,
     brand: "Van Heusen",
     category: "mens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4332,6 +4362,7 @@ const menClothing: Product[] = [
     stock: 150,
     brand: "Bata",
     category: "footwear",
+    sizes: ["6", "7", "8", "9", "10"],
     thumbnail: "/images/402/thumbnail.jpg",
     images: [
       "/images/402/1.jpg",
@@ -4371,6 +4402,7 @@ const womenClothing: Product[] = [
     stock: 150,
     brand: "Zara",
     category: "womens-clothing",
+    sizes: ["XS", "S", "M", "L", "XL"],
     thumbnail: "/images/501/thumbnail.jpg",
     images: [
       "/images/501/1.jpg",
@@ -4406,6 +4438,7 @@ const womenClothing: Product[] = [
     stock: 180,
     brand: "H&M",
     category: "womens-clothing",
+    sizes: ["26", "28", "30", "32", "34"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4441,6 +4474,7 @@ const womenClothing: Product[] = [
     stock: 100,
     brand: "Sabyasachi",
     category: "womens-clothing",
+    sizes: ["Free Size"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4476,6 +4510,7 @@ const womenClothing: Product[] = [
     stock: 250,
     brand: "Vero Moda",
     category: "womens-clothing",
+    sizes: ["XS", "S", "M", "L"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4511,6 +4546,7 @@ const womenClothing: Product[] = [
     stock: 120,
     brand: "H&M",
     category: "womens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4546,6 +4582,7 @@ const womenClothing: Product[] = [
     stock: 200,
     brand: "Nike",
     category: "womens-clothing",
+    sizes: ["S", "M", "L", "XL"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4581,6 +4618,7 @@ const womenClothing: Product[] = [
     stock: 80,
     brand: "H&M",
     category: "womens-clothing",
+    sizes: ["One Size"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4616,6 +4654,7 @@ const womenClothing: Product[] = [
     stock: 60,
     brand: "Zara",
     category: "womens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4646,6 +4685,7 @@ const womenClothing: Product[] = [
     stock: 150,
     brand: "Nike",
     category: "womens-clothing",
+    sizes: ["S", "M", "L"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",
@@ -4680,6 +4720,7 @@ const womenClothing: Product[] = [
     stock: 100,
     brand: "Levi's",
     category: "womens-clothing",
+    sizes: ["XS", "S", "M", "L"],
     thumbnail: "/images/502/thumbnail.jpg",
     images: [
       "/images/502/1.jpg",

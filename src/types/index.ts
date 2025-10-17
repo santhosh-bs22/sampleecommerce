@@ -12,6 +12,7 @@ export interface Product {
   images: string[];
   tags?: string[];
   features?: string[];
+  sizes?: string[]; // Added sizes property
   // Updated specification field for flexibility with external API data
   specifications: {
     [key: string]: string | number | undefined;
