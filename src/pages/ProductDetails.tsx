@@ -31,6 +31,7 @@ const ProductDetails: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
 
   const fetchProduct = useCallback(async (combinedId: string) => {
     setIsLoading(true);
@@ -39,6 +40,7 @@ const ProductDetails: React.FC = () => {
     setSelectedImage(0);
     setQuantity(1);
     setActiveTab('description');
+    setSelectedSize(undefined);
 
     const [source, productIdStr] = combinedId.split('-');
     const pid = parseInt(productIdStr || '0', 10);
@@ -52,6 +54,9 @@ const ProductDetails: React.FC = () => {
 
     if (fetchedProduct) {
       setProduct(fetchedProduct);
+      if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
+        setSelectedSize(fetchedProduct.sizes[0]);
+      }
       const similar = await getSimilarProducts(fetchedProduct, 4);
       setSimilarProducts(similar);
     }
@@ -99,6 +104,13 @@ const ProductDetails: React.FC = () => {
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
 
   const handleAddToCart = () => {
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+      toast({
+        title: "Please select a size",
+        variant: "destructive",
+      });
+      return;
+    }
     addItem(product, quantity);
     toast({
       title: "Added to cart",
@@ -233,6 +245,23 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
+          {product.sizes && product.sizes.length > 0 && (
+            <div>
+              <h3 className="font-semibold text-lg mb-2">Size</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((size) => (
+                  <Button
+                    key={size}
+                    variant={selectedSize === size ? 'default' : 'outline'}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <Separator />
           
           <div className="space-y-2">
@@ -298,8 +327,6 @@ const ProductDetails: React.FC = () => {
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specifications">Specifications</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            {/* <TabsTrigger value="videos">Video Reviews</TabsTrigger>
-            <TabsTrigger value="demo">Interactive Demo</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="description" className="mt-6">
@@ -385,36 +412,6 @@ const ProductDetails: React.FC = () => {
                   </div>
             </div></CardContent></Card>
           </TabsContent>
-{/* 
-          <TabsContent value="videos" className="mt-6">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-4">Video Reviews</h3>
-                <div className="aspect-w-16 aspect-h-9">
-                  <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                    title="Product Video Review"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full rounded-lg"
-                    style={{ minHeight: '350px' }}
-                  ></iframe>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent> */}
-
-          {/* <TabsContent value="demo" className="mt-6">
-            <Card>
-              <CardContent className="p-6 text-center">
-                <h3 className="text-xl font-bold mb-4">Interactive Demo</h3>
-                <p className="text-muted-foreground">An interactive demo for this product is not yet available.</p>
-                <p className="text-sm text-muted-foreground mt-2">(This is where you would embed a product-specific interactive element)</p>
-              </CardContent>
-            </Card>
-          </TabsContent> */}
-
         </Tabs>
       </div>
 
