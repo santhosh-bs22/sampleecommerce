@@ -1,13 +1,11 @@
 import { Product } from '../types';
-import { categories, mockProducts } from '../mockData'; // Import mockProducts
+import { mockProducts } from '../mockData'; // Import mockProducts
 
 // --- API Endpoints and Configuration ---
 
 // DummyJSON (supports limit and skip)
 const DUMMY_API_BASE = 'https://dummyjson.com';
-// Platzi Fake API (supports limit and offset)
-const PLATZI_API_BASE = 'https://api.escuelajs.co/api/v1';
-const PAGE_SIZE = 6; // Load 6 items per page (3 from each API for variety)
+const PAGE_SIZE = 8; // Load 8 items per page
 const FALLBACK_IMAGE = 'https://via.placeholder.com/400?text=Image+Not+Available';
 
 // --- Utility Functions for Data Normalization ---
@@ -53,42 +51,6 @@ const normalizeDummyProduct = (data: any): Product => {
     };
 };
 
-// Maps Platzi response to our Product interface
-const normalizePlatziProduct = (data: any): Product => {
-    // 1. Image Check: Filter out any image URLs that are empty or don't start with http
-    const validImages = Array.isArray(data.images) ? data.images.filter((img: string) => img && (img.startsWith('http') || img.startsWith('https'))) : [];
-
-    const images = validImages.length > 0
-        ? validImages
-        : [data.category?.image || FALLBACK_IMAGE]; // Fallback to category image or placeholder
-
-    // Ensure minimum 7 images
-    const finalImages = images.slice(0, 7);
-    while (finalImages.length < 7) {
-        finalImages.push(images[finalImages.length % images.length]);
-    }
-
-    return {
-      id: data.id,
-      title: data.title || 'Unknown Product', // Safety check for title
-      description: data.description || 'No description provided.',
-      price: Math.round(data.price * 80),
-      discountPercentage: Math.floor(Math.random() * 20),
-      rating: parseFloat(((Math.random() * 0.5) + 4.0).toFixed(1)),
-      stock: Math.floor(Math.random() * 50) + 1,
-      brand: data.category?.name || 'Generic',
-      category: data.category?.name?.replace(/ /g, '-').toLowerCase() || 'miscellaneous',
-      thumbnail: images[0] || FALLBACK_IMAGE, // Use the first validated image as thumbnail
-      images: finalImages,
-      features: [],
-      specifications: {
-        'Category': data.category?.name,
-        'Creation Date': new Date(data.creationAt).toLocaleDateString(),
-        'API Source': 'Platzi Fake API',
-      },
-      source: 'platzi',
-    };
-};
 
 // --- Main API Functions ---
 
@@ -108,24 +70,21 @@ interface FetchFilters {
 }
 
 /**
- * Fetches products from two external APIs, combines, normalizes, and returns a paginated result.
+ * Fetches products from the DummyJSON API, combines with mock data, normalizes, and returns a paginated result.
  */
 export const fetchProducts = async (
   page: number = 0,
   limit: number = PAGE_SIZE,
   filters: FetchFilters = {}
 ): Promise<PaginatedProducts> => {
-  // FIX: Initialize with the mockProducts array
   const allProducts: Product[] = page === 0 ? [...mockProducts] : [];
-  const dummyApiLimit = Math.ceil(limit / 2);
-  const platziApiLimit = limit - dummyApiLimit;
   let totalProductsEstimate = 100;
 
   // 1. Fetch from DummyJSON
   try {
-    const dummyOffset = page * dummyApiLimit;
+    const dummyOffset = page * limit;
     const dummySearchQuery = filters.searchTerm ? `search?q=${filters.searchTerm}&` : '';
-    const dummyUrl = `${DUMMY_API_BASE}/products/${dummySearchQuery}limit=${dummyApiLimit}&skip=${dummyOffset}`;
+    const dummyUrl = `${DUMMY_API_BASE}/products/${dummySearchQuery}limit=${limit}&skip=${dummyOffset}`;
     const dummyRes = await fetch(dummyUrl);
     const dummyData = await dummyRes.json();
 
@@ -137,26 +96,10 @@ export const fetchProducts = async (
     console.error("Error fetching from DummyJSON:", e);
   }
 
-  // 2. Fetch from Platzi Fake API
-  try {
-    const platziOffset = page * platziApiLimit;
-    // Note: Platzi API does not support search/filter by title in a simple query,
-    // so we rely on client-side filtering below for Platzi search results.
-    const platziUrl = `${PLATZI_API_BASE}/products?limit=${platziApiLimit}&offset=${platziOffset}`;
-    const platziRes = await fetch(platziUrl);
-    const platziData = await platziRes.json();
-
-    if (Array.isArray(platziData)) {
-      platziData.forEach((p: any) => allProducts.push(normalizePlatziProduct(p)));
-    }
-  } catch (e) {
-    console.error("Error fetching from Platzi API:", e);
-  }
 
   // --- Client-side Filtering, Searching & Sorting on Combined Results ---
   let finalProducts = allProducts;
 
-  // Client-side filtering for Platzi search results and combined results
   if (filters.searchTerm) {
     const term = filters.searchTerm.toLowerCase();
     finalProducts = finalProducts.filter(p =>
@@ -224,9 +167,6 @@ export const fetchProductById = async (id: number, source: Product['source']): P
     case 'dummyjson':
       url = `${DUMMY_API_BASE}/products/${id}`;
       break;
-    case 'platzi':
-      url = `${PLATZI_API_BASE}/products/${id}`;
-      break;
     default:
         return undefined;
   }
@@ -236,9 +176,7 @@ export const fetchProductById = async (id: number, source: Product['source']): P
     const data = await res.json();
 
     if (res.ok) {
-        return source === 'dummyjson'
-            ? normalizeDummyProduct(data)
-            : normalizePlatziProduct(data);
+        return normalizeDummyProduct(data);
     }
   } catch (e) {
     console.error(`Error fetching product ${id} from ${source}:`, e);
