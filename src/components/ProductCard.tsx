@@ -1,28 +1,45 @@
 // src/components/ProductCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardFooter } from './ui/card'; // Check path if needed
-import { Button } from './ui/button'; // Check path if needed
-import { Badge } from './ui/badge'; // Check path if needed
-import { Product } from '../types'; // Check path if needed
-import { useCartStore } from '../store/useCartStore'; // Check path if needed
-import { useWishlistStore } from '../store/useWishlistStore'; // Check path if needed
-import { useComparisonStore } from '../store/useComparisonStore'; // Check path if needed
-import { formatCurrency, calculateDiscount } from '../utils/currency'; // Check path if needed
-import { useToast } from '../hooks/use-toast'; // Check path if needed
-import { cn } from '../lib/utils'; // Check path if needed
-import { Scale } from 'lucide-react';
+import { Card, CardContent, CardFooter } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Product } from '../types';
+import { useCartStore } from '../store/useCartStore';
+import { useWishlistStore } from '../store/useWishlistStore';
+import { useComparisonStore } from '../store/useComparisonStore';
+import { formatCurrency, calculateDiscount } from '../utils/currency';
+import { useToast } from '../hooks/use-toast';
+import { cn } from '../lib/utils';
+import { Scale, Heart, ShoppingCart } from 'lucide-react'; // Added Heart, ShoppingCart
+import { motion, Variants } from 'framer-motion'; // Import motion
 
 interface ProductCardProps {
   product: Product;
   viewMode?: 'grid' | 'list';
   className?: string;
+  index?: number; // Optional index for stagger animation
 }
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({ // Accept index 'i'
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05, // Stagger delay based on index
+      duration: 0.3,
+      ease: [0.33, 1, 0.68, 1], // cubic-bezier equivalent of easeOut
+    },
+  }),
+};
+
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
   viewMode = 'grid',
-  className
+  className,
+  index = 0 // Default index to 0
 }) => {
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
@@ -33,221 +50,287 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isCompared = isInComparison(product.id);
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
   const savings = product.price - discountedPrice;
-
-  // Define product link using composite ID (source-id)
   const productLink = `/product/${product.source}-${product.id}`;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  // Simplified handlers using stopPropagation
+   const handleInteraction = (e: React.MouseEvent, action: () => void, successTitle: string, successDesc: string) => {
     e.preventDefault();
     e.stopPropagation();
-
-    addItem(product);
-    toast({
-      title: "🎉 Added to cart",
-      description: `${product.title} has been added to your cart.`,
-    });
+    action();
+    toast({ title: successTitle, description: successDesc });
   };
 
+  const handleAddToCart = (e: React.MouseEvent) => handleInteraction(e, () => addItem(product), "🎉 Added to cart", `${product.title} added.`);
   const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
     if (isWishlisted) {
-      removeFromWishlist(product.id);
-      toast({
-        title: "❤️ Removed from wishlist",
-        description: `${product.title} has been removed from your wishlist.`,
-      });
+      handleInteraction(e, () => removeFromWishlist(product.id), "❤️ Removed from wishlist", `${product.title} removed.`);
     } else {
-      addToWishlist(product);
-      toast({
-        title: "💖 Added to wishlist",
-        description: `${product.title} has been added to your wishlist.`,
-      });
+      handleInteraction(e, () => addToWishlist(product), "💖 Added to wishlist", `${product.title} added.`);
     }
   };
-
-  // Handle Compare Toggle
   const handleCompareToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (isCompared) {
-      removeFromCompare(product.id);
-      toast({
-        title: "Removed from comparison",
-        description: `${product.title} removed from compare list.`,
-      });
+     if (isCompared) {
+      handleInteraction(e, () => removeFromCompare(product.id), "➖ Removed from comparison", `${product.title} removed.`);
     } else {
-      addToCompare(product);
-      toast({
-        title: "Added to comparison",
-        description: `${product.title} added to compare list.`,
-      });
+       handleInteraction(e, () => addToCompare(product), "➕ Added to comparison", `${product.title} added.`);
     }
   };
 
+  // Common Card Content
+  const CardInnerContent = () => (
+    <>
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30 group-hover:bg-secondary/50 transition-colors rounded-t-lg"> {/* Aspect Ratio */}
+        <motion.img
+          src={product.thumbnail}
+          alt={product.title}
+          className="h-full w-full object-contain transition-transform duration-500" // Kept object-contain
+           whileHover={{ scale: 1.05 }} // Image zoom on hover
+        />
 
-  // Grid View (Default)
-  return (
-    <Card className={cn(
-      "group overflow-hidden transition-all duration-300 hover:shadow-lg border-2 hover:border-primary/20 h-full flex flex-col",
-      className
-    )}>
-      <Link to={productLink} className="block flex-1">
-        <div className="relative aspect-square overflow-hidden bg-muted/20">
-          <img
-            src={product.thumbnail}
-            alt={product.title}
-            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110" // *** Updated: object-contain ***
-          />
-
-          {/* Top Badges */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1">
-            <Badge variant="secondary" className="bg-green-500 text-white">
+        {/* Top Badges */}
+         <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+          <Badge variant="secondary" className="bg-green-600 text-white shadow">
               {product.rating.toFixed(1)} ★
             </Badge>
-            {product.discountPercentage > 0 && (
-              <Badge variant="destructive">
-                -{Math.round(product.discountPercentage)}%
-              </Badge>
-            )}
-          </div>
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.discountPercentage > 20 && (
-              <Badge variant="destructive" className="text-xs">
-                🔥 MEGA SALE
-              </Badge>
-            )}
-            {product.rating > 4.7 && (
-              <Badge variant="secondary" className="bg-yellow-500 text-white text-xs">
-                ⭐ BESTSELLER
-              </Badge>
-            )}
-          </div>
-
-
-          {/* Action Buttons (Wishlist & Compare) */}
-          <div className="absolute top-2 left-2 flex flex-col space-y-2"> {/* Changed from right-2 */}
-            {/* Wishlist Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleWishlistToggle}
-              className={cn(
-                "h-9 w-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm transition-all duration-300",
-                isWishlisted ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
-              )}
-            >
-              <span className={cn(
-                "text-lg transition-all",
-                isWishlisted ? "text-red-500 scale-110" : "text-gray-600"
-              )}>
-                {isWishlisted ? '❤️' : '🤍'}
-              </span>
-            </Button>
-
-            {/* Compare Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCompareToggle}
-              className={cn(
-                "h-9 w-9 rounded-full bg-white/90 hover:bg-white backdrop-blur-sm transition-all duration-300",
-                isCompared ? "opacity-100 scale-100 text-primary" : "opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 text-gray-600"
-              )}
-            >
-              <Scale className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Stock Overlay */}
-          {product.stock === 0 && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <Badge variant="secondary" className="bg-red-500 text-white text-lg py-3 px-6 font-semibold">
-                Out of Stock
-              </Badge>
-            </div>
-          )}
-
-          {/* Limited Stock Banner */}
-          {product.stock > 0 && product.stock <= 5 && (
-            <div className="absolute bottom-2 left-2 right-2">
-              <div className="bg-red-500 text-white text-xs text-center py-1 px-2 rounded-full font-semibold">
-                ⚡ Only {product.stock} left!
-              </div>
-            </div>
+          {product.discountPercentage > 0 && (
+             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }}>
+                <Badge variant="destructive" className="shadow">
+                  -{Math.round(product.discountPercentage)}%
+                </Badge>
+              </motion.div>
           )}
         </div>
+          {/* Quick Action Buttons - Appear on hover */}
+         <div className="absolute bottom-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="secondary" // Changed style
+                size="icon"
+                onClick={handleWishlistToggle}
+                className="h-9 w-9 rounded-full shadow-md backdrop-blur-sm"
+              >
+               <Heart className={cn("h-4 w-4 transition-colors", isWishlisted ? "fill-red-500 text-red-500" : "text-foreground/70")} />
+              </Button>
+           </motion.div>
+           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+             <Button
+                variant="secondary"
+                size="icon"
+                onClick={handleCompareToggle}
+                className="h-9 w-9 rounded-full shadow-md backdrop-blur-sm"
+             >
+                <Scale className={cn("h-4 w-4 transition-colors", isCompared ? "text-primary" : "text-foreground/70")} />
+             </Button>
+            </motion.div>
+          </div>
 
-        <CardContent className="p-4 flex-1 flex flex-col">
-          <div className="mb-3">
-            <Link to={productLink}>
-              <h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-primary transition-colors leading-tight">
+        {/* Stock Info */}
+        {product.stock === 0 && (
+          <div className="absolute inset-0 bg-black/70 flex items-center justify-center rounded-t-lg">
+             <Badge variant="destructive" className="text-base py-2 px-4 font-semibold">
+               Out of Stock
+             </Badge>
+          </div>
+        )}
+        {product.stock > 0 && product.stock <= 5 && (
+           <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+             <Badge variant="destructive" className="animate-pulse shadow">
+               ⚡ Only {product.stock} left!
+             </Badge>
+           </div>
+        )}
+      </div>
+
+      <CardContent className="p-4 flex-1 flex flex-col">
+          <div className="mb-2"> {/* Reduced margin */}
+            <Link to={productLink} className="group/link">
+              <h3 className="font-semibold text-base mb-1 line-clamp-2 group-hover/link:text-primary transition-colors leading-tight"> {/* Adjusted font */}
                 {product.title}
               </h3>
             </Link>
-            <p className="text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
+             <p className="text-xs text-muted-foreground line-clamp-2 flex-1 leading-relaxed mb-2"> {/* Adjusted font */}
               {product.description}
             </p>
           </div>
 
-          <div className="mt-auto space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-green-600">
+          <div className="mt-auto space-y-1"> {/* Reduced spacing */}
+             <div className="flex items-baseline gap-2"> {/* Use baseline alignment */}
+               <span className="text-lg font-bold text-green-600"> {/* Adjusted font */}
                 {formatCurrency(discountedPrice)}
               </span>
               {product.discountPercentage > 0 && (
-                <span className="text-sm text-muted-foreground line-through">
+                 <span className="text-xs text-muted-foreground line-through"> {/* Adjusted font */}
                   {formatCurrency(product.price)}
                 </span>
               )}
             </div>
 
             {product.discountPercentage > 0 && (
-              <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-green-600 border-green-600 text-xs">
+              <div className="flex items-center justify-between text-xs">
+                <Badge variant="outline" className="text-green-600 border-green-600/50"> {/* Adjusted style */}
                   Save {formatCurrency(savings)}
                 </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {Math.round(product.discountPercentage)}% off
-                </span>
               </div>
             )}
-
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="font-semibold text-foreground bg-secondary px-2 py-1 rounded-full capitalize">
-                {product.brand}
-              </span>
-              <div className="flex items-center gap-1">
-                <div className={cn(
-                  "w-2 h-2 rounded-full",
-                  product.stock > 10 ? "bg-green-500" :
-                  product.stock > 0 ? "bg-yellow-500" : "bg-red-500"
-                )} />
-                <span className={cn(
-                  product.stock === 0 && "text-red-500 font-semibold"
-                )}>
-                  {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
+           {/* Brand and Stock (optional based on viewMode) */}
+             {viewMode === 'grid' && (
+              <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
+                <span className="font-medium capitalize overflow-hidden whitespace-nowrap text-ellipsis max-w-[100px]">
+                  {product.brand}
                 </span>
-              </div>
-            </div>
+                <span className={cn(product.stock === 0 && "text-destructive font-semibold")}>
+                  {product.stock > 0 ? `${product.stock} left` : 'Out'}
+                </span>
+             </div>
+             )}
           </div>
-        </CardContent>
-      </Link>
+      </CardContent>
 
-      <CardFooter className="p-4 pt-0">
-        <Button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className="w-full h-12 font-semibold transition-all duration-200 hover:scale-105"
-          size="lg"
-        >
-          <span className="mr-2">🛒</span>
-          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-        </Button>
+      {/* Footer differs slightly based on viewMode */}
+       <CardFooter className={cn("p-3 pt-0", viewMode === 'list' && 'sm:pl-0 sm:pt-4 sm:border-l sm:ml-4')}>
+         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full">
+            <Button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              className="w-full h-10 font-semibold text-sm transition-all duration-200"
+              size="sm" // Smaller button
+            >
+             <ShoppingCart className="h-4 w-4 mr-2" />
+             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            </Button>
+          </motion.div>
       </CardFooter>
-    </Card>
+    </>
+  );
+
+  // Grid View Specific Structure
+   if (viewMode === 'grid') {
+    return (
+       <motion.div
+         variants={cardVariants}
+         initial="hidden"
+         animate="visible"
+         whileHover={{ y: -5 }} // Lift effect on hover
+         custom={index} // Pass index to variants
+         className={cn("h-full", className)}
+       >
+          <Link to={productLink} className="block h-full">
+            <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-xl border dark:border-muted/50 h-full flex flex-col rounded-lg">
+             <CardInnerContent />
+            </Card>
+          </Link>
+        </motion.div>
+    );
+  }
+
+  // List View Specific Structure
+   return (
+    <motion.div
+       variants={cardVariants}
+       initial="hidden"
+       animate="visible"
+       custom={index}
+       className={cn(className)}
+     >
+        <Link to={productLink} className="block">
+          <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-xl border dark:border-muted/50 flex flex-col sm:flex-row rounded-lg">
+             {/* Image container with fixed width in list view */}
+             <div className="sm:w-1/4 aspect-[4/3] sm:aspect-square flex-shrink-0">
+               {/* Simplified image section for list view */}
+                <div className="relative h-full overflow-hidden bg-secondary/30 rounded-l-lg">
+                  <motion.img
+                    src={product.thumbnail}
+                    alt={product.title}
+                    className="h-full w-full object-contain"
+                    whileHover={{ scale: 1.05 }}
+                  />
+                  {product.discountPercentage > 0 && (
+                    <Badge variant="destructive" className="absolute top-2 left-2 shadow">
+                      -{Math.round(product.discountPercentage)}%
+                    </Badge>
+                  )}
+                 </div>
+              </div>
+
+             {/* Content container taking remaining space */}
+             <div className="flex flex-1 flex-col sm:flex-row">
+               <CardContent className="p-4 flex-1 flex flex-col">
+                 <div className="mb-2">
+                    <Link to={productLink} className="group/link">
+                      <h3 className="font-semibold text-lg mb-1 line-clamp-1 group-hover/link:text-primary transition-colors leading-tight">
+                        {product.title}
+                      </h3>
+                    </Link>
+                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-3">
+                      {product.description}
+                    </p>
+                 </div>
+                 <div className="mt-auto space-y-1">
+                   <div className="flex items-baseline gap-2">
+                      <span className="text-xl font-bold text-green-600">
+                        {formatCurrency(discountedPrice)}
+                      </span>
+                      {product.discountPercentage > 0 && (
+                         <span className="text-sm text-muted-foreground line-through">
+                          {formatCurrency(product.price)}
+                         </span>
+                      )}
+                    </div>
+                     {product.discountPercentage > 0 && (
+                       <div className="flex items-center justify-between text-xs">
+                          <Badge variant="outline" className="text-green-600 border-green-600/50">
+                            Save {formatCurrency(savings)}
+                          </Badge>
+                       </div>
+                     )}
+                   {/* Brand and Stock for List View */}
+                   <div className="flex items-center justify-between text-sm text-muted-foreground pt-2">
+                       <span className="font-medium capitalize">
+                         {product.brand}
+                       </span>
+                       <div className="flex items-center gap-1">
+                          <div className={cn(
+                           "w-2 h-2 rounded-full",
+                           product.stock > 10 ? "bg-green-500" :
+                           product.stock > 0 ? "bg-yellow-500" : "bg-red-500"
+                          )} />
+                          <span className={cn(product.stock === 0 && "text-destructive font-semibold")}>
+                            {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
+                          </span>
+                       </div>
+                   </div>
+                  </div>
+               </CardContent>
+               {/* Action Buttons & Add to Cart */}
+                <div className="flex flex-col justify-between p-4 pt-0 sm:pt-4 sm:w-40 flex-shrink-0 space-y-2">
+                  <div className="flex sm:flex-col items-center sm:items-end gap-2 justify-end">
+                     <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                        <Button variant="ghost" size="icon" onClick={handleWishlistToggle} className="h-8 w-8 rounded-full">
+                         <Heart className={cn("h-4 w-4", isWishlisted ? "fill-red-500 text-red-500" : "text-foreground/70")} />
+                        </Button>
+                      </motion.div>
+                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                        <Button variant="ghost" size="icon" onClick={handleCompareToggle} className="h-8 w-8 rounded-full">
+                          <Scale className={cn("h-4 w-4", isCompared ? "text-primary" : "text-foreground/70")} />
+                        </Button>
+                       </motion.div>
+                  </div>
+                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full">
+                     <Button
+                        onClick={handleAddToCart}
+                        disabled={product.stock === 0}
+                        className="w-full h-10 font-semibold text-sm transition-all duration-200"
+                        size="sm"
+                     >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                       {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                      </Button>
+                   </motion.div>
+                 </div>
+              </div>
+          </Card>
+       </Link>
+     </motion.div>
   );
 };
 

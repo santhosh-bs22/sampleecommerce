@@ -4,133 +4,66 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 0 0% 100%; /* White */
+    --foreground: 224 71.4% 4.1%; /* Dark Blue/Black */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 240 70% 50%; /* Changed to Indigo/Violet */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 173 80% 40%; /* Teal */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 215 27.9% 90%; /* Lighter Gray */
+    --secondary-foreground: 224 71.4% 4.1%; /* Dark Blue/Black */
+    --muted: 215 25% 95%; /* Slightly darker gray */
+    --muted-foreground: 217 10% 50%; /* Medium gray */
+    --accent: 173 70% 90%; /* Lighter Teal */
+    --accent-foreground: 173 80% 20%; /* Darker Teal */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 240 70% 50%; /* Changed to Indigo/Violet */
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 20% 88%; /* Light gray border */
+    --input: 215 20% 88%;
+    --ring: 173 80% 40%; /* Teal */
+    --radius: 0.75rem; /* Slightly larger radius */
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 240 70% 70%; /* Changed to lighter Indigo/Violet */
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 224 71.4% 4.1%; /* Dark Blue/Black */
+    --foreground: 210 20% 98%; /* Almost White */
+    --card: 220 40% 9%; /* Darker Blue/Gray */
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 173 70% 50%; /* Brighter Teal */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 215 27.9% 16.9%; /* Dark Gray */
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%; /* Lighter Medium Gray */
+    --accent: 173 70% 20%; /* Dark Teal */
+    --accent-foreground: 0 0% 100%; /* White */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 240 70% 70%; /* Changed to lighter Indigo/Violet */
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 173 70% 50%; /* Brighter Teal */
   }
 }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    @apply border-border; /* Apply border color */
   }
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1; /* Optional: improve font rendering */
+    font-family: 'Inter', sans-serif; /* Example: Add a modern font - import in index.html */
   }
 }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Your additional custom styles remain the same */
-.fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.zoom-in {
-  animation: zoomIn 0.2s ease-out;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground));
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--foreground));
-}
+/* Add any new custom base styles or animations here if needed */
+/* Example: Import Font in index.html */
+/*
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/

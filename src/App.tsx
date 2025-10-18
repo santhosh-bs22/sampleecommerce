@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, Variants } from 'framer-motion'; // Keep using Framer Motion
 import { Toaster } from './components/ui/toaster';
 import { useThemeStore } from './store/useThemeStore';
 import Header from './components/Header';
@@ -13,54 +13,77 @@ import Wishlist from './pages/Wishlist';
 import Orders from './pages/Orders';
 import Login from './pages/Login';
 import Register from './pages/Register';
-// Removed SocialProof and Chatbot imports
 import './App.css';
 
-// Component to handle smooth page transitions
+// Enhanced Page Transition Variants
+const pageVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 20, // Start slightly lower
+    scale: 0.98, // Start slightly smaller
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4, // Slightly longer transition
+      // Use numeric cubic-bezier arrays for typing instead of string names
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20, // Exit upwards
+    scale: 0.98, // Shrink slightly on exit
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 1, 1],
+    },
+  },
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
-  const pageTransition = {
-    initial: { opacity: 0, x: -50 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: 50 },
-  };
-
   return (
+    // Use AnimatePresence for exit animations
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageWrapper element={<Home />} pageTransition={pageTransition} />} />
-        <Route path="/products" element={<PageWrapper element={<Home />} pageTransition={pageTransition} />} />
-        <Route path="/product/:id" element={<PageWrapper element={<ProductDetails />} pageTransition={pageTransition} />} />
-        <Route path="/cart" element={<PageWrapper element={<Cart />} pageTransition={pageTransition} />} />
-        <Route path="/checkout" element={<PageWrapper element={<Checkout />} pageTransition={pageTransition} />} />
-        <Route path="/wishlist" element={<PageWrapper element={<Wishlist />} pageTransition={pageTransition} />} />
-        <Route path="/orders" element={<PageWrapper element={<Orders />} pageTransition={pageTransition} />} />
-        <Route path="/login" element={<PageWrapper element={<Login />} pageTransition={pageTransition} />} />
-        <Route path="/register" element={<PageWrapper element={<Register />} pageTransition={pageTransition} />} />
+        {/* Wrap each Route's element in PageWrapper */}
+        <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/products" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/product/:id" element={<PageWrapper><ProductDetails /></PageWrapper>} />
+        <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
+        <Route path="/checkout" element={<PageWrapper><Checkout /></PageWrapper>} />
+        <Route path="/wishlist" element={<PageWrapper><Wishlist /></PageWrapper>} />
+        <Route path="/orders" element={<PageWrapper><Orders /></PageWrapper>} />
+        <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+        <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
         <Route path="*" element={
-          <div className="container mx-auto px-4 py-16 text-center">
-            <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
-            <p className="text-muted-foreground mb-8">The page you're looking for doesn't exist.</p>
-            <a href="/" className="text-primary hover:underline">Return to Home</a>
-          </div>
+          <PageWrapper>
+            <div className="container mx-auto px-4 py-16 text-center">
+              <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
+              <p className="text-muted-foreground mb-8">The page you're looking for doesn't exist.</p>
+              <a href="/" className="text-primary hover:underline">Return to Home</a>
+            </div>
+          </PageWrapper>
         } />
       </Routes>
     </AnimatePresence>
   );
 };
 
-// Wrapper component for motion integration
-const PageWrapper = ({ element, pageTransition }: { element: JSX.Element, pageTransition: any }) => (
+// Wrapper component applies motion.div to children
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   <motion.div
     initial="initial"
     animate="animate"
     exit="exit"
-    variants={pageTransition}
-    transition={{ duration: 0.3 }}
-    className="min-h-screen" // Ensures it takes up space for smooth transition
+    variants={pageVariants}
+    className="min-h-[calc(100vh-theme(space.16)-theme(space.1))] overflow-x-hidden" // Adjust min-height if header/footer size changes
   >
-    {element}
+    {children}
   </motion.div>
 );
 
@@ -69,23 +92,18 @@ function App() {
   const { isDark } = useThemeStore();
 
   React.useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Router basename="/sampleecommerce"> {/* Added basename */}
+    <div className="min-h-screen bg-background text-foreground font-sans"> {/* Added font-sans */}
+      <Router basename="/sampleecommerce">
         <Header />
-        <main>
+        <main className="pt-4 pb-16"> {/* Add some padding */}
           <AnimatedRoutes />
         </main>
         <Footer />
         <Toaster />
-        {/* Removed SocialProof and Chatbot components */}
       </Router>
     </div>
   );

@@ -1,61 +1,61 @@
-/* Additional custom styles */
-.fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
+/* Keep existing imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
+/* Keep keyframes defined in tailwind.config.js */
+
+/* Add any NEW specific animations here if needed */
+/* Example: Pulse animation */
+@keyframes pulse-subtle {
+  0%, 100% {
     opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.zoom-in {
-  animation: zoomIn 0.2s ease-out;
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
     transform: scale(1);
-    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
   }
 }
 
-/* Custom scrollbar */
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
+/* Custom scrollbar styles (can be kept or adjusted) */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px; /* Slightly wider */
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: hsl(var(--secondary)); /* Use secondary color */
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground));
-  border-radius: 3px;
+  background: hsl(var(--primary) / 0.6); /* Use primary color with opacity */
+  border-radius: 4px;
+  border: 2px solid hsl(var(--secondary)); /* Add border to match track */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--foreground));
+  background: hsl(var(--primary)); /* Darken on hover */
+}
+
+/* Optional: Improve focus visibility globally */
+@layer base {
+  *:focus-visible {
+      @apply outline-none ring-2 ring-offset-2 ring-primary ring-offset-background;
+  }
+}
+
+/* Hide scrollbar utility (if needed, e.g., for comparison bar) */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
