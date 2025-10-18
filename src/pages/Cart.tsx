@@ -1,24 +1,33 @@
+// src/pages/Cart.tsx
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// Import useLocation for redirect state
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { useCartStore } from '../store/useCartStore';
+import { useUserStore } from '../store/useUserStore'; // Import user store
 import { formatCurrency, calculateDiscount } from '../utils/currency';
 import { useToast } from '../hooks/use-toast';
+import { Trash2 } from 'lucide-react'; // Import Trash2 for remove button
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore();
+  const { isAuthenticated } = useUserStore(); // Get authentication status
   const { toast } = useToast();
-  
+
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleQuantityChange = (productId: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    updateQuantity(productId, newQuantity);
+    // Ensure quantity doesn't go below 1 or exceed stock
+    const item = items.find(i => i.product.id === productId);
+    if (!item) return;
+    const validatedQuantity = Math.max(1, Math.min(newQuantity, item.product.stock));
+    updateQuantity(productId, validatedQuantity);
   };
 
   const handleRemoveItem = (productId: number, productTitle: string) => {
@@ -37,6 +46,25 @@ const Cart: React.FC = () => {
     });
   };
 
+  const handleProceedToCheckout = () => {
+    // *** AUTHENTICATION CHECK ***
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to proceed to checkout.",
+        variant: "destructive",
+      });
+      // Redirect to login, passing the current page to return to
+      navigate('/login', { state: { from: location } });
+      return; // Stop execution
+    }
+    // *** END AUTHENTICATION CHECK ***
+
+    // If authenticated, navigate to checkout
+    navigate('/checkout');
+  };
+
+
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
@@ -46,7 +74,7 @@ const Cart: React.FC = () => {
           Looks like you haven't added anything to your cart yet.
         </p>
         <Link to="/">
-          <Button>
+          <Button size="lg"> {/* Make button slightly larger */}
             Continue Shopping
           </Button>
         </Link>
@@ -55,8 +83,8 @@ const Cart: React.FC = () => {
   }
 
   const subtotal = getTotalPrice();
-  const shipping = 0; // Free shipping
-  const tax = subtotal * 0.18;
+  const shipping = 0; // Assuming free shipping
+  const tax = subtotal * 0.18; // Assuming 18% tax
   const total = subtotal + shipping + tax;
 
   return (
@@ -64,9 +92,9 @@ const Cart: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Shopping Cart</h1>
-            <Button variant="outline" onClick={handleClearCart}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h1 className="text-3xl font-bold">Shopping Cart ({cartItemsCount} items)</h1>
+            <Button variant="outline" size="sm" onClick={handleClearCart}>
               Clear Cart
             </Button>
           </div>
@@ -77,85 +105,117 @@ const Cart: React.FC = () => {
               const totalPrice = discountedPrice * item.quantity;
 
               return (
-                <Card key={item.product.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-4">
-                      {/* Product Image */}
+                <Card key={item.product.id} className="overflow-hidden"> {/* Added overflow */}
+                  <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    {/* Product Image */}
+                    <Link to={`/product/${item.product.source}-${item.product.id}`}>
                       <img
                         src={item.product.thumbnail}
                         alt={item.product.title}
-                        className="w-20 h-20 object-cover rounded-lg"
+                        className="w-24 h-24 sm:w-20 sm:h-20 object-contain rounded-lg border flex-shrink-0" // Contain image
                       />
+                    </Link>
 
-                      {/* Product Details */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-lg truncate">
+                    {/* Product Details */}
+                    <div className="flex-1 min-w-0">
+                      <Link to={`/product/${item.product.source}-${item.product.id}`} className="hover:text-primary">
+                        <h3 className="font-semibold text-base sm:text-lg line-clamp-2 mb-1">
                           {item.product.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {item.product.brand}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-lg font-bold text-green-600">
-                            {formatCurrency(discountedPrice)}
-                          </span>
-                          {item.product.discountPercentage > 0 && (
-                            <>
-                              <span className="text-sm text-muted-foreground line-through">
-                                {formatCurrency(item.product.price)}
-                              </span>
-                              <Badge variant="destructive" className="text-xs">
-                                -{item.product.discountPercentage}%
-                              </Badge>
-                            </>
-                          )}
-                        </div>
+                      </Link>
+                      <p className="text-xs sm:text-sm text-muted-foreground capitalize">
+                        {item.product.brand} - {item.product.category.replace('-', ' ')}
+                      </p>
+                      <div className="flex items-baseline gap-2 mt-1">
+                        <span className="font-bold text-green-600">
+                          {formatCurrency(discountedPrice)}
+                        </span>
+                        {item.product.discountPercentage > 0 && (
+                          <>
+                            <span className="text-xs text-muted-foreground line-through">
+                              {formatCurrency(item.product.price)}
+                            </span>
+                            <Badge variant="destructive" className="text-xs px-1.5 py-0.5"> {/* Smaller badge */}
+                              -{Math.round(item.product.discountPercentage)}%
+                            </Badge>
+                          </>
+                        )}
                       </div>
+                       <p className="text-xs text-muted-foreground mt-1">
+                         {item.product.stock <= 10 && item.product.stock > 0 ? `Only ${item.product.stock} left!` : item.product.stock > 0 ? `${item.product.stock} available` : 'Out of stock'}
+                       </p>
+                    </div>
 
-                      {/* Quantity Controls */}
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleQuantityChange(item.product.id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                        >
-                          <span className="h-4 w-4">-</span>
-                        </Button>
-                        
-                        <Input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => handleQuantityChange(item.product.id, parseInt(e.target.value) || 1)}
-                          className="w-16 text-center"
-                          min="1"
-                        />
-                        
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleQuantityChange(item.product.id, item.quantity + 1)}
-                          disabled={item.quantity >= item.product.stock}
-                        >
-                          <span className="h-4 w-4">+</span>
-                        </Button>
-                      </div>
-
-                      {/* Total Price and Remove */}
-                      <div className="text-right min-w-24">
-                        <p className="font-bold text-lg">
-                          {formatCurrency(totalPrice)}
-                        </p>
-                        <Button
+                    {/* Quantity & Remove on Small Screens */}
+                    <div className="flex sm:hidden items-center justify-between w-full mt-2">
+                         <div className="flex items-center space-x-2">
+                             <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleQuantityChange(item.product.id, item.quantity - 1)}
+                                disabled={item.quantity <= 1}
+                                className="h-8 w-8"
+                              >
+                               <span className="h-4 w-4">-</span>
+                              </Button>
+                             <span className="w-8 text-center font-medium">{item.quantity}</span>
+                             <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleQuantityChange(item.product.id, item.quantity + 1)}
+                                disabled={item.quantity >= item.product.stock}
+                                className="h-8 w-8"
+                              >
+                               <span className="h-4 w-4">+</span>
+                             </Button>
+                         </div>
+                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleRemoveItem(item.product.id, item.product.title)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50/50 px-2 py-1 h-8"
                         >
-                          <span className="mr-1">🗑️</span>
-                          Remove
+                           <Trash2 className="h-4 w-4 mr-1" /> Remove
                         </Button>
-                      </div>
+                    </div>
+
+
+                    {/* Quantity Controls (Medium Screens Up) */}
+                    <div className="hidden sm:flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleQuantityChange(item.product.id, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                        className="h-8 w-8" // Smaller buttons
+                      >
+                        <span className="h-4 w-4">-</span>
+                      </Button>
+                      <span className="w-8 text-center font-medium">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleQuantityChange(item.product.id, item.quantity + 1)}
+                        disabled={item.quantity >= item.product.stock}
+                        className="h-8 w-8" // Smaller buttons
+                      >
+                        <span className="h-4 w-4">+</span>
+                      </Button>
+                    </div>
+
+                    {/* Total Price and Remove (Medium Screens Up) */}
+                    <div className="hidden sm:flex flex-col items-end space-y-1 min-w-[100px] flex-shrink-0"> {/* Adjusted width */}
+                      <p className="font-semibold text-base sm:text-lg"> {/* Slightly larger font */}
+                        {formatCurrency(totalPrice)}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveItem(item.product.id, item.product.title)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50/50 px-2 py-1 h-auto" // Adjusted padding/height
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" /> Remove
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -165,40 +225,40 @@ const Cart: React.FC = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <Card>
+        <div className="lg:col-span-1 sticky top-20 self-start"> {/* Make summary sticky */}
+          <Card className="shadow-md"> {/* Add subtle shadow */}
             <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+              <CardTitle className="text-xl">Order Summary</CardTitle> {/* Slightly smaller title */}
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm"> {/* Smaller text */}
                 <span>Subtotal ({cartItemsCount} items)</span>
-                <span>{formatCurrency(subtotal)}</span>
+                <span className="font-medium">{formatCurrency(subtotal)}</span>
               </div>
-              
-              <div className="flex justify-between">
+
+              <div className="flex justify-between text-sm">
                 <span>Shipping</span>
-                <span className="text-green-600">FREE</span>
+                <span className="font-medium text-green-600">FREE</span>
               </div>
-              
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>{formatCurrency(tax)}</span>
+
+              <div className="flex justify-between text-sm">
+                <span>Estimated Tax (18%)</span>
+                <span className="font-medium">{formatCurrency(tax)}</span>
               </div>
-              
+
               <Separator />
-              
+
               <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
+                <span>Order Total</span>
                 <span>{formatCurrency(total)}</span>
               </div>
 
-              <Button className="w-full" onClick={() => navigate('/checkout')}>
+              <Button size="lg" className="w-full text-base" onClick={handleProceedToCheckout}> {/* Larger button */}
                 Proceed to Checkout
               </Button>
 
-              <Link to="/" className="block">
-                <Button variant="outline" className="w-full">
+              <Link to="/" className="block text-center mt-2">
+                <Button variant="link" className="text-primary h-auto p-0">
                   Continue Shopping
                 </Button>
               </Link>

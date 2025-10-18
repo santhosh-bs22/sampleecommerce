@@ -1,5 +1,7 @@
+// src/pages/Login.tsx
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// Import useLocation
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -9,14 +11,21 @@ import { useToast } from '../hooks/use-toast';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Get location object
   const { login } = useUserStore();
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = React.useState({
     email: '',
     password: '',
   });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // *** Determine where to redirect after login ***
+  // If state.from exists (passed during redirection), use it, otherwise default to home '/'
+  const from = location.state?.from?.pathname || '/';
+  // *** END REDIRECT LOGIC ***
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -28,21 +37,26 @@ const Login: React.FC = () => {
 
     try {
       // Mock login - replace with actual API call
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+
       const mockUser = {
         id: 1,
         email: formData.email,
         username: formData.email.split('@')[0],
-        firstName: 'John',
+        firstName: 'John', // Replace with actual data if API provides it
         lastName: 'Doe',
         image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       };
-      
+
       login(mockUser);
       toast({
         title: "Login successful",
-        description: "Welcome back to FlipStore!",
+        description: "Welcome back to EcomX!",
       });
-      navigate('/');
+
+      // *** Navigate back to the 'from' location ***
+      navigate(from, { replace: true }); // Use replace to avoid login page in browser history
+
     } catch (error) {
       toast({
         title: "Login failed",
@@ -60,7 +74,7 @@ const Login: React.FC = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
-            Sign in to your FlipStore account
+            Sign in to your EcomX account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -74,9 +88,10 @@ const Login: React.FC = () => {
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 required
+                disabled={isSubmitting} // Disable during submit
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -86,15 +101,16 @@ const Login: React.FC = () => {
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 required
-                minLength={6}
+                minLength={6} // Example min length
+                disabled={isSubmitting} // Disable during submit
               />
             </div>
-            
+
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
@@ -103,8 +119,8 @@ const Login: React.FC = () => {
               </Link>
             </p>
           </div>
-          
-          <div className="mt-6">
+
+          {/* <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -118,7 +134,7 @@ const Login: React.FC = () => {
             <div className="mt-4 text-center text-sm text-muted-foreground">
               <p>Use any valid email and password (min 6 chars)</p>
             </div>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

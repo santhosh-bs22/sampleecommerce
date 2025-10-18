@@ -61,7 +61,7 @@ const Register: React.FC = () => {
 
       toast({
         title: "Registration successful!",
-        description: "Your account has been created. Welcome to FlipStore!",
+        description: "Your account has been created. Welcome to EcomX!",
       });
 
       navigate('/'); // Redirect to home page
@@ -82,7 +82,7 @@ const Register: React.FC = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Create Your Account</CardTitle>
           <CardDescription>
-            Enter your details below to get started with FlipStore
+            Enter your details below to get started with EcomX
           </CardDescription>
         </CardHeader>
         <CardContent>
