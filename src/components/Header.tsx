@@ -1,6 +1,6 @@
 // src/components/Header.tsx
-import React, { useState } from 'react'; // Import useState
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import {
@@ -21,26 +21,24 @@ import { useThemeStore } from '../store/useThemeStore';
 const Header: React.FC = () => {
   const { getTotalItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { user, isAuthenticated, logout } = useUserStore();
+  const { user, isAuthenticated, logout } = useUserStore(); // Get user state
   const { isDark, toggleTheme } = useThemeStore();
-  const navigate = useNavigate(); // <-- Add useNavigate hook
-  const [headerSearchTerm, setHeaderSearchTerm] = useState(''); // <-- Add state for search input
+  const navigate = useNavigate();
+  const [headerSearchTerm, setHeaderSearchTerm] = useState('');
 
   const cartItemsCount = getTotalItems();
   const wishlistItemsCount = wishlistItems.length;
 
   const handleLogout = () => {
     logout();
+    navigate('/'); // Redirect to home after logout
   };
 
-  // <-- Add search submission handler -->
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
     if (headerSearchTerm.trim()) {
-      // Navigate to the home page with the search term as a query parameter
       navigate(`/?q=${encodeURIComponent(headerSearchTerm.trim())}`);
     } else {
-      // Navigate to the home page without a search term if the input is empty
       navigate('/');
     }
   };
@@ -61,25 +59,22 @@ const Header: React.FC = () => {
             <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
               Home
             </Link>
-            {/* Link to /products might be redundant if / handles it */}
             <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
               All Products
             </Link>
           </nav>
 
-          {/* Search Bar - Updated */}
-          {/* Wrap input in a form */}
+          {/* Search Bar */}
           <form onSubmit={handleSearchSubmit} className="hidden lg:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search products..."
-                value={headerSearchTerm} // <-- Bind value to state
-                onChange={(e) => setHeaderSearchTerm(e.target.value)} // <-- Update state on change
-                className="w-full text-black pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                value={headerSearchTerm}
+                onChange={(e) => setHeaderSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-background" // Adjusted styles for theme compatibility
               />
-              {/* Optional: Add a search button if needed, or rely on Enter */}
             </div>
           </form>
 
@@ -133,13 +128,15 @@ const Header: React.FC = () => {
             {/* User Auth */}
             {isAuthenticated && user ? (
               <div className="flex items-center space-x-2">
-                <Link to="/orders">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    {user.firstName}
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                 {/* Updated Link to Profile Page */}
+                 <Link to="/profile">
+                   <Button variant="ghost" size="sm">
+                     <User className="h-4 w-4 mr-2" />
+                     {/* Display user's first name */}
+                     Hi, {user.firstName}
+                   </Button>
+                 </Link>
+                <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
                   <LogOut className="h-4 w-4" />
                 </Button>
               </div>
