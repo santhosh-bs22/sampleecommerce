@@ -1,19 +1,22 @@
+// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, Variants } from 'framer-motion'; // Keep using Framer Motion
-import { Toaster } from './components/ui/toaster';
-import { useThemeStore } from './store/useThemeStore';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import ProductDetails from './pages/ProductDetails';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import Wishlist from './pages/Wishlist';
-import Orders from './pages/Orders';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import './App.css';
+import { Toaster } from './components/ui/toaster'; //
+import { useThemeStore } from './store/useThemeStore'; //
+import Header from './components/Header'; //
+import Footer from './components/Footer'; //
+import Home from './pages/Home'; //
+import ProductDetails from './pages/ProductDetails'; //
+import Cart from './pages/Cart'; //
+import Checkout from './pages/Checkout'; //
+import Wishlist from './pages/Wishlist'; //
+import Orders from './pages/Orders'; //
+import Login from './pages/Login'; //
+import Register from './pages/Register'; //
+import Compare from './pages/Compare'; // Assuming Compare.tsx exists in src/pages/
+import Profile from './pages/Profile'; // Assuming Profile.tsx exists in src/pages/
+import './App.css'; //
 
 // Enhanced Page Transition Variants
 const pageVariants: Variants = {
@@ -52,7 +55,7 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         {/* Wrap each Route's element in PageWrapper */}
         <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
-        <Route path="/products" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/products" element={<PageWrapper><Home /></PageWrapper>} /> {/* Consider if /products route is needed if / shows all */}
         <Route path="/product/:id" element={<PageWrapper><ProductDetails /></PageWrapper>} />
         <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
         <Route path="/checkout" element={<PageWrapper><Checkout /></PageWrapper>} />
@@ -60,6 +63,8 @@ const AnimatedRoutes = () => {
         <Route path="/orders" element={<PageWrapper><Orders /></PageWrapper>} />
         <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
         <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+        <Route path="/compare" element={<PageWrapper><Compare /></PageWrapper>} />
+        <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
         <Route path="*" element={
           <PageWrapper>
             <div className="container mx-auto px-4 py-16 text-center">
@@ -81,7 +86,10 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
     animate="animate"
     exit="exit"
     variants={pageVariants}
-    className="min-h-[calc(100vh-theme(space.16)-theme(space.1))] overflow-x-hidden" // Adjust min-height if header/footer size changes
+    // Adjust min-height based on actual header/footer height if needed
+    // Using theme() requires Tailwind setup, ensure '16' corresponds to header height, '1' to border? Might need adjustment.
+    // A simpler approach might be calc(100vh - HeaderHeight - FooterHeight - MainPaddingTop - MainPaddingBottom)
+    className="min-h-[calc(100vh-theme(space.16)-theme(space.1))] overflow-x-hidden"
   >
     {children}
   </motion.div>
@@ -89,24 +97,27 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
 
 
 function App() {
-  const { isDark } = useThemeStore();
+  const { isDark } = useThemeStore(); //
 
   React.useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+    // Toggle dark class on the root HTML element based on Zustand state
+    document.documentElement.classList.toggle('dark', isDark); //
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans"> {/* Added font-sans */}
-      <Router basename="/sampleecommerce">
-        <Header />
-        <main className="pt-4 pb-16"> {/* Add some padding */}
-          <AnimatedRoutes />
+    // Set base background, text color, and font family
+    <div className="min-h-screen bg-background text-foreground font-sans"> {/* */}
+      {/* Use basename matching the 'base' in vite.config.js and 'homepage' in package.json */}
+      <Router basename="/sampleecommerce"> {/* */}
+        <Header /> {/* */}
+        <main className="pt-4 pb-16"> {/* Add padding around the main content area */}
+          <AnimatedRoutes /> {/* Render the animated routes */}
         </main>
-        <Footer />
-        <Toaster />
+        <Footer /> {/* */}
+        <Toaster /> {/* */}
       </Router>
     </div>
   );
 }
 
-export default App;
+export default App; //

@@ -1,20 +1,21 @@
+// src/pages/Home.tsx
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom'; // Import useSearchParams
 import ProductCard from '../components/ProductCard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'; // Added CardHeader, CardTitle
-import { Search, Filter, Grid3X3, List, SlidersHorizontal, X, Scale, Minus, Zap, Award, Tag } from 'lucide-react'; // Added Icons
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Search, Filter, Grid3X3, List, SlidersHorizontal, X, Scale, Minus, Zap, Award, Tag } from 'lucide-react';
 import { categories } from '../mockData';
 import { Product } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { fetchProducts } from '../api/productApi';
 import { cn } from '../lib/utils';
 import { useComparisonStore } from '../store/useComparisonStore';
-import { motion, AnimatePresence } from 'framer-motion'; // Import motion and AnimatePresence
+import { motion, AnimatePresence } from 'framer-motion';
 
-// Define state for paginated products
+// ... (keep ProductsState interface and containerVariants)
 interface ProductsState {
   products: Product[];
   currentPage: number;
@@ -23,22 +24,24 @@ interface ProductsState {
   isLoading: boolean;
 }
 
-// Animation variants for the container
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05, // Stagger effect for children
+      staggerChildren: 0.05,
     },
   },
 };
 
 const Home: React.FC = () => {
   const MAX_PRICE = 300000;
+  const [searchParams] = useSearchParams(); // <-- Get search params hook
+  const querySearchTerm = searchParams.get('q') || ''; // <-- Get 'q' parameter
 
-  // ... (keep existing state hooks: searchTerm, selectedCategory, sortBy, viewMode, priceRange, productsToCompare etc.)
-  const [searchTerm, setSearchTerm] = useState('');
+  // You might want to remove the local searchTerm state if the header is the only search input
+  // Or, initialize it with the query parameter
+  const [searchTerm, setSearchTerm] = useState(querySearchTerm); // Initialize with URL param
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'rating' | 'popular'>('popular');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -57,30 +60,35 @@ const Home: React.FC = () => {
 
   const { products, currentPage, totalProducts, hasMore, isLoading } = productsState;
 
-  // Debounce search term - Simple debounce simulation
+  // Update local searchTerm if the URL query parameter changes
+  useEffect(() => {
+    setSearchTerm(querySearchTerm);
+  }, [querySearchTerm]);
+
+  // Debouncing is less critical here if search happens on navigation, but kept for consistency
    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
    useEffect(() => {
      const handler = setTimeout(() => {
        setDebouncedSearchTerm(searchTerm);
-     }, 300); // 300ms debounce
+     }, 300);
      return () => clearTimeout(handler);
    }, [searchTerm]);
 
-   // fetchProductsData remains largely the same, just ensure it resets correctly
+
   const fetchProductsData = useCallback(async (isInitialLoad: boolean = false) => {
-    // ... (keep logic for hasMore, isLoading checks)
     if (!hasMore && !isInitialLoad) return;
-    if (isLoading && !isInitialLoad) return; // Prevent multiple loads
+    if (isLoading && !isInitialLoad) return;
 
     setProductsState(prev => ({ ...prev, isLoading: true }));
 
     const pageToFetch = isInitialLoad ? 0 : currentPage;
 
     try {
-      const data = await fetchProducts(pageToFetch, 12, { // Fetch more items per page
-        searchTerm: debouncedSearchTerm,
+      // <-- Use debouncedSearchTerm (derived from URL param) in API call -->
+      const data = await fetchProducts(pageToFetch, 12, {
+        searchTerm: debouncedSearchTerm, // <-- Pass the search term here
         category: selectedCategory,
-        priceRange: priceRange[0] === 0 && priceRange[1] === MAX_PRICE ? undefined : priceRange, // Only pass if changed
+        priceRange: priceRange[0] === 0 && priceRange[1] === MAX_PRICE ? undefined : priceRange,
         sortBy: sortBy,
       });
 
@@ -88,30 +96,28 @@ const Home: React.FC = () => {
         products: isInitialLoad ? data.products : [...prev.products, ...data.products],
         currentPage: pageToFetch + 1,
         totalProducts: data.total,
-        // Ensure hasMore is correctly updated based on fetched items vs limit
         hasMore: data.products.length === 12 && (pageToFetch * 12 + data.products.length < data.total),
         isLoading: false,
       }));
     } catch (error) {
       console.error("Failed to fetch products:", error);
-      setProductsState(prev => ({ ...prev, isLoading: false, hasMore: false })); // Stop loading on error
+      setProductsState(prev => ({ ...prev, isLoading: false, hasMore: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange), hasMore, isLoading]); // Add debouncedSearchTerm dependency
+  }, [currentPage, debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange), hasMore, isLoading]); // debouncedSearchTerm is now the key trigger
 
-  // Effect to trigger initial load or reset on filter changes
+  // Effect to trigger initial load or reset on filter/search changes
   useEffect(() => {
-    // Reset state before fetching new filtered data
     setProductsState(prev => ({
         ...prev,
         products: [],
         currentPage: 0,
         hasMore: true,
-        isLoading: false // Ensure isLoading is false before initial fetch
+        isLoading: false
      }));
     fetchProductsData(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange)]); // Dependencies trigger reload
+  }, [debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange)]); // debouncedSearchTerm now triggers reload
 
 
   const handleLoadMore = () => {
@@ -121,15 +127,17 @@ const Home: React.FC = () => {
   };
 
   const clearFilters = () => {
+    // Also clear search term in the URL by navigating
+    // navigate('/'); // Uncomment if you have navigate available here, or handle clearing differently
     setSearchTerm('');
     setSelectedCategory('all');
     setPriceRange([0, MAX_PRICE]);
     setSortBy('popular');
-    setShowFilters(false); // Close filters on clear
+    setShowFilters(false);
   };
 
    const activeFiltersCount = [
-    debouncedSearchTerm, // Use debounced term for count
+    debouncedSearchTerm,
     selectedCategory !== 'all',
     priceRange[0] > 0 || priceRange[1] < MAX_PRICE
   ].filter(Boolean).length;
@@ -137,19 +145,18 @@ const Home: React.FC = () => {
   return (
     <>
     <div className="container mx-auto px-4 py-8">
-      {/* Hero Section with Animation */}
+      {/* Hero Section */}
       <motion.section
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-center mb-16 bg-gradient-to-br from-primary/10 via-background to-background rounded-xl py-12 px-6 shadow-sm" // Added background gradient and padding
+        // ... (animations remain the same)
+        className="text-center mb-16 bg-gradient-to-br from-primary/10 via-background to-background rounded-xl py-12 px-6 shadow-sm"
       >
         <div className="max-w-4xl mx-auto">
-           <motion.h1
+           {/* ... (h1 and p tags remain the same) */}
+            <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent" // Updated gradient
+            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent"
            >
              Explore <span className="text-primary">EcomX</span> Trends
            </motion.h1>
@@ -157,31 +164,32 @@ const Home: React.FC = () => {
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
              transition={{ delay: 0.4, duration: 0.5 }}
-             className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto" // Adjusted font size
+             className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto"
            >
             Find curated collections and the latest arrivals. High quality, great value, delivered fast.
            </motion.p>
 
-          {/* Search Bar - slightly restyled */}
+          {/* Search Bar in Home - Consider removing or disabling if Header search is primary */}
            <motion.div
-             initial={{ opacity: 0, y: 10 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.6, duration: 0.5 }}
+             // ... (animations remain the same)
              className="max-w-2xl mx-auto relative"
             >
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+            {/* If keeping this search bar, ensure it also updates the URL param on submit */}
             <Input
               type="text"
-              placeholder="Search EcomX..." // Simplified placeholder
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-10 py-3 text-base border-2 border-border focus:border-primary focus:ring-1 focus:ring-primary/50 shadow-sm rounded-full w-full" // Rounded, different focus
+              placeholder="Search EcomX..."
+              value={searchTerm} // Reflects URL param or local changes
+              onChange={(e) => setSearchTerm(e.target.value)} // Update local state
+              // readOnly // Or make it readOnly if Header is the only input
+              className="pl-12 pr-10 py-3 text-base border-2 border-border focus:border-primary focus:ring-1 focus:ring-primary/50 shadow-sm rounded-full w-full"
             />
-            {searchTerm && (
+            {/* ... (X button remains the same) */}
+              {searchTerm && (
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSearchTerm('')}
+                onClick={() => setSearchTerm('')} // Clear local state, maybe navigate('/') too
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
               >
                 <X className="h-4 w-4" />
@@ -191,20 +199,21 @@ const Home: React.FC = () => {
         </div>
       </motion.section>
 
-       {/* Categories & Filters - Animated */}
-       <motion.section
+       {/* Categories & Filters */}
+       {/* ... (rest of the component remains largely the same) ... */}
+         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-10"
         >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">Shop by Category</h2> {/* Adjusted font weight */}
+          <h2 className="text-2xl font-semibold">Shop by Category</h2>
            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 rounded-full shadow-sm" // Rounded button
+              className="flex items-center gap-2 rounded-full shadow-sm"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filters
@@ -222,8 +231,8 @@ const Home: React.FC = () => {
            {/* Add 'all' category first */}
            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
-                  variant={selectedCategory === 'all' ? 'default' : 'secondary'} // Use secondary for non-active
-                  className="cursor-pointer px-4 py-2 text-sm font-medium transition-all rounded-full shadow-sm border border-transparent hover:border-primary/50" // Rounded pills
+                  variant={selectedCategory === 'all' ? 'default' : 'secondary'}
+                  className="cursor-pointer px-4 py-2 text-sm font-medium transition-all rounded-full shadow-sm border border-transparent hover:border-primary/50"
                   onClick={() => setSelectedCategory('all')}
               >
                  ✨ All
@@ -242,7 +251,7 @@ const Home: React.FC = () => {
            ))}
         </div>
 
-        {/* Filters Panel with Animation */}
+        {/* Filters Panel */}
          <AnimatePresence>
            {showFilters && (
              <motion.div
@@ -250,12 +259,12 @@ const Home: React.FC = () => {
                animate={{ height: 'auto', opacity: 1 }}
                exit={{ height: 0, opacity: 0 }}
                transition={{ duration: 0.3, ease: 'easeInOut' }}
-               style={{ overflow: 'hidden' }} // Important for height animation
+               style={{ overflow: 'hidden' }}
               >
-                <Card className="mt-4 border shadow-md"> {/* Added shadow */}
-                  <CardContent className="p-6"> {/* Increased padding */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> {/* Increased gap */}
-                      {/* Price Range */}
+                <Card className="mt-4 border shadow-md">
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                       {/* Price Range */}
                        <div>
                          <label className="text-sm font-medium mb-2 block text-foreground/80">
                            Price Range
@@ -264,16 +273,15 @@ const Home: React.FC = () => {
                            <span>₹{priceRange[0].toLocaleString()}</span>
                            <span>₹{priceRange[1].toLocaleString()}</span>
                           </div>
-                         {/* Style the range inputs (example - needs ::slider-thumb etc. for full styling) */}
                           <input
                            type="range"
                            min="0" max={MAX_PRICE} step="1000"
-                           value={priceRange[1]} // Control max first for better UX potentially
+                           value={priceRange[1]}
                            onChange={(e) => {
                              const newMax = Number(e.target.value);
                              if (newMax >= priceRange[0]) setPriceRange([priceRange[0], newMax]);
                            }}
-                           className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary" // Style range
+                           className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
                          />
                        </div>
 
@@ -284,7 +292,7 @@ const Home: React.FC = () => {
                             id="sort-select"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as any)}
-                            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" // Improved styling
+                            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                          >
                            <option value="popular">Most Popular</option>
                            <option value="price-low">Price: Low to High</option>
@@ -297,7 +305,7 @@ const Home: React.FC = () => {
                        {/* Action Buttons */}
                        <div className="flex items-end gap-3 justify-end md:justify-start">
                          <Button
-                            variant="ghost" // Use ghost for clear
+                            variant="ghost"
                             onClick={clearFilters}
                             className="text-muted-foreground hover:text-foreground"
                          >
@@ -315,43 +323,43 @@ const Home: React.FC = () => {
           </AnimatePresence>
       </motion.section>
 
-      {/* Results Header */}
+       {/* Results Header */}
        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
            <h2 className="text-2xl font-semibold capitalize">
              {selectedCategory === 'all' ? 'Discover Products' : selectedCategory.replace('-', ' ')}
            </h2>
-           <p className="text-sm text-muted-foreground"> {/* Smaller text */}
+           <p className="text-sm text-muted-foreground">
             {isLoading && products.length === 0 ? 'Loading...' : `${totalProducts} results`}
             {debouncedSearchTerm && ` for "${debouncedSearchTerm}"`}
            </p>
         </div>
-        <div className="flex items-center gap-2 bg-secondary p-1 rounded-lg shadow-sm"> {/* View Toggle */}
+        <div className="flex items-center gap-2 bg-secondary p-1 rounded-lg shadow-sm">
            <Button variant={viewMode === 'grid' ? 'default' : 'ghost'} size="icon" onClick={() => setViewMode('grid')} className="h-8 w-8"> <Grid3X3 className="h-4 w-4" /> </Button>
            <Button variant={viewMode === 'list' ? 'default' : 'ghost'} size="icon" onClick={() => setViewMode('list')} className="h-8 w-8"> <List className="h-4 w-4" /> </Button>
         </div>
       </div>
 
-       {/* Products Grid/List with Stagger Animation */}
+       {/* Products Grid/List */}
        <section>
         <AnimatePresence>
           {products.length > 0 && (
              <motion.div
-               key={selectedCategory + sortBy + JSON.stringify(priceRange)} // Change key to force re-animation on filter change
+               key={selectedCategory + sortBy + JSON.stringify(priceRange) + debouncedSearchTerm} // Add debouncedSearchTerm to key
                variants={containerVariants}
                initial="hidden"
                animate="visible"
                className={viewMode === 'grid'
-                 ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' // Keep grid layout
-                 : 'space-y-4' // Reduce list spacing slightly
+                 ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                 : 'space-y-4'
                }
              >
                {products.map((product, i) => (
                  <ProductCard
-                   key={`${product.source}-${product.id}-${i}`} // Ensure unique key
+                   key={`${product.source}-${product.id}-${i}`}
                    product={product}
                    viewMode={viewMode}
-                   index={i} // Pass index for stagger
+                   index={i}
                  />
                ))}
               </motion.div>
@@ -377,8 +385,8 @@ const Home: React.FC = () => {
                     onClick={handleLoadMore}
                     disabled={isLoading}
                     size="lg"
-                    variant="outline" // Changed variant
-                    className="w-full max-w-sm rounded-full shadow hover:shadow-md transition-shadow" // Style load more
+                    variant="outline"
+                    className="w-full max-w-sm rounded-full shadow hover:shadow-md transition-shadow"
                   >
                    {isLoading ? <LoadingSpinner size="sm" className='mr-2' /> : 'Load More'}
                   </Button>
@@ -390,13 +398,13 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-       {/* Placeholder for other sections like Featured Brands */}
-       <motion.section
+       {/* Why Shop Section */}
+        <motion.section
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }} // Animate when scrolling into view
-        viewport={{ once: true, amount: 0.3 }} // Trigger animation once, when 30% visible
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.5 }}
-        className="mt-20 pt-10 border-t" // Add separator
+        className="mt-20 pt-10 border-t"
        >
         <h2 className="text-3xl font-bold mb-8 text-center">Why Shop EcomX?</h2>
          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -419,9 +427,9 @@ const Home: React.FC = () => {
        </motion.section>
     </div>
 
-    {/* Comparison Bar - Minor style tweaks */}
-    {/* (Comparison bar code remains structurally similar, apply new color classes if needed) */}
-     <AnimatePresence>
+    {/* Comparison Bar */}
+    {/* ... (Comparison bar code remains the same) */}
+       <AnimatePresence>
         {productsToCompare.length > 0 && (
           <motion.div
              initial={{ y: "100%", opacity: 0 }}
@@ -432,9 +440,8 @@ const Home: React.FC = () => {
                "fixed bottom-0 left-0 right-0 z-40 bg-card border-t shadow-2xl"
               )}
            >
-              {/* ... rest of comparison bar JSX ... (ensure Button/Badge styles match new theme) */}
                <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide flex-1 min-w-0"> {/* Allow scroll on small screens */}
+                  <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide flex-1 min-w-0">
                      <Scale className="h-5 w-5 text-primary flex-shrink-0" />
                      <span className="font-semibold text-sm flex-shrink-0">
                       Compare ({productsToCompare.length}/4)
@@ -455,7 +462,6 @@ const Home: React.FC = () => {
                   </div>
                  <div className="flex items-center gap-2 flex-shrink-0">
                      <Button variant="ghost" size="sm" onClick={clearComparison}> Clear </Button>
-                      {/* Link to a future /compare page */}
                      <Link to={`/compare?ids=${productsToCompare.map(p=>`${p.source}-${p.id}`).join(',')}`}>
                        <Button size="sm" disabled={productsToCompare.length < 2}>
                           Compare Now

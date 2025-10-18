@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+// src/components/Header.tsx
+import React, { useState } from 'react'; // Import useState
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import {
@@ -11,19 +12,19 @@ import {
   Sun,
   Search,
   Package,
-  // Removed Sparkles
 } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useUserStore } from '../store/useUserStore';
 import { useThemeStore } from '../store/useThemeStore';
-// Removed AIPersonalShopperDialog import
 
 const Header: React.FC = () => {
   const { getTotalItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
   const { user, isAuthenticated, logout } = useUserStore();
   const { isDark, toggleTheme } = useThemeStore();
+  const navigate = useNavigate(); // <-- Add useNavigate hook
+  const [headerSearchTerm, setHeaderSearchTerm] = useState(''); // <-- Add state for search input
 
   const cartItemsCount = getTotalItems();
   const wishlistItemsCount = wishlistItems.length;
@@ -32,8 +33,21 @@ const Header: React.FC = () => {
     logout();
   };
 
+  // <-- Add search submission handler -->
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission
+    if (headerSearchTerm.trim()) {
+      // Navigate to the home page with the search term as a query parameter
+      navigate(`/?q=${encodeURIComponent(headerSearchTerm.trim())}`);
+    } else {
+      // Navigate to the home page without a search term if the input is empty
+      navigate('/');
+    }
+  };
+
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"> {/* Made header sticky */}
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -47,29 +61,31 @@ const Header: React.FC = () => {
             <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
               Home
             </Link>
-            <Link to="/products" className="text-sm font-medium transition-colors hover:text-primary">
+            {/* Link to /products might be redundant if / handles it */}
+            <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
               All Products
             </Link>
-            {/* Removed categories link if not implemented */}
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-8">
+          {/* Search Bar - Updated */}
+          {/* Wrap input in a form */}
+          <form onSubmit={handleSearchSubmit} className="hidden lg:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search products..."
+                value={headerSearchTerm} // <-- Bind value to state
+                onChange={(e) => setHeaderSearchTerm(e.target.value)} // <-- Update state on change
                 className="w-full text-black pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              {/* Optional: Add a search button if needed, or rely on Enter */}
             </div>
-          </div>
+          </form>
+
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-
-            {/* Removed AI Personal Shopper Trigger */}
-
             {/* Theme Toggle */}
             <Button
               variant="ghost"
