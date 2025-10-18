@@ -15,7 +15,6 @@ import { Product } from '../types';
 import { fetchProductById, getSimilarProducts } from '../api/productApi';
 import ProductCard from '../components/ProductCard';
 import { cn } from '../lib/utils';
-import Product3DView from '../components/Product3DView';
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +29,6 @@ const ProductDetails: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
 
   const fetchProduct = useCallback(async (combinedId: string) => {
@@ -153,53 +151,47 @@ const ProductDetails: React.FC = () => {
 
   const specificationsArray = Object.entries(product.specifications || {});
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
-        <Link to="/" className="hover:text-foreground">Home</Link>
-        <span>/</span>
-        <Link to="/" className="hover:text-foreground capitalize">{product.category.replace('-', ' ')}</Link>
-        <span>/</span>
-        <span className="text-foreground line-clamp-1">{product.title}</span>
-      </nav>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <div className="space-y-4">
-          <div className="aspect-square overflow-hidden rounded-lg border">
-            {viewMode === '2d' ? (
-              <img
-                src={product.images[selectedImage]}
-                alt={product.title}
-                className="h-full w-full object-cover transition-transform duration-300"
-              />
-            ) : (
-              <Product3DView images={product.images} />
-            )}
-          </div>
-
-          <div className="flex justify-between items-center">
-             <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-7 gap-3 overflow-x-auto pb-2">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    className={cn(`aspect-square overflow-hidden rounded-lg border-2 transition-all shrink-0`,
-                      selectedImage === index ? 'border-primary shadow-md' : 'border-transparent hover:border-muted'
-                    )}
-                    onClick={() => setSelectedImage(index)}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.title} ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            <Button onClick={() => setViewMode(viewMode === '2d' ? '3d' : '2d')} className="ml-4">
-              {viewMode === '2d' ? '3D View' : '2D View'}
-            </Button>
-          </div>
-        </div>
+ return (
+     <div className="container mx-auto px-4 py-8">
+       {/* Breadcrumbs */}
+       <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
+         <Link to="/" className="hover:text-foreground">Home</Link>
+         <span>/</span>
+         <Link to={`/products?category=${product.category}`} className="hover:text-foreground capitalize">{product.category.replace('-', ' ')}</Link> {/* Make category clickable */}
+         <span>/</span>
+         <span className="text-foreground line-clamp-1">{product.title}</span>
+       </nav>
+ 
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+         {/* Image Gallery */}
+         <div className="space-y-4 sticky top-20 self-start"> {/* Make image gallery sticky */}
+           <div className="aspect-square overflow-hidden rounded-lg border bg-muted/20"> {/* Added background */}
+             <img
+               src={product.images[selectedImage]}
+               alt={product.title}
+               className="h-full w-full object-contain transition-transform duration-300" // Changed object-cover to object-contain
+             />
+           </div>
+ 
+           <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-3 overflow-x-auto pb-2">
+             {product.images.map((image, index) => (
+               <button
+                 key={index}
+                 className={cn(`aspect-square overflow-hidden rounded-lg border-2 transition-all shrink-0 hover:opacity-80`,
+                   selectedImage === index ? 'border-primary shadow-md' : 'border-muted' // Simplified border logic
+                 )}
+                 onClick={() => setSelectedImage(index)}
+               >
+                 <img
+                   src={image}
+                   alt={`${product.title} ${index + 1}`}
+                   className="h-full w-full object-cover"
+                 />
+               </button>
+             ))}
+           </div>
+           {/* Removed 3D view button */}
+         </div>
 
         <div className="space-y-6">
           <div>

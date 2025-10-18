@@ -1,41 +1,39 @@
-// santhosh-bs22/sampleecommerce/sampleecommerce-84727adaf637574bd3a65d467f5a1d5f54624af3/src/components/Header.tsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { 
-  ShoppingCart, 
-  Heart, 
-  User, 
-  LogOut, 
-  Moon, 
+import {
+  ShoppingCart,
+  Heart,
+  User,
+  LogOut,
+  Moon,
   Sun,
   Search,
   Package,
-  Sparkles
+  // Removed Sparkles
 } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useUserStore } from '../store/useUserStore';
 import { useThemeStore } from '../store/useThemeStore';
-import AIPersonalShopperDialog from './AIPersonalShopperDialog'; // 👈 Import new component
+// Removed AIPersonalShopperDialog import
 
 const Header: React.FC = () => {
-  const { getTotalItems } = useCartStore(); //
-  const { items: wishlistItems } = useWishlistStore(); //
-  const { user, isAuthenticated, logout } = useUserStore(); //
-  const { isDark, toggleTheme } = useThemeStore(); //
-  
-  const cartItemsCount = getTotalItems(); //
-  const wishlistItemsCount = wishlistItems.length; //
+  const { getTotalItems } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
+  const { user, isAuthenticated, logout } = useUserStore();
+  const { isDark, toggleTheme } = useThemeStore();
+
+  const cartItemsCount = getTotalItems();
+  const wishlistItemsCount = wishlistItems.length;
 
   const handleLogout = () => {
-    logout(); //
+    logout();
   };
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"> {/* Made header sticky */}
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -52,9 +50,7 @@ const Header: React.FC = () => {
             <Link to="/products" className="text-sm font-medium transition-colors hover:text-primary">
               All Products
             </Link>
-            <Link to="/categories" className="text-sm font-medium transition-colors hover:text-primary">
-              Categories
-            </Link>
+            {/* Removed categories link if not implemented */}
           </nav>
 
           {/* Search Bar */}
@@ -71,9 +67,8 @@ const Header: React.FC = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            
-            {/* AI Personal Shopper Trigger */}
-            <AIPersonalShopperDialog /> {/* 👈 New AI Shopper button */}
+
+            {/* Removed AI Personal Shopper Trigger */}
 
             {/* Theme Toggle */}
             <Button
@@ -94,8 +89,8 @@ const Header: React.FC = () => {
               <Link to="/wishlist">
                 <Heart className="h-5 w-5" />
                 {wishlistItemsCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                   >
                     {wishlistItemsCount}
@@ -109,8 +104,8 @@ const Header: React.FC = () => {
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemsCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                   >
                     {cartItemsCount}

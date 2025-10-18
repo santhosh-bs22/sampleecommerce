@@ -13,8 +13,7 @@ import Wishlist from './pages/Wishlist';
 import Orders from './pages/Orders';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import SocialProof from './components/SocialProof';
-import Chatbot from './components/Chatbot';
+// Removed SocialProof and Chatbot imports
 import './App.css';
 
 // Component to handle smooth page transitions
@@ -79,15 +78,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Router>
+      <Router basename="/sampleecommerce"> {/* Added basename */}
         <Header />
         <main>
           <AnimatedRoutes />
         </main>
         <Footer />
         <Toaster />
-        <SocialProof />
-        <Chatbot />
+        {/* Removed SocialProof and Chatbot components */}
       </Router>
     </div>
   );

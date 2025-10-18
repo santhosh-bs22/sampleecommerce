@@ -1,16 +1,17 @@
+// src/components/ProductCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardFooter } from './ui/card';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Product } from '../types';
-import { useCartStore } from '../store/useCartStore';
-import { useWishlistStore } from '../store/useWishlistStore';
-import { useComparisonStore } from '../store/useComparisonStore'; // 👈 Imported
-import { formatCurrency, calculateDiscount } from '../utils/currency';
-import { useToast } from '../hooks/use-toast';
-import { cn } from '../lib/utils';
-import { Scale } from 'lucide-react'; // 👈 Imported icon
+import { Card, CardContent, CardFooter } from './ui/card'; // Check path if needed
+import { Button } from './ui/button'; // Check path if needed
+import { Badge } from './ui/badge'; // Check path if needed
+import { Product } from '../types'; // Check path if needed
+import { useCartStore } from '../store/useCartStore'; // Check path if needed
+import { useWishlistStore } from '../store/useWishlistStore'; // Check path if needed
+import { useComparisonStore } from '../store/useComparisonStore'; // Check path if needed
+import { formatCurrency, calculateDiscount } from '../utils/currency'; // Check path if needed
+import { useToast } from '../hooks/use-toast'; // Check path if needed
+import { cn } from '../lib/utils'; // Check path if needed
+import { Scale } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -18,28 +19,28 @@ interface ProductCardProps {
   className?: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
   viewMode = 'grid',
-  className 
+  className
 }) => {
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  const { addProduct: addToCompare, removeProduct: removeFromCompare, isInComparison } = useComparisonStore(); // 👈 Destructured
+  const { addProduct: addToCompare, removeProduct: removeFromCompare, isInComparison } = useComparisonStore();
   const { toast } = useToast();
-  
+
   const isWishlisted = isInWishlist(product.id);
-  const isCompared = isInComparison(product.id); // 👈 New state
+  const isCompared = isInComparison(product.id);
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
   const savings = product.price - discountedPrice;
-  
-  // New: Define product link using composite ID (source-id)
+
+  // Define product link using composite ID (source-id)
   const productLink = `/product/${product.source}-${product.id}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     addItem(product);
     toast({
       title: "🎉 Added to cart",
@@ -50,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (isWishlisted) {
       removeFromWishlist(product.id);
       toast({
@@ -66,11 +67,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  // New: Handle Compare Toggle
+  // Handle Compare Toggle
   const handleCompareToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (isCompared) {
       removeFromCompare(product.id);
       toast({
@@ -98,9 +99,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <img
             src={product.thumbnail}
             alt={product.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110" // *** Updated: object-contain ***
           />
-          
+
           {/* Top Badges */}
           <div className="absolute top-2 right-2 flex flex-col gap-1">
             <Badge variant="secondary" className="bg-green-500 text-white">
@@ -127,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
 
           {/* Action Buttons (Wishlist & Compare) */}
-          <div className="absolute top-2 left-2 flex flex-col space-y-2">
+          <div className="absolute top-2 left-2 flex flex-col space-y-2"> {/* Changed from right-2 */}
             {/* Wishlist Button */}
             <Button
               variant="ghost"
@@ -145,7 +146,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 {isWishlisted ? '❤️' : '🤍'}
               </span>
             </Button>
-            
+
             {/* Compare Button */}
             <Button
               variant="ghost"
@@ -178,7 +179,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           )}
         </div>
-        
+
         <CardContent className="p-4 flex-1 flex flex-col">
           <div className="mb-3">
             <Link to={productLink}>
@@ -190,7 +191,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               {product.description}
             </p>
           </div>
-          
+
           <div className="mt-auto space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-green-600">
@@ -202,7 +203,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               )}
             </div>
-            
+
             {product.discountPercentage > 0 && (
               <div className="flex items-center justify-between">
                 <Badge variant="outline" className="text-green-600 border-green-600 text-xs">
@@ -213,7 +214,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               </div>
             )}
-            
+
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span className="font-semibold text-foreground bg-secondary px-2 py-1 rounded-full capitalize">
                 {product.brand}
@@ -221,7 +222,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <div className="flex items-center gap-1">
                 <div className={cn(
                   "w-2 h-2 rounded-full",
-                  product.stock > 10 ? "bg-green-500" : 
+                  product.stock > 10 ? "bg-green-500" :
                   product.stock > 0 ? "bg-yellow-500" : "bg-red-500"
                 )} />
                 <span className={cn(
@@ -234,9 +235,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </CardContent>
       </Link>
-      
+
       <CardFooter className="p-4 pt-0">
-        <Button 
+        <Button
           onClick={handleAddToCart}
           disabled={product.stock === 0}
           className="w-full h-12 font-semibold transition-all duration-200 hover:scale-105"
