@@ -366,7 +366,7 @@ const mobilePhones: Product[] = [
   //   images: [
   //     "/images/110/1.jpg",
   //     "/images/110/2.jpg",
-  //     "/images/110/3.jpg",
+  //     "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
   //     "/images/110/4.jpg",
   //     "/images/110/5.jpg",
   //     "/images/110/6.jpg",
@@ -400,15 +400,15 @@ const mobilePhones: Product[] = [
     stock: 75,
     brand: "Nothing",
     category: "smartphones",
-    thumbnail: "/images/110/thumbnail.jpg",
+    thumbnail: "https://m.media-amazon.com/images/I/51E1ItTOFGL.jpg",
     images: [
-      "/images/110/1.jpg",
-      "/images/110/2.jpg",
-      "/images/110/3.jpg",
-      "/images/110/4.jpg",
-      "/images/110/5.jpg",
-      "/images/110/6.jpg",
-      "/images/110/thumbnail.jpg",
+"https://m.media-amazon.com/images/I/51E1ItTOFGL.jpg",      
+"https://m.media-amazon.com/images/I/41WZO5QpuZL.jpg",
+      "https://m.media-amazon.com/images/I/51CviMJZBiL.jpg",
+      "https://m.media-amazon.com/images/I/511-gPnf1aL.jpg",
+      "https://m.media-amazon.com/images/I/41mwq9GTyEL.jpg",
+      "https://m.media-amazon.com/images/I/41I9uj2uMXL.jpg",
+      "https://m.media-amazon.com/images/I/51JpF827CLL.jpg",
     ],
     features: [
       "Glyph Interface",
@@ -438,15 +438,16 @@ const mobilePhones: Product[] = [
     stock: 60,
     brand: "Motorola",
     category: "smartphones",
-    thumbnail: "/images/110/thumbnail.jpg",
+    thumbnail: "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/o/j/n/-original-imahfyjb3b7dhpzn.jpeg?q=70&crop=false",
     images: [
-      "/images/110/1.jpg",
-      "/images/110/2.jpg",
-      "/images/110/3.jpg",
-      "/images/110/4.jpg",
-      "/images/110/5.jpg",
-      "/images/110/6.jpg",
-      "/images/110/thumbnail.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/o/j/n/-original-imahfyjb3b7dhpzn.jpeg?q=70&crop=false",
+"https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/p/h/l/-original-imahfyjbvpbgkfb6.jpeg?q=70&crop=false",      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/t/6/x/-original-imah2ksafy9untnf.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/n/b/g/-original-imah2ksankdzxh2w.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/w/i/u/-original-imah2ksanjxaraqm.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/c/r/m/-original-imah2ksanbehgrgf.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/p/y/r/-original-imah2ksasfx5wxnb.jpeg?q=70&crop=false",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/y/7/j/-original-imahfyjbrngj8afe.jpeg?q=70&crop=false"
     ],
     features: [
       "Pantone Validated Display",
@@ -480,7 +481,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -518,7 +519,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -556,7 +557,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -594,7 +595,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -632,7 +633,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -670,7 +671,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -708,7 +709,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -746,7 +747,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -784,7 +785,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -822,7 +823,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -860,7 +861,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -898,7 +899,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -936,7 +937,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -974,7 +975,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -1012,7 +1013,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -1050,7 +1051,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -1088,7 +1089,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
@@ -1126,7 +1127,7 @@ const mobilePhones: Product[] = [
     images: [
       "/images/110/1.jpg",
       "/images/110/2.jpg",
-      "/images/110/3.jpg",
+      "https://rukminim2.flixcart.com/image/832/832/xif0q/mobile/l/m/h/-original-imah2ksa3nkjdmdh.jpeg?q=70&crop=false",
       "/images/110/4.jpg",
       "/images/110/5.jpg",
       "/images/110/6.jpg",
