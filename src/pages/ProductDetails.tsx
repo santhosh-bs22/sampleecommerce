@@ -1,6 +1,4 @@
-// src/pages/ProductDetails.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-// Import useLocation for redirect state
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -9,10 +7,11 @@ import { Separator } from '../components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Minus, Plus } from 'lucide-react';
+// Import ChevronLeft and ChevronRight
+import { Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
-import { useUserStore } from '../store/useUserStore'; // Import user store
+import { useUserStore } from '../store/useUserStore';
 import { formatCurrency, formatDiscountPrice, calculateDiscount } from '../utils/currency';
 import { useToast } from '../hooks/use-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -24,10 +23,10 @@ import { cn } from '../lib/utils';
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  const { isAuthenticated } = useUserStore(); // Get authentication status
+  const { isAuthenticated } = useUserStore();
   const { toast } = useToast();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -42,6 +41,7 @@ const ProductDetails: React.FC = () => {
   const [submittedReviews, setSubmittedReviews] = useState<any[]>([]);
 
   const fetchProduct = useCallback(async (combinedId: string) => {
+    // ... (fetchProduct logic remains the same)
     setIsLoading(true);
     setProduct(null);
     setSimilarProducts([]);
@@ -82,11 +82,10 @@ const ProductDetails: React.FC = () => {
   }, [id, fetchProduct]);
 
    useEffect(() => {
-    // Reset quantity only when the product ID changes
     if (product) {
         setQuantity(1);
     }
-   }, [product?.id, product?.source]); // Depend on unique product identifiers
+   }, [product?.id, product?.source]);
 
 
   const handleRating = (rating: number) => {
@@ -94,6 +93,7 @@ const ProductDetails: React.FC = () => {
   };
 
   const handleReviewSubmit = (e: React.FormEvent) => {
+     // ... (handleReviewSubmit logic remains the same)
     e.preventDefault();
     if (!userRating || !reviewText.trim()) {
       toast({
@@ -122,8 +122,28 @@ const ProductDetails: React.FC = () => {
     });
   };
 
+  // --- Image Navigation Handlers ---
+  const handlePrevImage = () => {
+    if (product) {
+      setSelectedImage((prevIndex) =>
+        prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
+      );
+    }
+  };
+
+  const handleNextImage = () => {
+    if (product) {
+      setSelectedImage((prevIndex) =>
+        prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  };
+  // --- End Image Navigation Handlers ---
+
+
   if (isLoading) {
-    return (
+    // ... (isLoading state remains the same)
+     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <LoadingSpinner size="lg" />
         <p className="mt-4 text-muted-foreground">Loading product details...</p>
@@ -132,6 +152,7 @@ const ProductDetails: React.FC = () => {
   }
 
   if (!product) {
+    // ... (product not found state remains the same)
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
@@ -150,6 +171,7 @@ const ProductDetails: React.FC = () => {
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
 
   const handleAddToCart = () => {
+    // ... (handleAddToCart logic remains the same)
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       toast({
         title: "Please select a size",
@@ -165,27 +187,24 @@ const ProductDetails: React.FC = () => {
   };
 
   const handleBuyNow = () => {
-    // *** AUTHENTICATION CHECK ***
+    // ... (handleBuyNow logic remains the same)
     if (!isAuthenticated) {
       toast({
         title: "Login Required",
         description: "Please log in to proceed with your purchase.",
         variant: "destructive",
       });
-      // Redirect to login, passing the current page to return to
       navigate('/login', { state: { from: location } });
-      return; // Stop execution
+      return;
     }
-    // *** END AUTHENTICATION CHECK ***
-
-    // If authenticated, proceed as before
-    handleAddToCart(); // Add the item first
-    navigate('/cart'); // Then navigate to cart
+    handleAddToCart();
+    navigate('/cart');
   };
 
 
   const handleWishlistToggle = () => {
-    if (isWishlisted) {
+    // ... (handleWishlistToggle logic remains the same)
+     if (isWishlisted) {
       removeFromWishlist(product.id);
       toast({
         title: "Removed from wishlist",
@@ -201,13 +220,15 @@ const ProductDetails: React.FC = () => {
   };
 
   const increaseQuantity = () => {
+    // ... (increaseQuantity logic remains the same)
     if (quantity < product.stock) {
       setQuantity(quantity + 1);
     }
   };
 
   const decreaseQuantity = () => {
-    if (quantity > 1) {
+    // ... (decreaseQuantity logic remains the same)
+     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
@@ -217,7 +238,8 @@ const ProductDetails: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumbs */}
-      <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
+      {/* ... (Breadcrumbs remain the same) */}
+       <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground">Home</Link>
         <span>/</span>
         <Link to={`/?category=${product.category}`} className="hover:text-foreground capitalize">{product.category.replace('-', ' ')}</Link>
@@ -228,14 +250,36 @@ const ProductDetails: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Image Gallery */}
         <div className="space-y-4 sticky top-20 self-start">
-          <div className="aspect-square overflow-hidden rounded-lg border bg-muted/20">
+          {/* Main Image Display with Arrows */}
+          <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group">
             <img
               src={product.images[selectedImage]}
               alt={product.title}
               className="h-full w-full object-contain transition-transform duration-300"
             />
+             {/* Previous Image Button */}
+             <Button
+                variant="outline"
+                size="icon"
+                onClick={handlePrevImage}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/50 hover:bg-background/80 rounded-full h-10 w-10"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+               {/* Next Image Button */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleNextImage}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/50 hover:bg-background/80 rounded-full h-10 w-10"
+                aria-label="Next image"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
           </div>
 
+          {/* Thumbnail Images */}
           <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-3 overflow-x-auto pb-2">
             {product.images.map((image, index) => (
               <button
@@ -244,6 +288,7 @@ const ProductDetails: React.FC = () => {
                   selectedImage === index ? 'border-primary shadow-md' : 'border-muted'
                 )}
                 onClick={() => setSelectedImage(index)}
+                aria-label={`View image ${index + 1}`}
               >
                 <img
                   src={image}
@@ -256,6 +301,7 @@ const ProductDetails: React.FC = () => {
         </div>
 
         {/* Product Details */}
+        {/* ... (Rest of the Product Details section remains the same) */}
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
@@ -300,7 +346,6 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Size Selection */}
           {product.sizes && product.sizes.length > 0 && (
             <div>
               <h3 className="font-semibold text-lg mb-2">Size</h3>
@@ -320,7 +365,6 @@ const ProductDetails: React.FC = () => {
 
           <Separator />
 
-          {/* Key Features */}
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Key Features</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 text-sm">
@@ -339,7 +383,6 @@ const ProductDetails: React.FC = () => {
 
           <Separator />
 
-          {/* Quantity Controls */}
           <div className="space-y-3">
             <p className="font-medium">Quantity</p>
             <div className="flex items-center gap-4">
@@ -356,7 +399,6 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button onClick={handleAddToCart} disabled={product.stock === 0} className="flex-1 h-12 text-lg" size="lg">
               <ShoppingCart className="h-5 w-5 mr-2" />
@@ -370,7 +412,6 @@ const ProductDetails: React.FC = () => {
             </Button>
           </div>
 
-          {/* Delivery Info Card */}
           <Card>
             <CardContent className="p-4">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
@@ -384,7 +425,8 @@ const ProductDetails: React.FC = () => {
       </div>
 
       {/* Tabs Section */}
-      <div className="mt-12">
+      {/* ... (Tabs section remains the same) */}
+       <div className="mt-12">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="description">Description</TabsTrigger>
@@ -392,7 +434,6 @@ const ProductDetails: React.FC = () => {
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
           </TabsList>
 
-          {/* Description Tab */}
           <TabsContent value="description" className="mt-6">
             <Card><CardContent className="p-6">
               <h3 className="text-xl font-bold mb-4">Detailed Overview</h3>
@@ -420,7 +461,6 @@ const ProductDetails: React.FC = () => {
             </CardContent></Card>
           </TabsContent>
 
-          {/* Specifications Tab */}
           <TabsContent value="specifications" className="mt-6">
             <Card><CardContent className="p-6">
               <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
@@ -439,12 +479,10 @@ const ProductDetails: React.FC = () => {
             </CardContent></Card>
           </TabsContent>
 
-          {/* Reviews Tab */}
           <TabsContent value="reviews" className="mt-6">
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-8">
-                  {/* Existing Reviews Section */}
                   <div>
                     <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
                     <div className="flex items-center gap-8 mb-6">
@@ -457,7 +495,6 @@ const ProductDetails: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Display submitted reviews */}
                     {submittedReviews.map((review) => (
                       <div key={review.id} className="border rounded-lg p-4 mb-4 bg-muted/50">
                         <div className="flex items-center gap-4 mb-2">
@@ -478,7 +515,6 @@ const ProductDetails: React.FC = () => {
                       </div>
                     ))}
 
-                    {/* Mocked reviews */}
                     <div className="border rounded-lg p-4 mb-4">
                       <div className="flex items-center gap-4 mb-2">
                         <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-semibold">JD</div>
@@ -508,11 +544,9 @@ const ProductDetails: React.FC = () => {
 
                   <Separator />
 
-                  {/* Write a Review Section */}
                   <div>
                     <h3 className="text-xl font-bold mb-4">Write Your Review</h3>
                     <form onSubmit={handleReviewSubmit} className="space-y-4">
-                      {/* Star Rating */}
                       <div className="space-y-2">
                         <Label>Your Rating</Label>
                         <div className="flex items-center gap-1">
@@ -537,7 +571,6 @@ const ProductDetails: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Review Text */}
                       <div className="space-y-2">
                         <Label htmlFor="reviewText">Your Review</Label>
                         <Textarea
@@ -551,7 +584,6 @@ const ProductDetails: React.FC = () => {
                         />
                       </div>
 
-                      {/* Submit Button */}
                       <Button type="submit">
                         Submit Review
                       </Button>
@@ -564,8 +596,10 @@ const ProductDetails: React.FC = () => {
         </Tabs>
       </div>
 
+
       {/* Similar Products Section */}
-      <section className="mt-12">
+      {/* ... (Similar Products section remains the same) */}
+       <section className="mt-12">
         <h2 className="text-3xl font-bold mb-6">Similar Products</h2>
         {similarProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

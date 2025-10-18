@@ -4418,355 +4418,937 @@ const menClothing: Product[] = [
 // --- Mock Data for Women's Clothing ---
 const womenClothing: Product[] = [
   {
-    id: 501,
-    title: "Women's Floral Maxi Dress",
-    description:
-      "An elegant and flowy floral maxi dress, perfect for brunches, vacations, or a casual day out.",
-    price: 2499,
-    discountPercentage: 35,
-    rating: 4.8,
-    stock: 150,
-    brand: "Zara",
-    category: "womens-clothing",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    thumbnail: "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/UNDhifXG_fcba4a8d34dd40f9b097f7f21da549f9.jpg",
-    images: [
+    "id": 501,
+    "title": "Women's Floral Maxi Dress",
+    "description": "An elegant and flowy floral maxi dress, perfect for brunches, vacations, or a casual day out.",
+    "price": 2499,
+    "discountPercentage": 35,
+    "rating": 4.8,
+    "stock": 150,
+    "brand": "Zara",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/UNDhifXG_fcba4a8d34dd40f9b097f7f21da549f9.jpg",
+    "images": [
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/UNDhifXG_fcba4a8d34dd40f9b097f7f21da549f9.jpg",
-"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/G46lZxnB_c36aa37a6cab4d63a617e9173fda21da.jpg",      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/7NA8wqqq_f0486ef2fcb547e191fbeb62a843795b.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/G46lZxnB_c36aa37a6cab4d63a617e9173fda21da.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/7NA8wqqq_f0486ef2fcb547e191fbeb62a843795b.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/86bw0PXt_8becbaa8f594453685ae3f4055d2ae4f.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/T5SqqD6c_996fa5948bc8485a940d12fa8beb6df4.jpg",
-      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/iF6kEVIt_a598198b0f624975a9f19b4fe13e735d.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/JUNE/30/iF6kEVIt_a598198b0f624975a9f19b4fe13e735d.jpg"
     ],
-    features: [
+    "features": [
       "Lightweight Viscose Fabric",
       "V-Neckline",
       "Tie-Waist Detail",
-      "Ruffled Hem",
+      "Ruffled Hem"
     ],
-    specifications: {
-      Material: "Viscose",
-      Length: "Maxi",
-      Sleeve: "Sleeveless",
-      Care: "Hand Wash",
+    "specifications": {
+      "Material": "Viscose",
+      "Length": "Maxi",
+      "Sleeve": "Sleeveless",
+      "Care": "Hand Wash"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 502,
-    title: "Women Skinny High Rise Light Blue Jeans",
-    description:
-      "Flatter your figure with these comfortable and stretchy high-waist skinny jeans, a versatile wardrobe staple.",
-    price: 1999,
-    discountPercentage: 20,
-    rating: 4.5,
-    stock: 180,
-    brand: "H&M",
-    category: "womens-clothing",
-    sizes: ["26", "28", "30", "32", "34"],
-    thumbnail: "https://rukminim2.flixcart.com/image/832/832/xif0q/jegging/x/2/j/30-hoc-pohel-m-30-house-of-common-original-imah44czwyxy3phh.jpeg?q=70&crop=false",
-    images: [
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/jegging/x/2/j/30-hoc-pohel-m-30-house-of-common-original-imah44czwyxy3phh.jpeg?q=70&crop=false",
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/legging/c/8/e/40-legg-pohel-4xl-40-3butterflies-original-imahcxa7zg2szmgh.jpeg?q=70&crop=false",
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/jean/t/l/r/40-ocket-wht-3butterflies-original-imahd4qutyfzgqhz.jpeg?q=70&crop=false",
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/legging/g/l/u/40-legg-pohel-4xl-40-3butterflies-original-imahcxa7bzehjzgh.jpeg?q=70&crop=false",
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/legging/u/7/o/40-legg-pohel-4xl-40-3butterflies-original-imahcxa7rtghhd7p.jpeg?q=70&crop=false",
-      "https://rukminim2.flixcart.com/image/832/832/xif0q/legging/s/m/f/40-legg-pohel-4xl-40-3butterflies-original-imahcxa7hfj4zdvm.jpeg?q=70&crop=false",
+    "id": 502,
+    "title": "Women Skinny High Rise Light Fade Stretchable Jeans",
+    "description": "Flatter your figure with these comfortable and stretchy high-waist skinny jeans, a versatile wardrobe staple.",
+    "price": 1999,
+    "discountPercentage": 20,
+    "rating": 4.5,
+    "stock": 180,
+    "brand": "H&M",
+    "category": "womens-clothing",
+    "sizes": ["26", "28", "30", "32", "34"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/a7dfde6e-2480-43f2-84e4-cc18a1a342861540285155016-Roadster-Women-Jeans-3011540285154913-1.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/a7dfde6e-2480-43f2-84e4-cc18a1a342861540285155016-Roadster-Women-Jeans-3011540285154913-1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/e2e05cca-cf06-48bf-8fe0-cbe8fb6d7dc71540285155003-Roadster-Women-Jeans-3011540285154913-2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/18037727-971b-40c1-9db7-6689275df50d1540285154991-Roadster-Women-Jeans-3011540285154913-3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/8d923041-4c59-4ac8-97cf-19e4989f73ba1540285154977-Roadster-Women-Jeans-3011540285154913-4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/7139185/2018/10/23/b1f36dea-0be1-40c5-90e2-c337592981e01540285154964-Roadster-Women-Jeans-3011540285154913-5.jpg",
     ],
-    features: [
+    "features": [
       "High-stretch Denim",
       "High Waist",
       "Five-Pocket Styling",
-      "Skinny Fit",
+      "Skinny Fit"
     ],
-    specifications: {
-      Material: "Cotton Blend",
-      Fit: "Skinny",
-      Waist: "High",
-      Care: "Machine Wash",
+    "specifications": {
+      "Material": "Cotton Blend",
+      "Fit": "Skinny",
+      "Waist": "High",
+      "Care": "Machine Wash"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 503,
-    title: "Women's Silk Blend Saree",
-    description:
-      "A beautiful and elegant silk blend saree with intricate zari work, perfect for festive occasions and weddings.",
-    price: 4999,
-    discountPercentage: 40,
-    rating: 4.9,
-    stock: 100,
-    brand: "Sabyasachi",
-    category: "womens-clothing",
-    sizes: ["Free Size"],
-    thumbnail: "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/1a74209a-6e50-4587-97ed-43ad71b03c041715762905726KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc1.jpg",
-    images: [
+    "id": 503,
+    "title": "Women's Silk Blend Saree",
+    "description": "A beautiful and elegant silk blend saree with intricate zari work, perfect for festive occasions and weddings.",
+    "price": 4999,
+    "discountPercentage": 40,
+    "rating": 4.9,
+    "stock": 100,
+    "brand": "Sabyasachi",
+    "category": "womens-clothing",
+    "sizes": ["Free Size"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/1a74209a-6e50-4587-97ed-43ad71b03c041715762905726KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc1.jpg",
+    "images": [
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/1a74209a-6e50-4587-97ed-43ad71b03c041715762905726KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc1.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/b4b32174-c274-480b-a9c5-4a7fab2f7e431715762905777KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc2.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/ecfca8ef-8c96-4da3-a19d-88e99b488a4b1715762905651KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc4.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/f8f0730f-bb64-4da2-a1b3-fca3677d65711715762905701KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc5.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/be8dca38-ef8e-4987-ac4b-e849f1143a5b1715762905751KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc6.jpg",
-      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/d247f304-c92d-4067-9a06-fe5f4914d3591715762905676KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc7.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/29558914/2024/5/15/d247f304-c92d-4067-9a06-fe5f4914d3591715762905676KaliniWomensSilkBlendPinkjacquardWovenDesignSareeWithUnstitc7.jpg"
     ],
-    features: [
+    "features": [
       "Silk Blend Fabric",
       "Zari Woven Work",
       "Comes with Blouse Piece",
-      "Traditional Design",
+      "Traditional Design"
     ],
-    specifications: {
-      Material: "Silk Blend",
-      Length: "5.5 meters",
-      Blouse: "0.8 meters",
-      Care: "Dry Clean Only",
+    "specifications": {
+      "Material": "Silk Blend",
+      "Length": "5.5 meters",
+      "Blouse": "0.8 meters",
+      "Care": "Dry Clean Only"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 504,
-    title: "Women's Casual Top",
-    description:
-      "A cute and comfortable casual top with a stylish print, perfect for everyday wear.",
-    price: 899,
-    discountPercentage: 50,
-    rating: 4.6,
-    stock: 250,
-    brand: "Vero Moda",
-    category: "womens-clothing",
-    sizes: ["XS", "S", "M", "L"],
-    thumbnail: "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/M5RbD36O_c7de477139e443e19a789cfe56078b21.jpg",
-    images: [
+    "id": 504,
+    "title": "Women's Casual Top",
+    "description": "A cute and comfortable casual top with a stylish print, perfect for everyday wear.",
+    "price": 899,
+    "discountPercentage": 50,
+    "rating": 4.6,
+    "stock": 250,
+    "brand": "Vero Moda",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/M5RbD36O_c7de477139e443e19a789cfe56078b21.jpg",
+    "images": [
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/M5RbD36O_c7de477139e443e19a789cfe56078b21.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/csgnWFeB_aa97b63526104632ad5339c79e3d77a2.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/uiopdBBy_f573cb07c3e3436b889f67eaf2a9baa4.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/2ncF82fb_484458df528940739e3612b93d587367.jpg",
-"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/pQ4YnAKF_c68032d8d0e74a54b91fa3a7fb581b5f.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/pQ4YnAKF_c68032d8d0e74a54b91fa3a7fb581b5f.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/JpRpOOZY_7ebb7a0d96c94917b35ab2f1dbef2d15.jpg",
-      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/m9CzKVHC_963be4e9bf244590a51c9acd13adb425.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/22/m9CzKVHC_963be4e9bf244590a51c9acd13adb425.jpg"
     ],
-    features: [
+    "features": [
       "Soft Viscose Fabric",
       "Round Neck",
       "Relaxed Fit",
-      "All-over Print",
+      "All-over Print"
     ],
-    specifications: {
-      Material: "Viscose",
-      Fit: "Relaxed",
-      Sleeve: "Short Sleeve",
-      Care: "Machine Wash",
+    "specifications": {
+      "Material": "Viscose",
+      "Fit": "Relaxed",
+      "Sleeve": "Short Sleeve",
+      "Care": "Machine Wash"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 505,
-    title: "Women's Winter Coat",
-    description:
-      "A warm and stylish winter coat with a faux fur hood, perfect for cold weather.",
-    price: 5999,
-    discountPercentage: 30,
-    rating: 4.7,
-    stock: 120,
-    brand: "H&M",
-    category: "womens-clothing",
-    sizes: ["S", "M", "L"],
-    thumbnail: "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/Fft7w2yd_cf6c8995734045cfb7334c89e73bacf6.jpg",
-    images: [
+    "id": 505,
+    "title": "Women's Winter Coat",
+    "description": "A warm and stylish winter coat with a faux fur hood, perfect for cold weather.",
+    "price": 5999,
+    "discountPercentage": 30,
+    "rating": 4.7,
+    "stock": 120,
+    "brand": "H&M",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/Fft7w2yd_cf6c8995734045cfb7334c89e73bacf6.jpg",
+    "images": [
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/Fft7w2yd_cf6c8995734045cfb7334c89e73bacf6.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/ST0LIAcQ_d0767cc3bc104752995f9a29572c4751.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/NXzeRCTS_89b51c1341674788896b79c9d0f1e687.jpg",
       "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/6hnNFtyj_2e8c0ace3d784129b8f3672c4ce5e8a3.jpg",
-      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/KCHgCTT2_2c9b113400dd4a23a92095d1c6b9f2c3.jpg",
-      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/ULUu4X6y_4da43b35a32f43a4a53f930099f75115.jpg",
-    
+      "httpss://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/KCHgCTT2_2c9b113400dd4a23a92095d1c6b9f2c3.jpg",
+      "httpss://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/30/ULUu4X6y_4da43b35a32f43a4a53f930099f75115.jpg"
     ],
-    features: [
+    "features": [
       "Warm Faux Fur Hood",
       "Double-Breasted",
       "Belted Waist",
-      "Wool Blend Fabric",
+      "Wool Blend Fabric"
     ],
-    specifications: {
-      Material: "Wool Blend",
-      Fit: "Regular",
-      Sleeve: "Full Sleeve",
-      Care: "Dry Clean Only",
+    "specifications": {
+      "Material": "Wool Blend",
+      "Fit": "Regular",
+      "Sleeve": "Full Sleeve",
+      "Care": "Dry Clean Only"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 506,
-    title: "Cycling Shorts",
-    description:
-      "Black Cotton Stretch Cycling Shorts for Women",
-    price: 1299,
-    discountPercentage: 25,
-    rating: 4.6,
-    stock: 200,
-    brand: "Nike",
-    category: "womens-clothing",
-    sizes: ["S", "M", "L", "XL"],
-    thumbnail: "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_4.jpg?v=1718275949",
-    images: [
+    "id": 506,
+    "title": "Women's Stretch Cycling Shorts",
+    "description": "Black cotton stretch cycling shorts for women, perfect for casual wear, light exercise, or layering.",
+    "price": 1299,
+    "discountPercentage": 25,
+    "rating": 4.6,
+    "stock": 200,
+    "brand": "Nike",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L", "XL"],
+    "thumbnail": "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_4.jpg?v=1718275949",
+    "images": [
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_4.jpg?v=1718275949",
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_5.jpg?v=1718275949",
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_3.jpg?v=1718275949",
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_6.jpg?v=1718275949",
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73_1.jpg?v=1718275949",
       "https://gocolors.com/cdn/shop/files/LCYC-BLACK73.jpg?v=1748593321",
-      "https://gocolors.com/cdn/shop/files/Spotlight_LCYC.jpg?v=1749808473",
+      "https://gocolors.com/cdn/shop/files/Spotlight_LCYC.jpg?v=1749808473"
     ],
-    features: [
+    "features": [
       "High-Waist Design",
       "Four-Way Stretch",
-      "Moisture-Wicking",
-      "Squat-Proof",
+      "Breathable Cotton Fabric",
+      "Elastic Waistband"
     ],
-    specifications: {
-      Material: "Polyester-Spandex Blend",
-      Fit: "Slim",
-      Length: "Full Length",
-      Care: "Machine Wash",
+    "specifications": {
+      "Material": "Cotton-Spandex Blend",
+      "Fit": "Slim",
+      "Length": "Above Knee",
+      "Care": "Machine Wash"
     },
-    source: "mock",
+    "source": "mock"
   },
   {
-    id: 507,
-    title: "Women's Leather Handbag",
-    description:
-      "A stylish and spacious leather handbag perfect for everyday use.",
-    price: 3999,
-    discountPercentage: 20,
-    rating: 4.8,
-    stock: 80,
-    brand: "H&M",
-    category: "womens-clothing",
-    sizes: ["One Size"],
-    thumbnail: "/images/502/thumbnail.jpg",
-    images: [
-      "/images/502/1.jpg",
-      "/images/502/2.jpg",
-      "/images/502/3.jpg",
-      "/images/502/4.jpg",
-      "/images/502/5.jpg",
-      "/images/502/6.jpg",
-      "/images/502/thumbnail.jpg",
+    "id": 508,
+    "title": "Women's Evening Gown",
+    "description": "An elegant evening gown perfect for formal events and parties.",
+    "price": 6999,
+    "discountPercentage": 30,
+    "rating": 4.9,
+    "stock": 60,
+    "brand": "Zara",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/3VWQHOlh_d4cf32ee291448c8a6798504443ff5bd.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/3VWQHOlh_d4cf32ee291448c8a6798504443ff5bd.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/exe4JZcb_1798cb09e9864407a12f26e9c1df07b3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/2fHDuUNL_015f3cc280b541efaade36f8d191bcb6.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/wWgGwk5l_5518e967dd5d4ac1873275eba2921ff8.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/9/r0ixjwKw_ef4a1a566bcf495893fc22c32c3f9413.jpg",
     ],
-    features: [
-      "Genuine Leather",
-      "Multiple Compartments",
-      "Adjustable Strap",
-      "Zipper Closure",
-    ],
-    specifications: {
-      Material: "Leather",
-      Dimensions: "30x20x10 cm",
-      Color: "Black",
-      Care: "Use leather conditioner",
+    "features": ["Satin Fabric", "Floor Length", "Back Zipper", "Lined"],
+    "specifications": {
+      "Material": "Satin",
+      "Length": "Maxi",
+      "Sleeve": "Sleeveless",
+      "Care": "Dry Clean Only"
     },
-    source: "mock",
+    "source": "mock"
   },
+  // {
+  //   "id": 509,
+  //   "title": "Women's Sports Bra",
+  //   "description": "High-support sports bra for intense workouts and physical activities.",
+  //   "price": 1499,
+  //   "discountPercentage": 35,
+  //   "rating": 4.7,
+  //   "stock": 150,
+  //   "brand": "Nike",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L"],
+  //   "thumbnail": "/images/502/thumbnail.jpg",
+  //   "images": [
+  //     "/images/502/1.jpg",
+  //     "/images/502/2.jpg",
+  //     "/images/502/3.jpg",
+  //     "/images/502/4.jpg",
+  //     "/images/502/5.jpg",
+  //     "/images/502/6.jpg",
+  //     "/images/502/thumbnail.jpg"
+  //   ],
+  //   "features": [
+  //     "High Impact Support",
+  //     "Moisture-Wicking",
+  //     "Racerback",
+  //     "Adjustable Straps"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Polyester Blend",
+  //     "Support Level": "High",
+  //     "Closure": "Hook and Eye",
+  //     "Care": "Machine Wash"
+  //   },
+  //   "source": "mock"
+  // },
   {
-    id: 508,
-    title: "Women's Evening Gown",
-    description:
-      "An elegant evening gown perfect for formal events and parties.",
-    price: 6999,
-    discountPercentage: 30,
-    rating: 4.9,
-    stock: 60,
-    brand: "Zara",
-    category: "womens-clothing",
-    sizes: ["S", "M", "L"],
-    thumbnail: "/images/502/thumbnail.jpg",
-    images: [
-      "/images/502/1.jpg",
-      "/images/502/2.jpg",
-      "/images/502/3.jpg",
-      "/images/502/4.jpg",
-      "/images/502/5.jpg",
-      "/images/502/6.jpg",
-      "/images/502/thumbnail.jpg",
+    "id": 510,
+    "title": "Women's Denim Jacket",
+    "description": "Classic denim jacket that never goes out of style.",
+    "price": 2799,
+    "discountPercentage": 25,
+    "rating": 4.6,
+    "stock": 100,
+    "brand": "Levi's",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/f9ElyXU6_ea345cd1f8a8459f892f906db06961c7.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/f9ElyXU6_ea345cd1f8a8459f892f906db06961c7.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/a3FcMmGD_a1e5e0fdcab649cbbd79f50e39532660.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/m0i0bv0n_346769572b524187abbe216c61962cc5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/NSMheiqY_00a5722453634f6f8d218c71e3889f1b.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/rHvOjCpg_8cc176db0d6146f380dbd3ddc3160b92.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/6XyignBZ_6ebca865426a4b56ad6dd954ae9d64a2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/26/XUSUVBcT_ec438c276d77418f881701d370ba492e.jpg"
     ],
-    features: ["Satin Fabric", "Floor Length", "Back Zipper", "Lined"],
-    specifications: {
-      Material: "Satin",
-      Length: "Maxi",
-      Sleeve: "Sleeveless",
-      Care: "Dry Clean Only",
-    },
-    source: "mock",
-  },
-  {
-    id: 509,
-    title: "Women's Sports Bra",
-    description:
-      "High-support sports bra for intense workouts and physical activities.",
-    price: 1499,
-    discountPercentage: 35,
-    rating: 4.7,
-    stock: 150,
-    brand: "Nike",
-    category: "womens-clothing",
-    sizes: ["S", "M", "L"],
-    thumbnail: "/images/502/thumbnail.jpg",
-    images: [
-      "/images/502/1.jpg",
-      "/images/502/2.jpg",
-      "/images/502/3.jpg",
-      "/images/502/4.jpg",
-      "/images/502/5.jpg",
-      "/images/502/6.jpg",
-      "/images/502/thumbnail.jpg",
-    ],
-    features: [
-      "High Impact Support",
-      "Moisture-Wicking",
-      "Racerback",
-      "Adjustable Straps",
-    ],
-    specifications: {
-      Material: "Polyester Blend",
-      "Support Level": "High",
-      Closure: "Hook and Eye",
-      Care: "Machine Wash",
-    },
-    source: "mock",
-  },
-  {
-    id: 510,
-    title: "Women's Denim Jacket",
-    description: "Classic denim jacket that never goes out of style.",
-    price: 2799,
-    discountPercentage: 25,
-    rating: 4.6,
-    stock: 100,
-    brand: "Levi's",
-    category: "womens-clothing",
-    sizes: ["XS", "S", "M", "L"],
-    thumbnail: "/images/502/thumbnail.jpg",
-    images: [
-      "/images/502/1.jpg",
-      "/images/502/2.jpg",
-      "/images/502/3.jpg",
-      "/images/502/4.jpg",
-      "/images/502/5.jpg",
-      "/images/502/6.jpg",
-      "/images/502/thumbnail.jpg",
-    ],
-    features: [
+    "features": [
       "100% Cotton Denim",
       "Button Front",
       "Chest Pockets",
-      "Regular Fit",
+      "Regular Fit"
     ],
-    specifications: {
-      Material: "Denim",
-      Fit: "Regular",
-      Sleeve: "Full Sleeve",
-      Care: "Machine Wash",
+    "specifications": {
+      "Material": "Denim",
+      "Fit": "Regular",
+      "Sleeve": "Full Sleeve",
+      "Care": "Machine Wash"
     },
-    source: "mock",
+    "source": "mock"
   },
+  {
+    "id": 511,
+    "title": "Women's High-Waist Yoga Pants",
+    "description": "Buttery soft and ultra-stretchy yoga pants, perfect for the studio or lounging at home. Features a high-waist band for tummy control and a hidden pocket.",
+    "price": 2299,
+    "discountPercentage": 30,
+    "rating": 4.9,
+    "stock": 200,
+    "brand": "Lululemon",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "thumbnail": "https://images.lululemon.com/is/image/lululemon/LW5AWBS_0001_1",
+    "images": [
+      "https://images.lululemon.com/is/image/lululemon/LW5AWBS_0001_1",
+      "https://images.lululemon.com/is/image/lululemon/LW5AWBS_0001_2",
+      "https://images.lululemon.com/is/image/lululemon/LW5AWBS_0001_3",
+      "https://images.lululemon.com/is/image/lululemon/LW5AWBS_0001_4"
+    ],
+    "features": [
+      "Nulu™ Fabric",
+      "Four-Way Stretch",
+      "Sweat-Wicking",
+      "Hidden Waistband Pocket",
+      "High-Rise"
+    ],
+    "specifications": {
+      "Material": "Nylon, Lycra Elastane",
+      "Fit": "Tight",
+      "Length": "Full Length",
+      "Care": "Machine Wash Cold"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 512,
+  //   "title": "Women's Linen Button-Down Shirt",
+  //   "description": "A breezy and relaxed-fit linen shirt, perfect for warm weather. Can be worn as a light layer or on its own.",
+  //   "price": 1799,
+  //   "discountPercentage": 25,
+  //   "rating": 4.6,
+  //   "stock": 180,
+  //   "brand": "Zara",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L", "XL"],
+  //   "thumbnail": "https://static.zara.net/photos///2024/V/0/1/p/8741/042/250/2/w/1920/8741042250_6_1_1.jpg?ts=1708010377041",
+  //   "images": [
+  //     "https://static.zara.net/photos///2024/V/0/1/p/8741/042/250/2/w/1920/8741042250_6_1_1.jpg?ts=1708010377041",
+  //     "https://static.zara.net/photos///2024/V/0/1/p/8741/042/250/2/w/1920/8741042250_6_2_1.jpg?ts=1708010374465",
+  //     "https://static.zara.net/photos///2024/V/0/1/p/8741/042/250/2/w/1920/8741042250_6_3_1.jpg?ts=1708010374823"
+  //   ],
+  //   "features": [
+  //     "100% Linen Fabric",
+  //     "Relaxed Fit",
+  //     "Button-Front Closure",
+  //     "Chest Pocket",
+  //     "Long Sleeves with Cuffs"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Linen",
+  //     "Fit": "Relaxed",
+  //     "Sleeve": "Long Sleeve",
+  //     "Care": "Machine Wash Delicate"
+  //   },
+  //   "source": "mock"
+  // },
+  // {
+  //   "id": 513,
+  //   "title": "Women's A-Line Midi Skirt",
+  //   "description": "A chic and versatile A-line midi skirt with a side slit. Easily dressed up with heels or down with sneakers.",
+  //   "price": 2199,
+  //   "discountPercentage": 15,
+  //   "rating": 4.7,
+  //   "stock": 130,
+  //   "brand": "Mango",
+  //   "category": "womens-clothing",
+  //   "sizes": ["XS", "S", "M", "L"],
+  //   "thumbnail": "https://cdn.example.com/images/513/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/513/1.jpg",
+  //     "https://cdn.example.com/images/513/2.jpg",
+  //     "https://cdn.example.com/images/513/3.jpg"
+  //   ],
+  //   "features": [
+  //     "Flowy Viscose Blend",
+  //     "A-Line Silhouette",
+  //     "Midi Length",
+  //     "Side Slit Detail",
+  //     "Concealed Side Zipper"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Viscose Blend",
+  //     "Length": "Midi",
+  //     "Closure": "Zipper",
+  //     "Care": "Hand Wash"
+  //   },
+  //   "source": "mock"
+  // },
+  {
+    "id": 514,
+    "title": "Women's Cashmere Crewneck Sweater",
+    "description": "An exceptionally soft and luxurious 100% cashmere sweater. A timeless wardrobe essential for cooler months.",
+    "price": 7999,
+    "discountPercentage": 10,
+    "rating": 4.9,
+    "stock": 70,
+    "brand": "Uniqlo",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L", "XL"],
+    "thumbnail": "https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4859.jpg?v=1743501066&_gl=1*1etb0rn*_up*MQ..*_gs*MQ..&gclid=EAIaIQobChMI9r6J_5GukAMVsj2DAx2R0hV5EAQYASABEgKNS_D_BwE&gbraid=0AAAAADmIe9IGTC6WFEkrq30IStYHSexv-",
+    "images": [
+      "https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4859.jpg?v=1743501066&_gl=1*1etb0rn*_up*MQ..*_gs*MQ..&gclid=EAIaIQobChMI9r6J_5GukAMVsj2DAx2R0hV5EAQYASABEgKNS_D_BwE&gbraid=0AAAAADmIe9IGTC6WFEkrq30IStYHSexv-",
+      "https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4838.jpg?v=1743501066&width=540",
+"https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4873.jpg?v=1743501066&width=540",
+"https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4818.jpg?v=1743501067&width=540",
+"https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4836.jpg?v=1743501067&width=540",
+"https://thehouseofrare.com/cdn/shop/files/SCHIT-OFF-WHITE4826.jpg?v=1743501067&width=540",
+    ],
+    "features": [
+      "100% Cashmere",
+      "Crew Neckline",
+      "Ribbed Cuffs and Hem",
+      "Regular Fit"
+    ],
+    "specifications": {
+      "Material": "Cashmere",
+      "Fit": "Regular",
+      "Sleeve": "Long Sleeve",
+      "Care": "Dry Clean Only"
+    },
+    "source": "mock"
+  },
+  {
+    "id": 515,
+    "title": "Women's Tailored Single-Breasted Blazer",
+    "description": "A sharp, tailored blazer that adds polish to any outfit. Features a single-button closure and flap pockets.",
+    "price": 4599,
+    "discountPercentage": 20,
+    "rating": 4.8,
+    "stock": 90,
+    "brand": "H&M",
+    "category": "womens-clothing",
+    "sizes": ["32", "34", "36", "38", "40"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/3edfa803-ca82-46fa-a967-49a68716d14b1707474562001SingleBreastedBlazer-Brown1.jpg",
+       "images": [
+     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/3edfa803-ca82-46fa-a967-49a68716d14b1707474562001SingleBreastedBlazer-Brown1.jpg",
+     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/71b34b5d-22f6-4427-8ecb-d2009443d2961707474562016SingleBreastedBlazer-Brown2.jpg",
+     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/bacc5eb3-1b60-458b-96d0-02734a1c18361707474562024SingleBreastedBlazer-Brown3.jpg",
+     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/16b3dbe5-6c56-42f1-b851-4521684e25441707474562008SingleBreastedBlazer-Brown4.jpg",
+     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27482488/2024/2/9/16b3dbe5-6c56-42f1-b851-4521684e25441707474562008SingleBreastedBlazer-Brown4.jpg",
+      ],
+    "features": [
+      "Woven Fabric",
+      "Notch Lapels",
+      "Single-Button Closure",
+      "Flap Front Pockets",
+      "Lined"
+    ],
+    "specifications": {
+      "Material": "Polyester, Viscose",
+      "Fit": "Tailored",
+      "Sleeve": "Long Sleeve",
+      "Care": "Dry Clean Only"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 516,
+  //   "title": "Women's Graphic Print T-Shirt",
+  //   "description": "A soft, 100% cotton t-shirt with a vintage-inspired graphic print on the front. Perfect for a casual, laid-back look.",
+  //   "price": 1299,
+  //   "discountPercentage": 40,
+  //   "rating": 4.5,
+  //   "stock": 300,
+  //   "brand": "Levi's",
+  //   "category": "womens-clothing",
+  //   "sizes": ["XS", "S", "M", "L", "XL"],
+  //   "thumbnail": "https://cdn.example.com/images/516/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/516/1.jpg",
+  //     "https://cdn.example.com/images/516/2.jpg"
+  //   ],
+  //   "features": [
+  //     "100% Cotton Jersey",
+  //     "Crew Neck",
+  //     "Short Sleeves",
+  //     "Graphic Print at Front"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Cotton",
+  //     "Fit": "Regular",
+  //     "Sleeve": "Short Sleeve",
+  //     "Care": "Machine Wash"
+  //   },
+  //   "source": "mock"
+  // },
+  {
+    "id": 517,
+    "title": "Women's Pleated Tennis Skort",
+    "description": "A sporty and stylish skort with built-in shorts for coverage. The pleated design offers a classic tennis look.",
+    "price": 1999,
+    "discountPercentage": 20,
+    "rating": 4.7,
+    "stock": 150,
+    "brand": "Nike",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/1ba97d65-dda5-4a4c-a22d-a8183f853d1e1725266035492-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-1.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/1ba97d65-dda5-4a4c-a22d-a8183f853d1e1725266035492-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/7b9a2066-587e-48e0-a1a1-b4a4478330871725266035465-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/832bcbe8-8ca1-4d3f-87bc-79fee49e2c9b1725266035437-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/c290bce6-0d74-453f-b9ae-d9611737b6fc1725266035404-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27045160/2024/9/2/78ef2d5b-bdcc-44f4-b1e4-f3a8fbfa3e651725266035370-CAVA-Ivory-Swirl-Tennis-Skorts-1821725266035052-5.jpg",
+    ],
+    "features": [
+      "Dri-FIT Technology",
+      "Built-in Shorts",
+      "Pleated Design",
+      "Elastic Waistband",
+      "Lightweight Fabric"
+    ],
+    "specifications": {
+      "Material": "Polyester, Spandex",
+      "Fit": "Standard",
+      "Length": "Short",
+      "Care": "Machine Wash"
+    },
+    "source": "mock"
+  },
+  {
+    "id": 518,
+    "title": "Women's Faux Leather Moto Jacket",
+    "description": "An edgy and timeless moto jacket made from high-quality faux leather. Features asymmetrical zip, zippered pockets, and snap-button lapels.",
+    "price": 3999,
+    "discountPercentage": 35,
+    "rating": 4.8,
+    "stock": 110,
+    "brand": "Vero Moda",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/fe77c901-a946-4e0b-a17e-524c7d9174ef1752731113925-HERENOW-Women-Jackets-2451752731113368-1.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/fe77c901-a946-4e0b-a17e-524c7d9174ef1752731113925-HERENOW-Women-Jackets-2451752731113368-1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/ff452072-4d7a-48f8-85f1-b2ddf725de441752731113898-HERENOW-Women-Jackets-2451752731113368-2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/4a43a1c0-7b1b-4e17-a7c3-27037ee9042b1752731113872-HERENOW-Women-Jackets-2451752731113368-3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/1ffa9b05-1eba-4cd5-a9cd-88babba8836f1752731113845-HERENOW-Women-Jackets-2451752731113368-4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/77b7d6ff-6da5-4ad7-898e-591a6d125dd01752731113814-HERENOW-Women-Jackets-2451752731113368-5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/24a2b208-41cd-49e9-8862-5c9310d982eb1752731113787-HERENOW-Women-Jackets-2451752731113368-6.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/33320716/2025/7/17/89d7b7d1-50ed-4943-bb96-c602ae8475061752731113761-HERENOW-Women-Jackets-2451752731113368-7.jpg",
+
+    ],
+    "features": [
+      "High-Quality Faux Leather",
+      "Asymmetrical Front Zip",
+      "Zippered Pockets",
+      "Notch Lapels with Snaps",
+      "Fitted Silhouette"
+    ],
+    "specifications": {
+      "Material": "Polyurethane, Viscose",
+      "Fit": "Slim",
+      "Sleeve": "Long Sleeve",
+      "Care": "Wipe Clean"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 519,
+  //   "title": "Women's Ruffled Wrap Blouse",
+  //   "description": "A romantic and feminine blouse featuring a wrap design, V-neckline, and delicate ruffle trim. Perfect for date night or a smart-casual look.",
+  //   "price": 1699,
+  //   "discountPercentage": 30,
+  //   "rating": 4.6,
+  //   "stock": 160,
+  //   "brand": "Mango",
+  //   "category": "womens-clothing",
+  //   "sizes": ["XS", "S", "M", "L"],
+  //   "thumbnail": "https://cdn.example.com/images/519/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/519/1.jpg",
+  //     "https://cdn.example.com/images/519/2.jpg"
+  //   ],
+  //   "features": [
+  //     "Lightweight Crepe Fabric",
+  //     "Wrap-Front Design",
+  //     "V-Neckline",
+  //     "Ruffle Trim",
+  //     "Long Sleeves with Cuffs"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Polyester",
+  //     "Fit": "Regular",
+  //     "Sleeve": "Long Sleeve",
+  //     "Care": "Machine Wash"
+  //   },
+  //   "source": "mock"
+  // },
+  // {
+  //   "id": 520,
+  //   "title": "Women's Cozy Knit Cardigan",
+  //   "description": "A soft, chunky-knit cardigan with an open front and oversized fit. Ideal for layering during transitional weather.",
+  //   "price": 2899,
+  //   "discountPercentage": 25,
+  //   "rating": 4.7,
+  //   "stock": 140,
+  //   "brand": "H&M",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L", "XL"],
+  //   "thumbnail": "https://cdn.example.com/images/520/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/520/1.jpg",
+  //     "https://cdn.example.com/images/520/2.jpg",
+  //     "https://cdn.example.com/images/520/3.jpg"
+  //   ],
+  //   "features": [
+  //     "Chunky Knit",
+  //     "Open Front",
+  //     "Oversized Fit",
+  //     "Patch Pockets",
+  //     "Dropped Shoulders"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Acrylic, Wool Blend",
+  //     "Fit": "Oversized",
+  //     "Sleeve": "Long Sleeve",
+  //     "Care": "Hand Wash"
+  //   },
+  //   "source": "mock"
+  // },
+  
+  // // {
+  // //   "id": 521,
+  // //   "title": "Women's V-Neck Sweater Vest",
+  // //   "description": "A chic and preppy V-neck sweater vest in a soft knit. Perfect for layering over shirts or blouses for a timeless, academic look.",
+  // //   "price": 1899,
+  // //   "discountPercentage": 30,
+  // //   "rating": 4.7,
+  // //   "stock": 170,
+  // //   "brand": "Mango",
+  // //   "category": "womens-clothing",
+  // //   "sizes": ["XS", "S", "M", "L"],
+  // //   "thumbnail": "https://cdn.example.com/images/521/thumbnail.jpg",
+  // //   "images": [
+  // //     "https://cdn.example.com/images/521/1.jpg",
+  // //     "https://cdn.example.com/images/521/2.jpg",
+  // //     "https://cdn.example.com/images/521/3.jpg"
+  // //   ],
+  // //   "features": [
+  // //     "Soft Knit Fabric",
+  // //     "V-Neckline",
+  // //     "Sleeveless Design",
+  // //     "Ribbed Trim",
+  // //     "Relaxed Fit"
+  // //   ],
+  // //   "specifications": {
+  // //     "Material": "Acrylic, Polyester Blend",
+  // //     "Fit": "Relaxed",
+  // //     "Sleeve": "Sleeveless",
+  // //     "Care": "Hand Wash"
+  // //   },
+  // //   "source": "mock"
+  // // },
+  // // // {
+  //   "id": 522,
+  //   "title": "Women's Wide-Leg Linen Trousers",
+  //   "description": "Effortlessly stylish wide-leg trousers made from a breathable linen blend. Features a high waist and a relaxed fit for ultimate comfort.",
+  //   "price": 2799,
+  //   "discountPercentage": 20,
+  //   "rating": 4.6,
+  //   "stock": 130,
+  //   "brand": "Zara",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L", "XL"],
+  //   "thumbnail": "https://cdn.example.com/images/522/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/522/1.jpg",
+  //     "https://cdn.example.com/images/522/2.jpg",
+  //     "https://cdn.example.com/images/522/3.jpg",
+  //     "https://cdn.example.com/images/522/4.jpg"
+  //   ],
+  //   "features": [
+  //     "Linen Blend Fabric",
+  //     "High-Waist",
+  //     "Wide-Leg Cut",
+  //     "Zip Fly with Button Closure",
+  //     "Side Pockets"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Linen, Viscose",
+  //     "Fit": "Wide-Leg",
+  //     "Waist": "High",
+  //     "Care": "Machine Wash Cold"
+  //   },
+  //   "source": "mock"
+  // },
+  {
+    "id": 523,
+    "title": "Black V-Neck Basic Jumpsuit",
+    "description": "A practical yet fashionable long-sleeve utility jumpsuit with a belted waist to define the silhouette. Features multiple pockets and a front-zip closure.",
+    "price": 4299,
+    "discountPercentage": 25,
+    "rating": 4.8,
+    "stock": 90,
+    "brand": "Levi's",
+    "category": "womens-clothing",
+    "sizes": ["XS", "S", "M", "L"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/7de31d10-6d44-4860-b4e7-7d0be475e21d1681463123696Jumpsuit1.jpg",
+    "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/7de31d10-6d44-4860-b4e7-7d0be475e21d1681463123696Jumpsuit1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/0234898d-8715-4f3e-8949-7c2f85122de11681463123684Jumpsuit2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/a44017bb-dae1-4b1e-88dd-df43d57982c41681463123720Jumpsuit3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/04ed4acd-3e37-46f6-937c-49bcd71d0b161681463123708Jumpsuit4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/22772590/2023/4/14/d18fe7ad-8755-45a2-b943-bb6b52b959f71681463123730Jumpsuit5.jpg",
+    ],
+    "features": [
+      "Durable Cotton Twill",
+      "Front-Zip Closure",
+      "Self-Tie Belted Waist",
+      "Chest and Side Pockets",
+      "Long Sleeves"
+    ],
+    "specifications": {
+      "Material": "Cotton",
+      "Fit": "Regular",
+      "Sleeve": "Long Sleeve",
+      "Care": "Machine Wash"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 524,
+  //   "title": "Women's Satin Pajama Set",
+  //   "description": "Indulge in luxury with this silky-smooth satin pajama set. Includes a button-down long-sleeve shirt and matching elastic-waist pants.",
+  //   "price": 2499,
+  //   "discountPercentage": 35,
+  //   "rating": 4.9,
+  //   "stock": 110,
+  //   "brand": "H&M",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L", "XL"],
+  //   "thumbnail": "https://cdn.example.com/images/524/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/524/1.jpg",
+  //     "https://cdn.example.com/images/524/2.jpg"
+  //   ],
+  //   "features": [
+  //     "Soft Satin Fabric",
+  //     "Notch Lapel Shirt",
+  //     "Contrast Piping Trim",
+  //     "Elastic Waistband Pants",
+  //     "Relaxed Fit"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Polyester Satin",
+  //     "Fit": "Relaxed",
+  //     "Sleeve": "Long Sleeve",
+  //     "Care": "Machine Wash Delicate"
+  //   },
+  //   "source": "mock"
+  // },
+  // {
+  //   "id": 525,
+  //   "title": "Women's Classic Trench Coat",
+  //   "description": "A timeless double-breasted trench coat. This wardrobe staple features a belted waist, storm flap, and water-resistant fabric.",
+  //   "price": 6999,
+  //   "discountPercentage": 20,
+  //   "rating": 4.8,
+  //   "stock": 75,
+  //   "brand": "Zara",
+  //   "category": "womens-clothing",
+  //   "sizes": ["S", "M", "L"],
+  //   "thumbnail": "https://cdn.example.com/images/525/thumbnail.jpg",
+  //   "images": [
+  //     "https://cdn.example.com/images/525/1.jpg",
+  //     "https://cdn.example.com/images/525/2.jpg",
+  //     "https://cdn.example.com/images/525/3.jpg",
+  //     "https://cdn.example.com/images/525/4.jpg"
+  //   ],
+  //   "features": [
+  //     "Water-Resistant Cotton Blend",
+  //     "Double-Breasted Button Closure",
+  //     "Removable Waist Belt",
+  //     "Cuff Straps",
+  //     "Back Vent"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Cotton Blend",
+  //     "Fit": "Regular",
+  //     "Sleeve": "Long Sleeve",
+  //     "Care": "Dry Clean Only"
+  //   },
+  //   "source": "mock"
+  // },
+  
+  {
+    "id": 527,
+    "title": "Women's Anarkali Kurta Set with Dupatta",
+    "description": "A stunning floor-length Anarkali kurta set in georgette, featuring intricate embroidery and a matching dupatta. Ideal for weddings and festive celebrations.",
+    "price": 4599,
+    "discountPercentage": 40,
+    "rating": 4.8,
+    "stock": 80,
+    "brand": "BIBA",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/QM02Jxk0_82e9e70b0054446bb4d70a6a4f1e5b75.jpg",
+      "images": [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/QM02Jxk0_82e9e70b0054446bb4d70a6a4f1e5b75.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/aVRMIvbJ_68dba889b274430992495d0e5f419c6c.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/wjTLIQN1_2a493db7b6794efeb6916b469f22648f.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/QOU4aY7w_7cb4d53ebc3e4a929c9459e70182c470.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2024/AUGUST/30/HDQvQ5po_c96d2949668b41c883c5c2fe92d9f626.jpg",      
+    ],
+    "features": [
+      "Georgette Fabric with Lining",
+      "Floor Length Anarkali",
+      "Round Neck",
+      "Full Sleeves",
+      "Comes with Kurta, Churidar, and Dupatta"
+    ],
+    "specifications": {
+      "Material": "Georgette",
+      "Fit": "Anarkali",
+      "Sleeve": "Full Sleeve",
+      "Care": "Dry Clean Only"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 528,
+  //   "title": "Women's Lucknowi Chikankari Kurti",
+  //   "description": "An elegant cotton kurti featuring authentic Lucknowi Chikankari hand-embroidery. Perfect for a sophisticated casual look or office wear.",
+  //   "price": 1999,
+  //   "discountPercentage": 30,
+  //   "rating": 4.9,
+  //   "stock": 150,
+  //   "brand": "Fabindia",
+  //   "category": "womens-clothing",
+  //   "sizes": ["M", "L", "XL", "XXL"],
+  //   "thumbnail": "https://assets.ajio.com/medias/sys_master/root/20230623/Bsay/6494fa6842f9e729d784364c/-473Wx593H-465383321-white-MODEL.jpg",
+  //   "images": [
+  //     "https://assets.ajio.com/medias/sys_master/root/20230623/Bsay/6494fa6842f9e729d784364c/-473Wx593H-465383321-white-MODEL.jpg",
+  //     "https://assets.ajio.com/medias/sys_master/root/20230623/m4Iq/6494fa6842f9e729d7843635/-473Wx593H-465383321-white-MODEL3.jpg",
+  //     "https://assets.ajio.com/medias/sys_master/root/20230623/I2eS/6494fa6842f9e729d7843668/-473Wx593H-465383321-white-MODEL4.jpg"
+  //   ],
+  //   "features": [
+  //     "Pure Cotton Fabric",
+  //     "Hand-Embroidered Chikankari Work",
+  //     "Knee Length",
+  //     "3/4 Sleeves",
+  //     "Mandarin Collar"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Cotton",
+  //     "Fit": "Straight",
+  //     "Sleeve": "3/4 Sleeve",
+  //     "Care": "Hand Wash Separately"
+  //   },
+  //   "source": "mock"
+  // },
+  {
+    "id": 529,
+    "title": "Women's Printed Cotton Salwar Suit Set",
+    "description": "A comfortable and vibrant printed cotton salwar suit set, including a straight-cut kameez, matching salwar, and a chiffon dupatta. Perfect for daily wear.",
+    "price": 1799,
+    "discountPercentage": 50,
+    "rating": 4.5,
+    "stock": 220,
+    "brand": "W for Woman",
+    "category": "womens-clothing",
+    "sizes": ["S", "M", "L", "XL"],
+    "thumbnail": "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/GTZbUIuq_684fccf020c24d9ba68452a0f3d9c855.jpg", 
+     "images": [
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/GTZbUIuq_684fccf020c24d9ba68452a0f3d9c855.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/uIBvIrdM_fd6fcab7a42940e580e0e2ef12ea4196.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/3qdy6a6D_e3a60e1d3f534ae7b3f36422ba78d398.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/DoIJTlLf_0ff33daa3a954988b2b22f98d29c7be4.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/L3Gtp005_d523fbcae9a44167be6def11f12f5ab8.jpg",
+    "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/AUGUST/28/sMmI7gLJ_eafa34e2e26e466999c7f7e6c3475f81.jpg",
+
+    ],
+    "features": [
+      "100% Cotton",
+      "Floral Print",
+      "Straight Kurta",
+      "Elasticated Salwar",
+      "Crinkled Chiffon Dupatta"
+    ],
+    "specifications": {
+      "Material": "Cotton",
+      "Fit": "Regular",
+      "Sleeve": "3/4 Sleeve",
+      "Care": "Machine Wash"
+    },
+    "source": "mock"
+  },
+  // {
+  //   "id": 530,
+  //   "title": "Women's Solid Lightweight Raincoat",
+  //   "description": "A stylish and lightweight waterproof raincoat with a hood and sealed seams. Comes with a carrying pouch, making it perfect for the Indian monsoon.",
+  //   "price": 2199,
+  //   "discountPercentage": 25,
+  //   "rating": 4.6,
+  //   "stock": 180,
+  //   "brand": "Wildcraft",
+  //   "category": "womens-clothing",
+  //   "sizes": ["M", "L", "XL"],
+  //   "thumbnail": "https://images.wildcraft.com/image/upload/f_auto,q_auto,dpr_2/e_trim/media/catalog/product/h/y/hypadry_w_jkt_teal_green_8903338879685_1.jpg",
+  //   "images": [
+  //     "https://images.wildcraft.com/image/upload/f_auto,q_auto,dpr_2/e_trim/media/catalog/product/h/y/hypadry_w_jkt_teal_green_8903338879685_1.jpg",
+  //     "https://images.wildcraft.com/image/upload/f_auto,q_auto,dpr_2/e_trim/media/catalog/product/h/y/hypadry_w_jkt_teal_green_8903338879685_2.jpg",
+  //     "httpsS://images.wildcraft.com/image/upload/f_auto,q_auto,dpr_2/e_trim/media/catalog/product/h/y/hypadry_w_jkt_teal_green_8903338879685_3.jpg"
+  //   ],
+  //   "features": [
+  //     "Waterproof Polyester Fabric",
+  //     "Sealed Seams",
+  //     "Adjustable Hood with Drawcord",
+  //     "Front Zip with Storm Flap",
+  //     "Packable in Pouch"
+  //   ],
+  //   "specifications": {
+  //     "Material": "Polyester",
+  //     "Fit": "Regular",
+  //     "Sleeve": "Full Sleeve",
+  //     "Care": "Wipe with a damp cloth"
+  //   },
+  //   "source": "mock"
+  // }
+
 ];
 
 export const mockProducts: Product[] = [
