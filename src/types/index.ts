@@ -1,7 +1,6 @@
 // src/types/index.ts
 
-// Keep existing interfaces like Product, CartItem, User, Order, ThemeState, etc.
-// Example: Ensure Product interface exists
+// Keep existing interfaces like Product, CartItem, Order, ThemeState, etc.
 export interface Product {
     id: number;
     title: string;
@@ -28,21 +27,20 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  image: string;
+// Define Tracking Event structure
+export interface TrackingEvent {
+  timestamp: string;
+  status: string;
+  location: string;
+  description: string;
 }
 
 export interface Order {
   id: number;
-  userId: number;
+  userId: number; // Added userId
   items: CartItem[];
   total: number;
-  status: 'pending' | 'completed' | 'cancelled' | 'shipped' | 'delivered';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'completed'; // Added 'processing'
   createdAt: string;
   shippingAddress: {
     firstName: string;
@@ -53,7 +51,12 @@ export interface Order {
     zipCode: string;
   };
   paymentMethod: string;
+  // --- New Tracking Fields ---
+  trackingNumber?: string; // Optional tracking number
+  estimatedDelivery?: string; // Optional estimated delivery date
+  trackingHistory?: TrackingEvent[]; // Array of tracking events
 }
+
 
 export interface ThemeState {
   isDark: boolean;
@@ -75,14 +78,6 @@ export interface WishlistState {
   addItem: (product: Product) => void;
   removeItem: (productId: number) => void;
   isInWishlist: (productId: number) => boolean;
-}
-
-export interface UserState {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (userData: User) => void;
-  logout: () => void;
-  updateUser: (updatedData: Partial<User>) => void; // Keep this if you added it
 }
 
 export interface CheckoutFormData {
@@ -113,4 +108,24 @@ export interface RecentlyViewedState {
   items: Product[];
   addItem: (product: Product) => void;
   clearItems: () => void;
+}
+
+// --- Add Admin Role ---
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  role?: 'customer' | 'admin'; // Add role
+}
+
+export interface UserState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isAdmin: boolean; // Add isAdmin flag for quick checks
+  login: (userData: User) => void;
+  logout: () => void;
+  updateUser: (updatedData: Partial<User>) => void;
 }

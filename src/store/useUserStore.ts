@@ -5,32 +5,40 @@ import { UserState, User } from '../types';
 
 // Define the shape of the state plus actions
 interface UserStore extends UserState {
-  updateUser: (updatedData: Partial<User>) => void; // Add updateUser action
+  updateUser: (updatedData: Partial<User>) => void;
 }
 
 
-export const useUserStore = create<UserStore>()( // Use the extended UserStore type
+export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
       isAuthenticated: false,
+      isAdmin: false, // <-- Initialize isAdmin
 
       login: (userData: User) => {
-        set({ user: userData, isAuthenticated: true });
+        // <-- Set isAdmin based on userData.role
+        set({
+          user: userData,
+          isAuthenticated: true,
+          isAdmin: userData.role === 'admin' // Check if role is admin
+        });
       },
 
       logout: () => {
-        set({ user: null, isAuthenticated: false });
+        // <-- Reset isAdmin on logout
+        set({ user: null, isAuthenticated: false, isAdmin: false });
       },
 
-      // New function to update user details
       updateUser: (updatedData: Partial<User>) => {
         set((state) => {
           if (state.user) {
-            // Merge existing user data with the updated data
-            return { user: { ...state.user, ...updatedData } };
+            const updatedUser = { ...state.user, ...updatedData };
+            // <-- Update isAdmin if role changes
+            const isAdmin = updatedUser.role === 'admin';
+            return { user: updatedUser, isAdmin };
           }
-          return state; // Return current state if no user is logged in
+          return state;
         });
       },
     }),

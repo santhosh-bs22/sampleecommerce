@@ -1,6 +1,7 @@
 // src/pages/ProductDetails.tsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+// Corrected paths: Changed ../../ to ../
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -19,7 +20,9 @@ import { Product } from '../types';
 import { fetchProductById, getSimilarProducts } from '../api/productApi';
 import ProductCard from '../components/ProductCard';
 import { cn } from '../lib/utils';
-import { motion, AnimatePresence } from 'framer-motion'; // <-- Import AnimatePresence
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRecentlyViewedStore } from '../store/useRecentlyViewedStore';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,8 +30,9 @@ const ProductDetails: React.FC = () => {
   const location = useLocation();
   const { addItem } = useCartStore();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  const { user, isAuthenticated } = useUserStore(); // <-- Destructure user here
+  const { user, isAuthenticated } = useUserStore();
   const { toast } = useToast();
+  const { addItem: addRecentlyViewed } = useRecentlyViewedStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
@@ -39,16 +43,14 @@ const ProductDetails: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [userRating, setUserRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
-  const [submittedReviews, setSubmittedReviews] = useState<any[]>([]);
+  const [submittedReviews, setSubmittedReviews] = useState<any[]>([]); // Keep 'any' for mock flexibility
 
-  // State for image zoom
   const [isZooming, setIsZooming] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const imageRef = useRef<HTMLImageElement>(null);
 
   const fetchProduct = useCallback(async (combinedId: string) => {
     setIsLoading(true);
-    // Reset state
     setProduct(null);
     setSimilarProducts([]);
     setSelectedImage(0);
@@ -58,16 +60,13 @@ const ProductDetails: React.FC = () => {
     setUserRating(0);
     setReviewText('');
     setSubmittedReviews([]);
-    setIsZooming(false); // Reset zoom state
+    setIsZooming(false);
 
-    // Basic validation for combined ID format
     if (!combinedId || !combinedId.includes('-')) {
         console.error("Invalid product ID format:", combinedId);
         setIsLoading(false);
-        // Maybe navigate to a not found page or show an error
         return;
     }
-
 
     const [source, productIdStr] = combinedId.split('-');
     const pid = parseInt(productIdStr || '0', 10);
@@ -80,7 +79,6 @@ const ProductDetails: React.FC = () => {
 
     try {
         const fetchedProduct = await fetchProductById(pid, source as Product['source']);
-
         if (fetchedProduct) {
           setProduct(fetchedProduct);
           if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
@@ -89,13 +87,10 @@ const ProductDetails: React.FC = () => {
           const similar = await getSimilarProducts(fetchedProduct, 4);
           setSimilarProducts(similar);
         } else {
-             // Handle product not found from API
              console.warn(`Product not found: ${combinedId}`);
-             // Optionally navigate to a 404 page or show a specific message
         }
     } catch (error) {
          console.error("Error fetching product details:", error);
-         // Optionally show a generic error message to the user
     } finally {
         setIsLoading(false);
     }
@@ -105,61 +100,52 @@ const ProductDetails: React.FC = () => {
     if (id) {
       fetchProduct(id);
     } else {
-         // Handle case where ID is missing in URL
          setIsLoading(false);
-         // Optionally navigate or show error
     }
   }, [id, fetchProduct]);
 
+  useEffect(() => {
+    if (product) {
+      addRecentlyViewed(product);
+    }
+  }, [product, addRecentlyViewed]);
+
    useEffect(() => {
     if (product) {
-        setQuantity(1); // Reset quantity when product changes
+        setQuantity(1);
     }
-   }, [product?.id, product?.source]); // Depend on specific product identifiers
+   }, [product?.id, product?.source]);
 
 
   const handleRating = (rating: number) => {
     setUserRating(rating);
   };
 
+  // Corrected: Add type React.FormEvent
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAuthenticated) { // Check if user is logged in
+    if (!isAuthenticated) {
         toast({ title: "Login Required", description: "Please log in to submit a review.", variant: "destructive" });
         navigate('/login', { state: { from: location } });
         return;
     }
     if (!userRating || !reviewText.trim()) {
-      toast({
-        title: "Incomplete Review",
-        description: "Please select a rating and write your review.",
-        variant: "destructive",
-      });
+      toast({ title: "Incomplete Review", description: "Please select a rating and write your review.", variant: "destructive" });
       return;
     }
-
     const newReview = {
       id: Date.now(),
-      // Use user details from the store
-      author: user ? `${user.firstName} ${user.lastName}` : "Anonymous User", // <-- Use destructured user
+      author: user ? `${user.firstName} ${user.lastName}` : "Anonymous User",
       rating: userRating,
       text: reviewText,
-      date: new Date().toLocaleDateString('en-IN'), // Or format as needed
+      date: new Date().toLocaleDateString('en-IN'),
     };
-
-    // Prepend new review
     setSubmittedReviews(prev => [newReview, ...prev]);
-    setUserRating(0); // Reset form
+    setUserRating(0);
     setReviewText('');
-
-    toast({
-      title: "Review Submitted!",
-      description: "Thank you for your feedback.",
-    });
-    // In real app: Send the review to the backend API here
+    toast({ title: "Review Submitted!", description: "Thank you for your feedback." });
   };
 
-  // Image Navigation Handlers
   const handlePrevImage = () => {
     if (product) {
       setSelectedImage((prevIndex) =>
@@ -176,31 +162,19 @@ const ProductDetails: React.FC = () => {
     }
   };
 
-  // --- Image Zoom Handlers ---
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
-      // Calculate cursor position relative to the image element
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
-      // Clamp values between 0 and 100 to keep transform origin within bounds
-      setMousePosition({
-          x: Math.max(0, Math.min(100, x)),
-          y: Math.max(0, Math.min(100, y))
-      });
+      setMousePosition({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
     }
   };
 
   const handleMouseEnter = () => setIsZooming(true);
-  const handleMouseLeave = () => {
-      setIsZooming(false);
-      // Optional: Reset mouse position slightly off-center on leave for a smoother exit transition
-      // setMousePosition({ x: 50, y: 50 });
-  };
-  // --- End Image Zoom Handlers ---
+  const handleMouseLeave = () => setIsZooming(false);
 
 
-  // --- Loading and Not Found States ---
   if (isLoading) {
      return (
       <div className="container mx-auto px-4 py-16 text-center min-h-[50vh] flex flex-col justify-center items-center">
@@ -225,71 +199,47 @@ const ProductDetails: React.FC = () => {
     );
   }
 
-  // --- Derived State ---
   const isWishlisted = isInWishlist(product.id);
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
 
-  // --- Action Handlers ---
   const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      toast({ title: "Please select a size", variant: "destructive" });
-      return;
+      toast({ title: "Please select a size", variant: "destructive" }); return;
     }
      if (product.stock === 0) {
-       toast({ title: "Out of Stock", description: "This item is currently unavailable.", variant: "destructive" });
-       return;
+       toast({ title: "Out of Stock", description: "This item is currently unavailable.", variant: "destructive" }); return;
      }
     addItem(product, quantity);
-    toast({
-      title: "Added to cart",
-      description: `${quantity} ${product.title}(s) added.`,
-    });
+    toast({ title: "Added to cart", description: `${quantity} ${product.title}(s) added.` });
   };
 
   const handleBuyNow = () => {
     if (!isAuthenticated) {
       toast({ title: "Login Required", description: "Please log in.", variant: "destructive" });
-      navigate('/login', { state: { from: location } });
-      return;
+      navigate('/login', { state: { from: location } }); return;
     }
-     if (product.stock === 0) {
-        toast({ title: "Out of Stock", variant: "destructive" });
-        return;
-      }
+     if (product.stock === 0) { toast({ title: "Out of Stock", variant: "destructive" }); return; }
      if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-       toast({ title: "Please select a size", variant: "destructive" });
-       return;
+       toast({ title: "Please select a size", variant: "destructive" }); return;
      }
-    addItem(product, quantity); // Add to cart first
-    navigate('/cart'); // Then navigate to cart
+    addItem(product, quantity);
+    navigate('/cart');
   };
 
-
   const handleWishlistToggle = () => {
-     if (isWishlisted) {
-      removeFromWishlist(product.id);
-      toast({ title: "Removed from wishlist" });
-    } else {
-      addToWishlist(product);
-      toast({ title: "Added to wishlist" });
-    }
+     if (isWishlisted) { removeFromWishlist(product.id); toast({ title: "Removed from wishlist" }); }
+     else { addToWishlist(product); toast({ title: "Added to wishlist" }); }
   };
 
   const increaseQuantity = () => {
-    if (quantity < product.stock) {
-      setQuantity(quantity + 1);
-    } else {
-        toast({ title: "Maximum stock reached", variant: "destructive", description: `Only ${product.stock} available.`});
-    }
+    if (quantity < product.stock) { setQuantity(quantity + 1); }
+    else { toast({ title: "Maximum stock reached", variant: "destructive", description: `Only ${product.stock} available.`}); }
   };
 
-  const decreaseQuantity = () => {
-     if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
+  const decreaseQuantity = () => { if (quantity > 1) { setQuantity(quantity - 1); } };
 
-  const specificationsArray = Object.entries(product.specifications || {}).filter(([key, value]) => value); // Filter out empty specs
+  // Corrected: Add optional chaining for safety
+  const specificationsArray = Object.entries(product?.specifications || {}).filter(([key, value]) => value !== undefined && value !== null && value !== '');
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -305,94 +255,58 @@ const ProductDetails: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* --- ENHANCED Image Gallery --- */}
         <div className="space-y-4 sticky top-20 self-start">
-          {/* Main Image Display with Enhanced Zoom */}
-          <div // Changed from motion.div to regular div, motion applied to img
-            className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group cursor-zoom-in" // Keep overflow-hidden here
+          {/* Main Image Display */}
+          <div
+            className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group cursor-zoom-in"
             onMouseMove={handleMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <motion.img
-              key={selectedImage} // Key for transition between images
+              key={selectedImage}
               ref={imageRef}
               src={product.images[selectedImage]}
               alt={product.title}
-              className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300 ease-out" // Use contain, ensure transition for smooth exit
-              style={{
-                transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`, // Set origin based on mouse
-              }}
-              initial={{ opacity: 0.8, scale: 1 }} // Initial state (no scale)
-              animate={{
-                opacity: 1,
-                scale: isZooming ? 2.5 : 1, // Apply scale only when zooming (adjust scale factor as needed)
-              }}
-              transition={{ // Fine-tune transitions
-                scale: { duration: 0.2, ease: "easeOut" }, // Quick zoom-in
-                opacity: { duration: 0.3 }
-              }}
+              className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300 ease-out"
+              style={{ transformOrigin: `${mousePosition.x}% ${mousePosition.y}%` }}
+              initial={{ opacity: 0.8, scale: 1 }}
+              animate={{ opacity: 1, scale: isZooming ? 2.5 : 1 }}
+              transition={{ scale: { duration: 0.2, ease: "easeOut" }, opacity: { duration: 0.3 } }}
             />
-
-             {/* Navigation Buttons (Appear on Hover, Hidden during Zoom) */}
+             {/* Navigation Buttons */}
               <AnimatePresence>
-                 {!isZooming && ( // Only show arrows when not zooming
+                 {!isZooming && (
                     <>
-                       {/* Previous Image Button */}
                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={handlePrevImage}
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
-                                aria-label="Previous image"
-                            >
+                            <Button variant="outline" size="icon" onClick={handlePrevImage} className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" aria-label="Previous image">
                                 <ChevronLeft className="h-5 w-5" />
                             </Button>
                         </motion.div>
-                        {/* Next Image Button */}
                         <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={handleNextImage}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
-                                aria-label="Next image"
-                            >
+                            <Button variant="outline" size="icon" onClick={handleNextImage} className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" aria-label="Next image">
                                 <ChevronRight className="h-5 w-5" />
                             </Button>
                         </motion.div>
                      </>
                  )}
                </AnimatePresence>
-                {/* Optional: Zoom Indicator */}
-                {isZooming && (
-                  <div className="absolute bottom-2 right-2 bg-black/50 text-white p-1 rounded-full pointer-events-none z-10">
-                      <ZoomIn className="h-4 w-4" />
-                  </div>
-                )}
+                {isZooming && ( <div className="absolute bottom-2 right-2 bg-black/50 text-white p-1 rounded-full pointer-events-none z-10"><ZoomIn className="h-4 w-4" /></div> )}
           </div>
-
           {/* Thumbnail Images */}
-          <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted"> {/* More thumbnails */}
-            {product.images.map((image, index) => (
+          <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted">
+            {/* Corrected: Added types for map parameters */}
+            {product.images.map((image: string, index: number) => (
               <button
                 key={index}
-                className={cn(`aspect-square overflow-hidden rounded-lg border-2 transition-all shrink-0 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`, // Added focus styles
-                  selectedImage === index ? 'border-primary shadow-md scale-105' : 'border-muted' // Scale up selected
-                )}
+                className={cn(`aspect-square overflow-hidden rounded-lg border-2 transition-all shrink-0 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2`, selectedImage === index ? 'border-primary shadow-md scale-105' : 'border-muted' )}
                 onClick={() => setSelectedImage(index)}
                 aria-label={`View image ${index + 1}`}
               >
-                <img
-                  src={image}
-                  alt={`${product.title} thumbnail ${index + 1}`}
-                  className="h-full w-full object-cover" // Cover for thumbnails
-                />
+                <img src={image} alt={`${product.title} thumbnail ${index + 1}`} className="h-full w-full object-cover" />
               </button>
             ))}
           </div>
         </div>
-        {/* --- END ENHANCED Image Gallery --- */}
-
 
         {/* Product Details */}
         <div className="space-y-6">
@@ -420,7 +334,7 @@ const ProductDetails: React.FC = () => {
                   <span className="text-xl text-muted-foreground line-through">
                     {formatCurrency(product.price)}
                   </span>
-                  <Badge variant="destructive" className="text-base px-2 py-0.5"> {/* Slightly larger badge */}
+                  <Badge variant="destructive" className="text-base px-2 py-0.5">
                     {Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 </>
@@ -439,16 +353,18 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
+          {/* Size Selection */}
           {product.sizes && product.sizes.length > 0 && (
             <div>
               <h3 className="font-semibold text-lg mb-2">Size</h3>
               <div className="flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
+                {/* Corrected: Added type for size */}
+                {product.sizes.map((size: string) => (
                   <Button
                     key={size}
                     variant={selectedSize === size ? 'default' : 'outline'}
                     onClick={() => setSelectedSize(size)}
-                    className={cn(selectedSize === size && "ring-2 ring-primary ring-offset-2")} // Highlight selected
+                    className={cn(selectedSize === size && "ring-2 ring-primary ring-offset-2")}
                   >
                     {size}
                   </Button>
@@ -459,10 +375,12 @@ const ProductDetails: React.FC = () => {
 
           <Separator />
 
+          {/* Key Features */}
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Key Features</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 text-sm">
-              {product.features && product.features.length > 0 ? product.features.map((feature, index) => (
+              {/* Corrected: Added types for map parameters */}
+              {product.features && product.features.length > 0 ? product.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-center text-muted-foreground">
                   <svg className="h-4 w-4 text-primary mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" clipRule="evenodd" />
@@ -477,15 +395,16 @@ const ProductDetails: React.FC = () => {
 
           <Separator />
 
+          {/* Quantity */}
           <div className="space-y-3">
             <p className="font-medium">Quantity</p>
             <div className="flex items-center gap-4">
-              <div className="flex items-center border rounded-lg overflow-hidden"> {/* Added overflow hidden */}
-                <Button variant="ghost" size="icon" onClick={decreaseQuantity} disabled={quantity <= 1} className="h-10 w-10 rounded-none border-r"> {/* Adjust style */}
+              <div className="flex items-center border rounded-lg overflow-hidden">
+                <Button variant="ghost" size="icon" onClick={decreaseQuantity} disabled={quantity <= 1} className="h-10 w-10 rounded-none border-r">
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="w-12 text-center font-medium bg-background">{quantity}</span> {/* Added bg */}
-                <Button variant="ghost" size="icon" onClick={increaseQuantity} disabled={quantity >= product.stock} className="h-10 w-10 rounded-none border-l"> {/* Adjust style */}
+                <span className="w-12 text-center font-medium bg-background">{quantity}</span>
+                <Button variant="ghost" size="icon" onClick={increaseQuantity} disabled={quantity >= product.stock} className="h-10 w-10 rounded-none border-l">
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -493,20 +412,21 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button onClick={handleAddToCart} disabled={product.stock === 0} className="flex-1 h-12 text-lg" size="lg">
-              <ShoppingCart className="h-5 w-5 mr-2" />
-              Add to Cart
+              <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart
             </Button>
-            <Button onClick={handleBuyNow} disabled={product.stock === 0} variant="secondary" className="flex-1 h-12 text-lg" size="lg"> {/* Changed variant */}
+            <Button onClick={handleBuyNow} disabled={product.stock === 0} variant="secondary" className="flex-1 h-12 text-lg" size="lg">
               Buy Now
             </Button>
-            <Button variant="outline" size="icon" onClick={handleWishlistToggle} className="h-12 w-12 shrink-0 border-2" title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}> {/* Added title */}
-              <Heart className={`h-5 w-5 transition-colors duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} /> {/* Smoother transition */}
+            <Button variant="outline" size="icon" onClick={handleWishlistToggle} className="h-12 w-12 shrink-0 border-2" title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}>
+              <Heart className={`h-5 w-5 transition-colors duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
             </Button>
           </div>
 
-          <Card className="border-dashed"> {/* Dashed border */}
+          {/* Delivery/Warranty Info */}
+          <Card className="border-dashed">
             <CardContent className="p-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2"><Truck className="h-4 w-4 text-green-600 flex-shrink-0" /><span>Free delivery</span></div>
@@ -519,26 +439,24 @@ const ProductDetails: React.FC = () => {
       </div>
 
        {/* Tabs Section */}
-       <div className="mt-16"> {/* Increased margin */}
+       <div className="mt-16">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 border-b rounded-none p-0 bg-transparent mb-6 justify-start"> {/* Underline style tabs */}
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 border-b rounded-none p-0 bg-transparent mb-6 justify-start">
             <TabsTrigger value="description" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0 mr-6">Description</TabsTrigger>
             <TabsTrigger value="specifications" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0 mr-6">Specifications</TabsTrigger>
             <TabsTrigger value="reviews" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0">Reviews</TabsTrigger>
           </TabsList>
 
-          {/* Tab Content with Animation */}
            <motion.div
-             key={activeTab} // Change key to trigger animation
+             key={activeTab}
              initial={{ opacity: 0, y: 10 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ duration: 0.3 }}
            >
               <TabsContent value="description" className="mt-6">
-                <Card className="border-none shadow-none"><CardContent className="p-0"> {/* Remove card styles */}
+                <Card className="border-none shadow-none"><CardContent className="p-0">
                   <h3 className="text-xl font-bold mb-4">Detailed Overview</h3>
-                  <p className="text-base leading-relaxed text-foreground/80">{product.description}</p> {/* Use base font size */}
-                   {/* ... (rest of description content) */}
+                  <p className="text-base leading-relaxed text-foreground/80">{product.description}</p>
                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                         <div>
                         <h4 className="font-semibold mb-2 text-primary">Key Selling Points</h4>
@@ -563,15 +481,17 @@ const ProductDetails: React.FC = () => {
               </TabsContent>
 
               <TabsContent value="specifications" className="mt-6">
-                 <Card className="border-none shadow-none"><CardContent className="p-0"> {/* Remove card styles */}
+                 <Card className="border-none shadow-none"><CardContent className="p-0">
                    <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
                    {specificationsArray.length > 0 ? (
                       <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4"> {/* Adjusted grid/gap */}
-                          {specificationsArray.map(([key, value]) => (
-                            <div key={key} className="border-b pb-2"> {/* Simple border style */}
-                              <h4 className="font-medium text-sm text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</h4> {/* Add space before caps */}
-                              <span className="text-base text-foreground">{value || 'N/A'}</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                          {/* Corrected: Added types for map parameters */}
+                          {specificationsArray.map(([key, value]: [string, string | number | undefined]) => (
+                            <div key={key} className="border-b pb-2">
+                              <h4 className="font-medium text-sm text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</h4>
+                              {/* Corrected: Ensure value is treated as ReactNode */}
+                              <span className="text-base text-foreground">{value ?? 'N/A'}</span>
                             </div>
                           ))}
                         </div>
@@ -583,7 +503,7 @@ const ProductDetails: React.FC = () => {
                </TabsContent>
 
                <TabsContent value="reviews" className="mt-6">
-                 <Card className="border-none shadow-none"><CardContent className="p-0"> {/* Remove card styles */}
+                 <Card className="border-none shadow-none"><CardContent className="p-0">
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Overall Rating Summary */}
                       <div className="md:col-span-1 border-b md:border-b-0 md:border-r md:pr-8 pb-8 md:pb-0">
@@ -592,20 +512,20 @@ const ProductDetails: React.FC = () => {
                              <div className="text-5xl font-bold">{product.rating.toFixed(1)}</div>
                              <div>
                                 <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map((star) => (<Star key={star} className={`h-5 w-5 ${star <= Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />))}
+                                    {/* Corrected: Added type number for star */}
+                                    {[1, 2, 3, 4, 5].map((star: number) => (<Star key={star} className={`h-5 w-5 ${star <= Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />))}
                                 </div>
                                 <p className="text-sm text-muted-foreground mt-1">{Math.floor(Math.random() * 1000) + 100} reviews</p>
                              </div>
                            </div>
-                           {/* Add Rating breakdown bars here if needed */}
                        </div>
 
                       {/* Reviews List & Form */}
                        <div className="md:col-span-2 space-y-6">
                          {/* Submitted Reviews */}
-                         {submittedReviews.map((review) => (
+                         {/* Corrected: Added type 'any' for mock review */}
+                         {submittedReviews.map((review: any) => (
                            <div key={review.id} className="border-b pb-4">
-                             {/* ... (review rendering, same as before) */}
                               <div className="flex items-center gap-4 mb-2">
                                 <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-secondary-foreground font-semibold">
                                     {review.author.substring(0, 1)}
@@ -613,7 +533,8 @@ const ProductDetails: React.FC = () => {
                                 <div>
                                     <p className="font-semibold">{review.author}</p>
                                     <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map((star) => (
+                                    {/* Corrected: Added type number for star */}
+                                    {[1, 2, 3, 4, 5].map((star: number) => (
                                         <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
                                     ))}
                                     </div>
@@ -625,26 +546,26 @@ const ProductDetails: React.FC = () => {
                          ))}
 
                          {/* Existing Mock Reviews */}
-                         <div className="border-b pb-4"> {/* Added border */}
-                           {/* ... (John Doe review, same as before) */}
+                         <div className="border-b pb-4">
                            <div className="flex items-center gap-4 mb-2">
                                 <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-semibold">JD</div>
                                 <div>
                                 <p className="font-semibold">John Doe</p>
-                                <div className="flex items-center gap-1">{[1, 2, 3, 4, 5].map((star) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}</div>
+                                {/* Corrected: Added type number for star */}
+                                <div className="flex items-center gap-1">{[1, 2, 3, 4, 5].map((star: number) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}</div>
                                 </div>
                                 <span className="ml-auto text-xs text-muted-foreground">10/10/2025</span>
                             </div>
                             <p className="text-sm text-muted-foreground">Excellent product! Great quality and fast delivery. Would definitely recommend to others.</p>
                          </div>
-                         <div className="border-b pb-4"> {/* Added border */}
-                           {/* ... (Sarah Johnson review, same as before) */}
+                         <div className="border-b pb-4">
                             <div className="flex items-center gap-4 mb-2">
                                 <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center text-green-700 font-semibold">SJ</div>
                                 <div>
                                 <p className="font-semibold">Sarah Johnson</p>
                                 <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4].map((star) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}
+                                    {/* Corrected: Added type number for star */}
+                                    {[1, 2, 3, 4].map((star: number) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}
                                     <Star className="h-3 w-3 text-gray-300" />
                                 </div>
                                 </div>
@@ -655,29 +576,23 @@ const ProductDetails: React.FC = () => {
 
                          {/* Write Review Form */}
                          <div>
-                            <h3 className="text-lg font-semibold mb-4 pt-4 border-t">Write Your Review</h3> {/* Separated form */}
+                            <h3 className="text-lg font-semibold mb-4 pt-4 border-t">Write Your Review</h3>
                             <form onSubmit={handleReviewSubmit} className="space-y-4">
-                             {/* ... (form content, same as before) */}
                               <div className="space-y-2">
                                 <Label>Your Rating</Label>
                                 <div className="flex items-center gap-1">
-                                {[1, 2, 3, 4, 5].map((star) => (
+                                {/* Corrected: Added type number for star */}
+                                {[1, 2, 3, 4, 5].map((star: number) => (
                                     <Button
                                     key={star}
                                     type="button"
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => handleRating(star)}
-                                    className="p-1 text-gray-300 hover:text-yellow-400 focus-visible:text-yellow-400 focus:outline-none focus:ring-0" // Removed default focus ring
+                                    className="p-1 text-gray-300 hover:text-yellow-400 focus-visible:text-yellow-400 focus:outline-none focus:ring-0"
                                     aria-label={`Rate ${star} star`}
                                     >
-                                    <Star
-                                        className={`h-6 w-6 transition-colors ${
-                                        star <= userRating
-                                            ? 'fill-yellow-400 text-yellow-400'
-                                            : ''
-                                        }`}
-                                    />
+                                    <Star className={`h-6 w-6 transition-colors ${ star <= userRating ? 'fill-yellow-400 text-yellow-400' : '' }`} />
                                     </Button>
                                 ))}
                                 </div>
@@ -695,10 +610,7 @@ const ProductDetails: React.FC = () => {
                                 className="resize-none"
                                 />
                             </div>
-
-                            <Button type="submit">
-                                Submit Review
-                            </Button>
+                            <Button type="submit"> Submit Review </Button>
                             </form>
                           </div>
                         </div>
@@ -709,24 +621,27 @@ const ProductDetails: React.FC = () => {
          </Tabs>
        </div>
 
-
       {/* Similar Products Section */}
-       <section className="mt-16 pt-10 border-t"> {/* Increased margin and added border */}
-        <h2 className="text-3xl font-bold mb-8 text-center">You Might Also Like</h2> {/* Centered title */}
+       <section className="mt-16 pt-10 border-t">
+        <h2 className="text-3xl font-bold mb-8 text-center">You Might Also Like</h2>
         {similarProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Animate similar products */}
-             {similarProducts.map((similarProduct, i) => (
+             {/* Corrected: Added types for map parameters */}
+             {similarProducts.map((similarProduct: Product, i: number) => (
                 <ProductCard
                    key={`${similarProduct.source}-${similarProduct.id}`}
                    product={similarProduct}
                    className="hover:shadow-xl"
-                   index={i} // Pass index for stagger animation
+                   index={i}
                  />
              ))}
           </div>
         ) : (<p className="text-muted-foreground text-center">No similar products found for this item.</p>)}
       </section>
+
+      {/* Recently Viewed Section */}
+      <RecentlyViewed />
+
     </div>
   );
 };

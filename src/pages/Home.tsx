@@ -1,21 +1,22 @@
 // src/pages/Home.tsx
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom'; // Import useSearchParams
+import { Link, useSearchParams } from 'react-router-dom';
+// Corrected paths: Changed ../../ to ../
 import ProductCard from '../components/ProductCard';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Search, Filter, Grid3X3, List, SlidersHorizontal, X, Scale, Minus, Zap, Award, Tag } from 'lucide-react';
-import { categories } from '../mockData';
-import { Product } from '../types';
-import LoadingSpinner from '../components/LoadingSpinner';
-import { fetchProducts } from '../api/productApi';
-import { cn } from '../lib/utils';
-import { useComparisonStore } from '../store/useComparisonStore';
+import { categories } from '../mockData'; // Corrected path
+import { Product } from '../types'; // Corrected path
+import LoadingSpinner from '../components/LoadingSpinner'; // Corrected path
+import { fetchProducts } from '../api/productApi'; // Corrected path
+import { cn } from '../lib/utils'; // Corrected path
+import { useComparisonStore } from '../store/useComparisonStore'; // Corrected path
 import { motion, AnimatePresence } from 'framer-motion';
+import RecentlyViewed from '../components/RecentlyViewed'; // Corrected path
 
-// ... (keep ProductsState interface and containerVariants)
 interface ProductsState {
   products: Product[];
   currentPage: number;
@@ -39,8 +40,6 @@ const Home: React.FC = () => {
   const [searchParams] = useSearchParams(); // <-- Get search params hook
   const querySearchTerm = searchParams.get('q') || ''; // <-- Get 'q' parameter
 
-  // You might want to remove the local searchTerm state if the header is the only search input
-  // Or, initialize it with the query parameter
   const [searchTerm, setSearchTerm] = useState(querySearchTerm); // Initialize with URL param
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'rating' | 'popular'>('popular');
@@ -60,12 +59,10 @@ const Home: React.FC = () => {
 
   const { products, currentPage, totalProducts, hasMore, isLoading } = productsState;
 
-  // Update local searchTerm if the URL query parameter changes
   useEffect(() => {
     setSearchTerm(querySearchTerm);
   }, [querySearchTerm]);
 
-  // Debouncing is less critical here if search happens on navigation, but kept for consistency
    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
    useEffect(() => {
      const handler = setTimeout(() => {
@@ -84,9 +81,8 @@ const Home: React.FC = () => {
     const pageToFetch = isInitialLoad ? 0 : currentPage;
 
     try {
-      // <-- Use debouncedSearchTerm (derived from URL param) in API call -->
       const data = await fetchProducts(pageToFetch, 12, {
-        searchTerm: debouncedSearchTerm, // <-- Pass the search term here
+        searchTerm: debouncedSearchTerm,
         category: selectedCategory,
         priceRange: priceRange[0] === 0 && priceRange[1] === MAX_PRICE ? undefined : priceRange,
         sortBy: sortBy,
@@ -104,9 +100,8 @@ const Home: React.FC = () => {
       setProductsState(prev => ({ ...prev, isLoading: false, hasMore: false }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange), hasMore, isLoading]); // debouncedSearchTerm is now the key trigger
+  }, [currentPage, debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange), hasMore, isLoading]);
 
-  // Effect to trigger initial load or reset on filter/search changes
   useEffect(() => {
     setProductsState(prev => ({
         ...prev,
@@ -117,7 +112,7 @@ const Home: React.FC = () => {
      }));
     fetchProductsData(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange)]); // debouncedSearchTerm now triggers reload
+  }, [debouncedSearchTerm, selectedCategory, sortBy, JSON.stringify(priceRange)]);
 
 
   const handleLoadMore = () => {
@@ -127,8 +122,6 @@ const Home: React.FC = () => {
   };
 
   const clearFilters = () => {
-    // Also clear search term in the URL by navigating
-    // navigate('/'); // Uncomment if you have navigate available here, or handle clearing differently
     setSearchTerm('');
     setSelectedCategory('all');
     setPriceRange([0, MAX_PRICE]);
@@ -147,11 +140,12 @@ const Home: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <motion.section
-        // ... (animations remain the same)
         className="text-center mb-16 bg-gradient-to-br from-primary/10 via-background to-background rounded-xl py-12 px-6 shadow-sm"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="max-w-4xl mx-auto">
-           {/* ... (h1 and p tags remain the same) */}
             <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -169,27 +163,26 @@ const Home: React.FC = () => {
             Find curated collections and the latest arrivals. High quality, great value, delivered fast.
            </motion.p>
 
-          {/* Search Bar in Home - Consider removing or disabling if Header search is primary */}
            <motion.div
-             // ... (animations remain the same)
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.6, duration: 0.5 }}
              className="max-w-2xl mx-auto relative"
             >
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-            {/* If keeping this search bar, ensure it also updates the URL param on submit */}
             <Input
               type="text"
               placeholder="Search EcomX..."
-              value={searchTerm} // Reflects URL param or local changes
-              onChange={(e) => setSearchTerm(e.target.value)} // Update local state
-              // readOnly // Or make it readOnly if Header is the only input
+              value={searchTerm}
+              // Corrected: Added type for event
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               className="pl-12 pr-10 py-3 text-base border-2 border-border focus:border-primary focus:ring-1 focus:ring-primary/50 shadow-sm rounded-full w-full"
             />
-            {/* ... (X button remains the same) */}
               {searchTerm && (
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSearchTerm('')} // Clear local state, maybe navigate('/') too
+                onClick={() => setSearchTerm('')}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
               >
                 <X className="h-4 w-4" />
@@ -200,7 +193,6 @@ const Home: React.FC = () => {
       </motion.section>
 
        {/* Categories & Filters */}
-       {/* ... (rest of the component remains largely the same) ... */}
          <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -228,7 +220,6 @@ const Home: React.FC = () => {
 
          {/* Category Pills */}
         <div className="flex flex-wrap gap-2 mb-4">
-           {/* Add 'all' category first */}
            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
                   variant={selectedCategory === 'all' ? 'default' : 'secondary'}
@@ -238,7 +229,8 @@ const Home: React.FC = () => {
                  ✨ All
               </Badge>
             </motion.div>
-           {categories.map(category => (
+           {/* Corrected: Added type for category */}
+           {categories.map((category: string) => (
             <motion.div key={category} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                <Badge
                  variant={selectedCategory === category ? 'default' : 'secondary'}
@@ -345,7 +337,7 @@ const Home: React.FC = () => {
         <AnimatePresence>
           {products.length > 0 && (
              <motion.div
-               key={selectedCategory + sortBy + JSON.stringify(priceRange) + debouncedSearchTerm} // Add debouncedSearchTerm to key
+               key={selectedCategory + sortBy + JSON.stringify(priceRange) + debouncedSearchTerm}
                variants={containerVariants}
                initial="hidden"
                animate="visible"
@@ -425,10 +417,13 @@ const Home: React.FC = () => {
            </Card>
          </div>
        </motion.section>
+
+        {/* --- Recently Viewed Section --- */}
+        <RecentlyViewed /> {/* Added RecentlyViewed */}
+
     </div>
 
     {/* Comparison Bar */}
-    {/* ... (Comparison bar code remains the same) */}
        <AnimatePresence>
         {productsToCompare.length > 0 && (
           <motion.div
@@ -447,8 +442,9 @@ const Home: React.FC = () => {
                       Compare ({productsToCompare.length}/4)
                      </span>
                      <div className="flex space-x-2">
-                       {productsToCompare.map(product => (
-                         <Badge key={product.id} className="bg-primary/10 text-primary flex items-center gap-1 py-1 px-2 rounded-full">
+                       {/* Corrected: Added type for product */}
+                       {productsToCompare.map((product: Product) => (
+                         <Badge key={`${product.source}-${product.id}`} className="bg-primary/10 text-primary flex items-center gap-1 py-1 px-2 rounded-full">
                            <span className="text-xs truncate max-w-[80px]">{product.title}</span>
                            <button
                               onClick={() => removeProduct(product.id)}
@@ -462,7 +458,8 @@ const Home: React.FC = () => {
                   </div>
                  <div className="flex items-center gap-2 flex-shrink-0">
                      <Button variant="ghost" size="sm" onClick={clearComparison}> Clear </Button>
-                     <Link to={`/compare?ids=${productsToCompare.map(p=>`${p.source}-${p.id}`).join(',')}`}>
+                     {/* Corrected: Added type for p */}
+                     <Link to={`/compare?ids=${productsToCompare.map((p: Product) =>`${p.source}-${p.id}`).join(',')}`}>
                        <Button size="sm" disabled={productsToCompare.length < 2}>
                           Compare Now
                        </Button>

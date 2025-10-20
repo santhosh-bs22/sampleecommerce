@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+// Corrected paths: Changed ../../ to ../
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -15,8 +16,9 @@ import { useCartStore } from '../store/useCartStore';
 import { useUserStore } from '../store/useUserStore';
 import { formatCurrency } from '../utils/currency';
 import { useToast } from '../hooks/use-toast';
-import { cn } from '../lib/utils'; // Make sure cn is imported
-import { CreditCard, Landmark, IndianRupee } from 'lucide-react'; // Import icons
+import { cn } from '../lib/utils';
+import { CreditCard, Landmark, IndianRupee } from 'lucide-react';
+import { CartItem } from '../types'; // <-- Import CartItem type
 
 const checkoutSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -102,6 +104,7 @@ const Checkout: React.FC = () => {
       // Create order
       const order = {
         id: Date.now(),
+        userId: user?.id || 0, // <-- Add userId from store
         items,
         total,
         shippingAddress: {
@@ -113,8 +116,12 @@ const Checkout: React.FC = () => {
           zipCode: data.zipCode,
         },
         paymentMethod: data.paymentMethod,
-        status: 'completed' as const, // Hardcode status for simulation
+        status: 'processing' as const, // <-- Change initial status to 'processing'
         createdAt: new Date().toISOString(),
+        // Initialize tracking fields (optional)
+        trackingNumber: undefined,
+        estimatedDelivery: undefined,
+        trackingHistory: [],
       };
 
       // Save order to localStorage (in real app, send to backend)
@@ -126,10 +133,11 @@ const Checkout: React.FC = () => {
 
       toast({
         title: "Order placed successfully!",
-        description: "Your order has been confirmed and will be shipped soon.",
+        description: "Your order is being processed and will be shipped soon.",
       });
 
-      navigate('/orders');
+      // Navigate to the new Order Details page for this order
+      navigate(`/order/${order.id}`); // <-- Navigate to Order Details
     } catch (error) {
       toast({
         title: "Payment failed",
@@ -440,10 +448,11 @@ const Checkout: React.FC = () => {
               <CardContent className="space-y-4">
                 {/* Order Items */}
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-background">
-                  {items.map((item) => {
+                  {/* Corrected: Added CartItem type for item */}
+                  {items.map((item: CartItem) => {
                     const discountedPrice = item.product.price - (item.product.price * item.product.discountPercentage) / 100;
                     return (
-                      <div key={item.product.id} className="flex items-center gap-3">
+                      <div key={`${item.product.source}-${item.product.id}`} className="flex items-center gap-3"> {/* Use combined key */}
                         <img
                           src={item.product.thumbnail}
                           alt={item.product.title}

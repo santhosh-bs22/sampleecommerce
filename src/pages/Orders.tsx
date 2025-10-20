@@ -1,45 +1,17 @@
 // src/pages/Orders.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card'; // Adjusted imports if needed
+// Corrected paths: Changed ../../ to ../
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Badge, BadgeProps } from '../components/ui/badge'; // Import BadgeProps if needed by Badge variant type
+import { Badge, BadgeProps } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Package, ShoppingBag, Calendar, MapPin, ArrowRight, Truck, CheckCircle, XCircle, CircleDashed, Info } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
 import { formatCurrency, calculateDiscount } from '../utils/currency';
 import { cn } from '../lib/utils';
-import { Product } from '../types'; // Import Product type if needed elsewhere
-
-// Interface for Order data structure
-interface Order {
-  id: number;
-  items: Array<{
-    product: {
-      id: number;
-      source: string; // Keep source for linking
-      title: string;
-      thumbnail: string;
-      price: number;
-      discountPercentage: number;
-    };
-    quantity: number;
-  }>;
-  total: number;
-  shippingAddress: {
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  paymentMethod: string;
-  status: 'pending' | 'completed' | 'cancelled' | 'shipped' | 'delivered';
-  createdAt: string;
-  // userId?: number; // Optional: Add userId if filtering locally
-}
+import { Order, CartItem } from '../types'; // Import Order and CartItem
 
 const Orders: React.FC = () => {
   const { user, isAuthenticated } = useUserStore();
@@ -50,42 +22,42 @@ const Orders: React.FC = () => {
     // Load orders from localStorage (replace with API fetch in real app)
     if (isAuthenticated) {
       const savedOrders = JSON.parse(localStorage.getItem('flipstore-orders') || '[]');
-      // Optional: Filter orders for the current user if localStorage stores orders for multiple users
-      // const userOrders = savedOrders.filter(order => order.userId === user?.id);
-      setOrders(savedOrders); // Assuming localStorage only has current user's orders
+      setOrders(savedOrders);
     } else {
-      setOrders([]); // Clear orders if not authenticated
+      setOrders([]);
     }
-  }, [isAuthenticated, user?.id]); // Rerun effect if authentication or user changes
+  }, [isAuthenticated, user?.id]);
 
   // Filter orders based on the active tab
   const filteredOrders = orders.filter(order => {
     if (activeTab === 'all') return true;
+    if (activeTab === 'pending') return order.status === 'pending' || order.status === 'processing'; // Group pending & processing
+    // Handle 'completed' separately if needed, or group with delivered
+    // if (activeTab === 'completed') return order.status === 'completed' || order.status === 'delivered';
     return order.status === activeTab;
   });
 
-  // Enhanced status badge function with TypeScript fixes
+  // Updated status badge function for new 'processing' status
   const getStatusBadge = (status: Order['status']) => {
-    // Define the type for the status configuration values
     type StatusConfigValue = {
-        variant: BadgeProps['variant']; // Use BadgeProps['variant'] for type safety
+        variant: BadgeProps['variant'];
         label: string;
         icon: React.ReactElement;
-        className?: string; // className is optional
+        className?: string;
     };
 
-    // Use satisfies to ensure the whole object conforms without losing specific types
     const statusConfig = {
       pending: { variant: 'secondary', label: 'Pending', icon: <CircleDashed className="h-3 w-3 mr-1" />, className: 'text-yellow-700 border-yellow-300 bg-yellow-50 dark:text-yellow-300 dark:border-yellow-700 dark:bg-yellow-900/30' },
-      completed: { variant: 'default', label: 'Completed', icon: <CheckCircle className="h-3 w-3 mr-1" />, className: 'bg-blue-500 hover:bg-blue-600 text-white border-blue-600' },
-      cancelled: { variant: 'destructive', label: 'Cancelled', icon: <XCircle className="h-3 w-3 mr-1" />, className: '' }, // Provide default className
+      processing: { variant: 'secondary', label: 'Processing', icon: <CircleDashed className="h-3 w-3 mr-1 animate-spin" />, className: 'text-blue-700 border-blue-300 bg-blue-50 dark:text-blue-300 dark:border-blue-700 dark:bg-blue-900/30' }, // Added processing
       shipped: { variant: 'default', label: 'Shipped', icon: <Truck className="h-3 w-3 mr-1" />, className: 'bg-blue-500 hover:bg-blue-600 text-white border-blue-600' },
       delivered: { variant: 'default', label: 'Delivered', icon: <CheckCircle className="h-3 w-3 mr-1" />, className: 'bg-green-600 hover:bg-green-700 text-white border-green-700' },
-    } satisfies Record<Order['status'], StatusConfigValue>; // Check the whole object structure
+      completed: { variant: 'default', label: 'Completed', icon: <CheckCircle className="h-3 w-3 mr-1" />, className: 'bg-green-600 hover:bg-green-700 text-white border-green-700' }, // Treat completed like delivered visually
+      cancelled: { variant: 'destructive', label: 'Cancelled', icon: <XCircle className="h-3 w-3 mr-1" />, className: '' },
+    } satisfies Record<Order['status'], StatusConfigValue>;
 
-    const config = statusConfig[status];
+    // Use satisfies ensures status exists, provide fallback just in case
+    const config = statusConfig[status] || { variant: 'secondary', label: status, icon: <Info className="h-3 w-3 mr-1" />, className: '' };
 
-    // Pass the correctly typed variant and handle potentially undefined className
     return (
       <Badge variant={config.variant} className={cn("text-xs font-medium flex items-center", config.className)}>
         {config.icon}
@@ -93,6 +65,7 @@ const Orders: React.FC = () => {
       </Badge>
     );
   };
+
 
   // Function to get display label for payment methods
   const getPaymentMethodLabel = (method: string) => {
@@ -107,22 +80,22 @@ const Orders: React.FC = () => {
 
   // --- Render Logic ---
 
-  // Display prompt if user is not authenticated
   if (!isAuthenticated) {
+    // ... (Not Authenticated Message) ...
     return (
-      <div className="container mx-auto px-4 py-16 text-center min-h-[calc(100vh-theme(space.16)-theme(space.1))] flex flex-col justify-center items-center">
-        <ShoppingBag className="h-20 w-20 text-primary mb-6" />
-        <h2 className="text-3xl font-bold mb-4">View Your Order History</h2>
-        <p className="text-muted-foreground mb-8 max-w-md">
-          Please sign in to access your past orders, track current shipments, and manage returns.
-        </p>
-        <Link to="/login">
-          <Button size="lg" className="text-lg px-8 py-3">
-            Sign In Now
-          </Button>
-        </Link>
-      </div>
-    );
+        <div className="container mx-auto px-4 py-16 text-center min-h-[calc(100vh-theme(space.16)-theme(space.1))] flex flex-col justify-center items-center">
+          <ShoppingBag className="h-20 w-20 text-primary mb-6" />
+          <h2 className="text-3xl font-bold mb-4">View Your Order History</h2>
+          <p className="text-muted-foreground mb-8 max-w-md">
+            Please sign in to access your past orders, track current shipments, and manage returns.
+          </p>
+          <Link to="/login">
+            <Button size="lg" className="text-lg px-8 py-3">
+              Sign In Now
+            </Button>
+          </Link>
+        </div>
+      );
   }
 
   // Display orders if authenticated
@@ -137,12 +110,12 @@ const Orders: React.FC = () => {
 
       {/* Tabs for filtering orders */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-        <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full sm:w-auto mb-6 border divide-x rounded-md overflow-hidden"> {/* Style TabsList */}
+        <TabsList className="grid grid-cols-3 sm:grid-cols-5 w-full sm:w-auto mb-6 border divide-x rounded-md overflow-hidden"> {/* Adjusted grid cols */}
           <TabsTrigger value="all" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All</TabsTrigger>
-          <TabsTrigger value="pending" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Pending</TabsTrigger>
+          <TabsTrigger value="pending" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Processing</TabsTrigger> {/* Changed label */}
           <TabsTrigger value="shipped" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Shipped</TabsTrigger>
           <TabsTrigger value="delivered" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Delivered</TabsTrigger>
-          <TabsTrigger value="completed" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Completed</TabsTrigger>
+          {/* Removed 'completed' tab for simplicity */}
           <TabsTrigger value="cancelled" className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Cancelled</TabsTrigger>
         </TabsList>
       </Tabs>
@@ -158,7 +131,7 @@ const Orders: React.FC = () => {
               <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
                 {activeTab === 'all'
                   ? "You haven't placed any orders yet. Let's find something great!"
-                  : `You don't have any ${activeTab} orders.`
+                  : `You don't have any ${activeTab === 'pending' ? 'processing' : activeTab} orders.` // Adjust label
                 }
               </p>
               <Link to="/">
@@ -198,7 +171,8 @@ const Orders: React.FC = () => {
               {/* Order Items */}
               <CardContent className="p-4 md:p-6">
                 <div className="space-y-4">
-                  {order.items.map((item, index) => {
+                  {/* Corrected: Added CartItem type and number type */}
+                  {order.items.map((item: CartItem, index: number) => {
                     const itemPrice = calculateDiscount(item.product.price, item.product.discountPercentage);
                     const productLink = `/product/${item.product.source}-${item.product.id}`;
 
@@ -208,7 +182,7 @@ const Orders: React.FC = () => {
                           <img
                             src={item.product.thumbnail}
                             alt={item.product.title}
-                            className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-md border bg-muted/20" // Slightly larger image
+                            className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-md border bg-muted/20"
                           />
                         </Link>
                         <div className="flex-1 min-w-0">
@@ -226,7 +200,6 @@ const Orders: React.FC = () => {
                            <p className="font-semibold text-sm md:text-base">
                              {formatCurrency(itemPrice * item.quantity)}
                            </p>
-                           {/* Simplified Buy Again at order level */}
                          </div>
                       </div>
                     );
@@ -241,23 +214,23 @@ const Orders: React.FC = () => {
                   <span className="truncate">Ship to: {order.shippingAddress.firstName}, {order.shippingAddress.city}</span>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap justify-end">
-                   {/* Conditional Buttons */}
-                   {(order.status === 'shipped' || order.status === 'delivered') && (
-                     <Button variant="outline" size="sm" className="bg-background"> {/* Added bg-background for contrast */}
-                       <Truck className="h-4 w-4 mr-2"/> Track Order
+                   {/* Conditional Buttons - Link Track Order to Order Details */}
+                   {(order.status === 'shipped' || order.status === 'delivered' || order.status === 'completed' || order.status === 'processing') && (
+                     <Button variant="outline" size="sm" className="bg-background" asChild>
+                       <Link to={`/order/${order.id}`}> {/* Link to Order Details */}
+                         <Truck className="h-4 w-4 mr-2"/> Track Order
+                       </Link>
                      </Button>
                    )}
-                   {order.status === 'delivered' && (
-                     <Button variant="outline" size="sm" className="bg-background"> {/* Added bg-background */}
-                       Return Item
-                     </Button>
-                   )}
-                  <Button variant="secondary" size="sm">
-                     <Info className="h-4 w-4 mr-2" /> View Details
+                  {/* Link View Details button */}
+                  <Button variant="secondary" size="sm" asChild>
+                     <Link to={`/order/${order.id}`}> {/* Link to Order Details */}
+                       <Info className="h-4 w-4 mr-2" /> View Details
+                     </Link>
                   </Button>
-                  {/* General Buy Again button */}
+                  {/* General Shop Similar button */}
                   <Button size="sm" asChild>
-                    <Link to="/"> {/* Link to home, adjust if needed */}
+                    <Link to="/">
                        Shop Similar <ArrowRight className="h-4 w-4 ml-2" />
                     </Link>
                   </Button>
