@@ -5818,10 +5818,574 @@ const womenClothing: Product[] = [
   // }
 ];
 
+const accessories: Product[] = [
+  // {
+  //   id: 601,
+  //   title: "Men's Genuine Leather Bifold Wallet",
+  //   description:
+  //     "A classic bifold wallet crafted from 100% genuine leather. Features multiple card slots, a coin pocket, and two currency compartments with RFID blocking.",
+  //   price: 1499,
+  //   discountPercentage: 30,
+  //   rating: 4.7,
+  //   stock: 200,
+  //   brand: "Tommy Hilfiger",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10338563/2019/8/2/0b6d3a87-1e5b-4a5c-9d6e-8e8a71ca5c5e1564736345318-Tommy-Hilfiger-Men-Wallets-9761564736344230-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10338563/2019/8/2/0b6d3a87-1e5b-4a5c-9d6e-8e8a71ca5c5e1564736345318-Tommy-Hilfiger-Men-Wallets-9761564736344230-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10338563/2019/8/2/6a8f119f-e75a-4e2a-b620-179339a061411564736345298-Tommy-Hilfiger-Men-Wallets-9761564736344230-2.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10338563/2019/8/2/689a9f24-814a-449e-8ac3-3329e46a96f11564736345279-Tommy-Hilfiger-Men-Wallets-9761564736344230-3.jpg",
+  //   ],
+  //   features: [
+  //     "100% Genuine Leather",
+  //     "Bifold Design",
+  //     "Multiple Card Slots",
+  //     "RFID Blocking Technology",
+  //   ],
+  //   specifications: {
+  //     Material: "Leather",
+  //     Type: "Bifold",
+  //     Closure: "None",
+  //     Pockets: "6 Card Slots, 1 Coin Pocket",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 602,
+  //   title: "Men's Classic Aviator Sunglasses",
+  //   description:
+  //     "Iconic aviator sunglasses with a lightweight metal frame and polarized lenses. Offers 100% UV protection and a timeless look.",
+  //   price: 2999,
+  //   discountPercentage: 40,
+  //   rating: 4.8,
+  //   stock: 150,
+  //   brand: "Ray-Ban",
+  //   category: "accessories", // Updated category
+  //   sizes: ["Medium"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10179977/2019/7/3/2f6c986c-a496-485d-b03d-8e4740e53fde1562132717947-Ray-Ban-Men-Sunglasses-3291562132717088-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10179977/2019/7/3/2f6c986c-a496-485d-b03d-8e4740e53fde1562132717947-Ray-Ban-Men-Sunglasses-3291562132717088-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10179977/2019/7/3/93e82415-430c-43f1-b480-1a1b1e9411d31562132717933-Ray-Ban-Men-Sunglasses-3291562132717088-2.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/10179977/2019/7/3/265c71a3-62b2-4d1e-a13a-c397576c98b81562132717918-Ray-Ban-Men-Sunglasses-3291562132717088-3.jpg",
+  //   ],
+  //   features: [
+  //     "Polarized Lenses",
+  //     "100% UV Protection",
+  //     "Lightweight Metal Frame",
+  //     "Classic Aviator Style",
+  //   ],
+  //   specifications: {
+  //     FrameMaterial: "Metal",
+  //     LensMaterial: "Polycarbonate",
+  //     Type: "Aviator",
+  //     UVProtection: "UV400",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 603,
+  //   title: "Men's Reversible Formal Leather Belt",
+  //   description:
+  //     "A versatile reversible belt, black on one side and brown on the other. Made from genuine leather with a rotating metal buckle.",
+  //   price: 1799,
+  //   discountPercentage: 25,
+  //   rating: 4.6,
+  //   stock: 180,
+  //   brand: "Woodland",
+  //   category: "accessories", // Updated category
+  //   sizes: ["30", "32", "34", "36", "38"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/1700944/2017/2/17/11487332213710-Woodland-Men-Belts-6061487332213425-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/1700944/2017/2/17/11487332213710-Woodland-Men-Belts-6061487332213425-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/1700944/2017/2/17/11487332213681-Woodland-Men-Belts-6061487332213425-2.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/1700944/2017/2/17/11487332213656-Woodland-Men-Belts-6061487332213425-3.jpg",
+  //   ],
+  //   features: [
+  //     "Reversible (Black/Brown)",
+  //     "Genuine Leather",
+  //     "Rotating Metal Buckle",
+  //     "Formal/Casual Wear",
+  //   ],
+  //   specifications: {
+  //     Material: "Leather",
+  //     BuckleType: "Twist-Reversible",
+  //     Width: "35mm",
+  //     Color: "Black/Brown",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 604,
+  //   title: "Men's Chronograph Analog Watch",
+  //   description:
+  //     "A sophisticated chronograph watch with a stainless steel strap and a bold blue dial. Water-resistant up to 50 meters and perfect for any occasion.",
+  //   price: 8999,
+  //   discountPercentage: 20,
+  //   rating: 4.9,
+  //   stock: 100,
+  //   brand: "Titan",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11314638/2020/2/20/0c44c53c-415d-44a6-880c-7b5687d8d2121582186259453-Titan-Men-Blue-Analogue-Watch-90110QM01-5211582186257762-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11314638/2020/2/20/0c44c53c-415d-44a6-880c-7b5687d8d2121582186259453-Titan-Men-Blue-Analogue-Watch-90110QM01-5211582186257762-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11314638/2020/2/20/5d4f29bd-b0f3-4d7c-87b6-f08969395f191582186259429-Titan-Men-Blue-Analogue-Watch-90110QM01-5211582186257762-2.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11314638/2020/2/20/834241e7-f131-41db-85d7-00363c431d4b1582186259389-Titan-Men-Blue-Analogue-Watch-90110QM01-5211582186257762-3.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11314638/2020/2/20/95318a6c-edb5-4b53-b1d6-b9d99787e9c31582186259345-Titan-Men-Blue-Analogue-Watch-90110QM01-5211582186257762-4.jpg",
+  //   ],
+  //   features: [
+  //     "Chronograph Display",
+  //     "Stainless Steel Strap",
+  //     "Blue Dial",
+  //     "Water Resistant (5 ATM)",
+  //   ],
+  //   specifications: {
+  //     Display: "Analog",
+  //     Movement: "Quartz",
+  //     StrapMaterial: "Stainless Steel",
+  //     WaterResistance: "50 meters",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 605,
+  //   title: "Men's Silk Blend Striped Tie",
+  //   description:
+  //     "A classic silk blend tie featuring a subtle diagonal stripe pattern. Adds a touch of elegance and sophistication to your formal attire.",
+  //   price: 999,
+  //   discountPercentage: 50,
+  //   rating: 4.5,
+  //   stock: 250,
+  //   brand: "Van Heusen",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2157177/2017/10/11/11507718016462-Van-Heusen-Men-Navy-Blue-Striped-Tie-1121507718016259-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2157177/2017/10/11/11507718016462-Van-Heusen-Men-Navy-Blue-Striped-Tie-1121507718016259-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2157177/2017/10/11/11507718016443-Van-Heusen-Men-Navy-Blue-Striped-Tie-1121507718016259-2.jpg",
+  //   ],
+  //   features: [
+  //     "Silk Blend Fabric",
+  //     "Classic Striped Pattern",
+  //     "Regular Width",
+  //     "Satin Finish",
+  //   ],
+  //   specifications: {
+  //     Material: "Silk Blend",
+  //     Width: "3 inches",
+  //     Pattern: "Striped",
+  //     Care: "Dry Clean Only",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 606,
+  //   title: "Men's Water-Resistant Laptop Backpack",
+  //   description:
+  //     "A durable and spacious backpack with a dedicated padded laptop sleeve (fits up to 15.6 inches). Water-resistant material and multiple compartments for organization.",
+  //   price: 3499,
+  //   discountPercentage: 30,
+  //   rating: 4.8,
+  //   stock: 120,
+  //   brand: "Puma",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/13768812/2021/3/17/28a86c67-b50a-4e67-93f6-2187e53f1f451615962372437-Puma-Unisex-Black-Backpack-241615962371452-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/13768812/2021/3/17/28a86c67-b50a-4e67-93f6-2187e53f1f451615962372437-Puma-Unisex-Black-Backpack-241615962371452-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/13768812/2021/3/17/4e963b65-e99d-472e-832c-7b567d02a0a21615962372412-Puma-Unisex-Black-Backpack-241615962371452-2.jpg",
+  //     "httpsa://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/13768812/2021/3/17/0410f922-b5e8-46c5-8f6c-8474d284f1831615962372387-Puma-Unisex-Black-Backpack-241615962371452-3.jpg",
+  //   ],
+  //   features: [
+  //     "Padded Laptop Sleeve (15.6 inch)",
+  //     "Water-Resistant Fabric",
+  //     "Multiple Compartments",
+  //     "Padded Shoulder Straps",
+  //   ],
+  //   specifications: {
+  //     Material: "Polyester",
+  //     Capacity: "30 Liters",
+  //     LaptopSleeve: "Yes",
+  //     WaterResistant: "Yes",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 607,
+  //   title: "Men's Cotton Baseball Cap",
+  //   description:
+  //     "A comfortable and stylish baseball cap made from 100% cotton twill. Features a bold embroidered logo and an adjustable strap for a perfect fit.",
+  //   price: 1299,
+  //   discountPercentage: 20,
+  //   rating: 4.6,
+  //   stock: 300,
+  //   brand: "Adidas",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11413642/2020/3/3/5443c2f0-1e5f-40c2-b3f8-6e4c02a77f0c1583226487140-ADIDAS-Unisex-Black-Solid-Baseball-Cap-461583226485038-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11413642/2020/3/3/5443c2f0-1e5f-40c2-b3f8-6e4c02a77f0c1583226487140-ADIDAS-Unisex-Black-Solid-Baseball-Cap-461583226485038-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11413642/2020/3/3/c816e87f-94b1-4bb2-b98a-7c980b1f1f2e1583226487114-ADIDAS-Unisex-Black-Solid-Baseball-Cap-461583226485038-2.jpg",
+  //     "https.assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/11413642/2020/3/3/c75b1c55-b1a7-47b2-92e1-4566c3c72d681583226487088-ADIDAS-Unisex-Black-Solid-Baseball-Cap-461583226485038-3.jpg",
+  //   ],
+  //   features: [
+  //     "100% Cotton Twill",
+  //     "Embroidered Logo",
+  //     "Adjustable Back Strap",
+  //     "Curved Brim",
+  //   ],
+  //   specifications: {
+  //     Material: "Cotton",
+  //     Fit: "Adjustable",
+  //     Type: "Baseball Cap",
+  //     Care: "Hand Wash",
+  //   },
+  //   source: "mock",
+  // },
+  // {
+  //   id: 608,
+  //   title: "Men's Silver-Toned Cufflinks",
+  //   description:
+  //     "Elegant silver-toned, rhodium-plated cufflinks with a subtle geometric design. Perfect for formal shirts and special occasions. Comes in a gift box.",
+  //   price: 1599,
+  //   discountPercentage: 35,
+  //   rating: 4.9,
+  //   stock: 90,
+  //   brand: "Louis Philippe",
+  //   category: "accessories", // Updated category
+  //   sizes: ["One Size"],
+  //   thumbnail:
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2237837/2017/11/13/11510565809758-Louis-Philippe-Men-Silver-Toned-Cufflinks-8811510565809543-1.jpg",
+  //   images: [
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2237837/2017/11/13/11510565809758-Louis-Philippe-Men-Silver-Toned-Cufflinks-8811510565809543-1.jpg",
+  //     "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2237837/2017/11/13/11510565809716-Louis-Philippe-Men-Silver-Toned-Cufflinks-8811510565809543-2.jpg",
+  //     "httpss://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2237837/2017/11/13/11510565809681-Louis-Philippe-Men-Silver-Toned-Cufflinks-8811510565809543-3.jpg",
+  //   ],
+  //   features: [
+  //     "Silver-Toned Rhodium Plated",
+  //     "Secure T-bar closure",
+  //     "Elegant Geometric Design",
+  //     "Comes in a Presentation Box",
+  //   ],
+  //   specifications: {
+  //     Material: "Metal",
+  //     Plating: "Rhodium",
+  //     Closure: "T-bar",
+  //     Occasion: "Formal",
+  //   },
+  //   source: "mock",
+  // },
+  {
+    id: 701,
+    title: "Women's Structured Tote Handbag",
+    description:
+      "A chic and spacious structured tote bag made from high-quality faux leather. Features a main zip closure and multiple inner pockets. Perfect for work or a day out.",
+    price: 3999,
+    discountPercentage: 40,
+    rating: 4.8,
+    stock: 130,
+    brand: "FARGO",
+    category: "accessories", // Updated category
+    sizes: ["One Size"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/th2MoLbw_18880f6f0cb445cca6863e1e0d084d80.jpg",
+         images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/th2MoLbw_18880f6f0cb445cca6863e1e0d084d80.jpg"
+      ,
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/SuA96HxP_77310c52683b42f099e5bdd3fe3c1940.jpg",
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/eViDYqsV_91c406c4b81d49369293da519e643a93.jpg",
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/RyICHvr9_75953e65c4e449c1a4589166b976e81d.jpg",
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/L2XG68LH_5f81f5b9bc344ac3baa92e23674a3cd1.jpg  ",
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/tREcAHez_d4fc107d666a41ef9ef48c33afc56102.jpg  ",
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/OCTOBER/14/7XsFSIbR_61cb2db8338c4e0b85665e857a607e44.jpg"
+
+
+    ],
+    features: [
+      "High-Quality Faux Leather",
+      "Structured Tote Design",
+      "Main Zip Compartment",
+      "Inner Pockets",
+      "Dual Handles",
+    ],
+    specifications: {
+      Material: "PU (Faux Leather)",
+      Closure: "Zipper",
+      Pockets: "3",
+      Type: "Tote",
+    },
+    source: "mock",
+  },
+  {
+    id: 702,
+    title: "Women's Cat-Eye Sunglasses",
+    description:
+      "Stylish and glamorous cat-eye sunglasses with gradient lenses and 100% UV protection. Adds a vintage flair to any outfit.",
+    price: 2499,
+    discountPercentage: 30,
+    rating: 4.7,
+    stock: 160,
+    brand: "ODETTE",
+    category: "accessories", // Updated category
+    sizes: ["Medium"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/41169b23-1789-4e3d-a688-4ce1c3e169461689166800973ODETTEWomenSunglasses5.jpg",
+    images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/41169b23-1789-4e3d-a688-4ce1c3e169461689166800973ODETTEWomenSunglasses5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/9bf1377a-c41e-4081-938d-5a85331f0e141689166801000ODETTEWomenSunglasses6.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/7940709e-b6e2-4adf-bdee-d798f9890f8a1689166800983ODETTEWomenSunglasses1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/e70b5a61-bd25-4319-924e-6e93bc9904bd1689166800964ODETTEWomenSunglasses2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/ee6b91c9-b469-4b8f-9ef4-d1417e6acc551689166800991ODETTEWomenSunglasses3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/23989110/2023/7/12/1ff8e4ed-1d01-4b9c-9cdd-f363b7eb575c1689166800951ODETTEWomenSunglasses4.jpg "
+    ],
+    features: [
+      "Gradient Lenses",
+      "100% UV Protection",
+      "Durable Acetate Frame",
+      "Chic Cat-Eye Shape",
+    ],
+    specifications: {
+      FrameMaterial: "Acetate",
+      LensMaterial: "Polycarbonate",
+      Type: "Cat-Eye",
+      UVProtection: "UV400",
+    },
+    source: "mock",
+  },
+  {
+    id: 703,
+    title: "Women's Printed Pure Silk Scarf",
+    description:
+      "A luxurious pure silk scarf with a vibrant floral print. Can be styled in multiple ways - around the neck, as a headscarf, or tied to a handbag.",
+    price: 2199,
+    discountPercentage: 25,
+    rating: 4.9,
+    stock: 100,
+    brand: "Fabindia",
+    category: "accessories", // Updated category
+    sizes: ["One Size"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/x3UdEBlq_8abbfc1b25c64b1ab9de4c88603baa84.jpg",
+    images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/x3UdEBlq_8abbfc1b25c64b1ab9de4c88603baa84.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/ELz1zfXV_a31614f566534d3da31d3d446125b61b.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/DKokcGL3_7b9de9c656d544bc9cdd8177a8451490.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/X5m7MCI4_cfd321a7fa3a419590143a2996849e34.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/d6h7mqVU_064798332a1d41da80ec68f91165494a.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/xuaAY90J_28ae83b9a90f4e01b572729529e41cd6.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/MARCH/8/6LyqzhJi_d82fdcdc37764e16b56dbab4ad78cddd.jpg"
+    ],
+    features: [
+      "100% Pure Silk",
+      "Vibrant Floral Print",
+      "Lightweight and Soft",
+      "Finished Edges",
+    ],
+    specifications: {
+      Material: "Silk",
+      Pattern: "Floral",
+      Shape: "Square",
+      Care: "Dry Clean Only",
+    },
+    source: "mock",
+  },
+  {
+    id: 704,
+    title: "Women's Silver-Plated Charm Bracelet",
+    description:
+      "A delicate silver-plated charm bracelet featuring multiple celestial-themed charms like stars and a crescent moon. Secured with a lobster clasp closure.",
+    price: 1899,
+    discountPercentage: 40,
+    rating: 4.7,
+    stock: 220,
+    brand: "SARAF SILVERETZ",
+    category: "accessories",
+    sizes: ["Adjustable"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/rUQOQJaV_a7584cf6a1314e7f8ada4e9555c87825.jpg",
+    images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/rUQOQJaV_a7584cf6a1314e7f8ada4e9555c87825.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/Axkbo3I7_23d3712e782f4830b087ab4aa6873722.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/56WSyCLn_61355045301d4075a99835465542ba76.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/KbEEU90Y_680e58b386c949b488014572579409d8.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/GHZSfOhN_63c3cc968d954f2090613557b8428859.jpg ",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/FEBRUARY/25/tQTVLeP7_ccc902499fc34818852ec2411df8a551.jpg ",
+
+    ],
+    features: [
+      "Silver-Plated",
+      "Celestial Charms (Moon, Stars)",
+      "Lobster Clasp Closure",
+      "Adjustable Length",
+    ],
+    specifications: {
+      Material: "Metal Alloy",
+      Plating: "Silver",
+      Closure: "Lobster Clasp",
+      Type: "Charm Bracelet",
+    },
+    source: "mock",
+  },
+  {
+    id: 705,
+    title: "Women's Kundan & Pearl Choker Necklace Set",
+    description:
+      "A stunning gold-plated choker necklace set featuring intricate Kundan work and pearl drops. Comes with matching jhumka earrings. Perfect for ethnic wear and weddings.",
+    price: 3499,
+    discountPercentage: 55,
+    rating: 4.9,
+    stock: 110,
+    brand: "Sukkhi",
+    category: "accessories",
+    sizes: ["One Size"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/8/6mGS3m5d_907b609afa3142c4b67a46f57d1aa2f9.jpg",
+    images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/8/6mGS3m5d_907b609afa3142c4b67a46f57d1aa2f9.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/8/dm87yGLN_d8ae3d0737f04ccfa9292a86afe61eb3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/8/MmD6m1ij_f8b88de7767f437288460edea89cdf07.jpg"
+    ],
+    features: [
+      "Gold-Plated Alloy",
+      "Kundan Stonework",
+      "Faux Pearl Drops",
+      "Includes Choker and Earrings",
+      "Adjustable Drawstring Closure",
+    ],
+    specifications: {
+      Material: "Alloy",
+      Plating: "Gold",
+      Stone: "Kundan, Pearls",
+      Type: "Necklace Set",
+    },
+    source: "mock",
+  },
+  {
+    id: 706,
+    title: "Women's Classic Analog Watch",
+    description:
+      "An elegant and minimalist analog watch with a white dial, rose gold indices, and a comfortable brown leather strap. Water-resistant and perfect for everyday sophistication.",
+    price: 4995,
+    discountPercentage: 25,
+    rating: 4.8,
+    stock: 130,
+    brand: "Anouk",
+    category: "accessories",
+    sizes: ["One Size"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/NT35FfcQ_8fc5a95c3f5a400ca0e0cb752709cff8.jpg",
+          images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/NT35FfcQ_8fc5a95c3f5a400ca0e0cb752709cff8.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/OfCG2rQD_116e5db1f647428cb442b298896b7bdc.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/Q4bByVd9_c7ba8ce0be194c26812cd900d755ab0e.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/H7ydGmwh_e12ea4c2db6f4cc7a897155421d9b5f8.jpg ",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/CjopMobC_b98ba42887b4465d91ce6a4956c762a5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/Db5Ru4o6_8e437d4fc3f846f497f4f6502477e9d5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/2025/SEPTEMBER/3/G5T1Vroi_972adff7f5cf405eaa54b12700dfa305.jpg", 
+    ],
+    features: [
+      "Minimalist White Dial",
+      "Rose Gold-Toned Case",
+      "Genuine Leather Strap",
+      "Water Resistant (3 ATM)",
+      "Japanese Quartz Movement",
+    ],
+    specifications: {
+      Display: "Analog",
+      Movement: "Quartz",
+      StrapMaterial: "Leather",
+      WaterResistance: "30 meters",
+    },
+    source: "mock",
+  },
+  {
+    id: 707,
+    title: "Women Leather Winter Touchscreen Wind & Snow Proof Warm Gloves",
+    description:
+      "A pair of warm and stylish knit gloves in a solid color. Features special conductive fingertips on the thumb and index finger, allowing you to use your smartphone without taking them off.",
+    price: 1299,
+    discountPercentage: 20,
+    rating: 4.6,
+    stock: 230,
+    brand: "Alexvyan",
+    category: "accessories",
+    sizes: ["S/M", "L/XL"],
+    thumbnail:
+"https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/d3fe440f-e15d-44a1-8cc3-8ebf165405db1706008058921Gloves1.jpg" ,   images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/d3fe440f-e15d-44a1-8cc3-8ebf165405db1706008058921Gloves1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/a12b7dba-9063-4afe-b9b3-96beee6b68631706008058938Gloves2.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/2cce42ee-9f95-4828-b9ec-f94e5e0ee4201706008058944Gloves3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/2c6471d4-a315-4623-bbb2-490a7055fd881706008058949Gloves4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/58cb9943-8c7e-4a97-8a72-502d23f2c4901706008058927Gloves5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/068f0ec5-c4e5-4c9a-991c-6750b496e5241706008058955Gloves6.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/27143960/2024/1/23/22173572-7148-4f16-bbd6-50de924073db1706008058933Gloves7.jpg"
+    ],
+    features: [
+      "Soft Knit Fabric",
+      "Touchscreen-Friendly Fingertips (Thumb & Index)",
+      "Ribbed Cuffs for Snug Fit",
+      "Warm and Comfortable",
+    ],
+    specifications: {
+      Material: "Acrylic Blend",
+      Type: "Gloves",
+      Features: "Touchscreen Compatible",
+      Care: "Hand Wash",
+    },
+    source: "mock",
+  },
+  {
+    id: 708,
+    title: "Women Ethnic Motifs Printed Cotton Beanie",
+    description:
+      "A cozy and soft knit beanie hat with a cute faux fur pom-pom. Perfect for keeping warm and stylish during the winter months.",
+    price: 1399,
+    discountPercentage: 30,
+    rating: 4.8,
+    stock: 200,
+    brand: "Alexvyan",
+    category: "accessories", // Updated category
+    sizes: ["One Size"],
+    thumbnail:
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/84706218-ec53-45ae-aa32-1caa6613dfa81701802186414AlexvyanWomenRedPrintedBeanie1.jpg",
+    images: [
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/84706218-ec53-45ae-aa32-1caa6613dfa81701802186414AlexvyanWomenRedPrintedBeanie1.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/57ecc294-f798-4443-8298-d8ee459d7b181701802186402AlexvyanWomenRedPrintedBeanie2.jpg ",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/d52ca267-d9f2-405b-a222-f6e40bd09c451701802186389AlexvyanWomenRedPrintedBeanie3.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/f8a2a150-5049-49ec-8e7d-7fe24aca57211701802186395AlexvyanWomenRedPrintedBeanie4.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/b2a9d097-808c-40b6-b99c-6adcf5bece171701802186408AlexvyanWomenRedPrintedBeanie5.jpg",
+      "https://assets.myntassets.com/h_1440,q_90,w_1080/v1/assets/images/26256982/2023/12/6/00bdbeef-34d1-4c2d-95d5-ba3a2411a24a1701802186383AlexvyanWomenRedPrintedBeanie7.jpg"
+    ],
+    features: [
+      "Soft Knit Fabric",
+      "Faux Fur Pom-Pom",
+      "Ribbed Cuff",
+      "Warm and Cozy",
+    ],
+    specifications: {
+      Material: "Acrylic",
+      Fit: "Regular",
+      PomPom: "Faux Fur",
+      Care: "Hand Wash",
+    },
+    source: "mock",
+  },
+];
+
+
 export const mockProducts: Product[] = [
   ...mobilePhones,
   ...laptops,
   // ...homeAppliances,
+  ...accessories,
   ...menClothing,
   ...womenClothing,
 ];
@@ -5831,7 +6395,7 @@ export const categories = [
   "smartphones",
   "laptops",
   // "home-appliances",
+  "accessories",
   "mens-clothing",
   "womens-clothing",
-  // "footwear",
 ];
