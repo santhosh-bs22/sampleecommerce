@@ -180,9 +180,10 @@ const ProductDetails: React.FC = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
+      // Calculate cursor position relative to the image element
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
-      // Clamp values between 0 and 100
+      // Clamp values between 0 and 100 to keep transform origin within bounds
       setMousePosition({
           x: Math.max(0, Math.min(100, x)),
           y: Math.max(0, Math.min(100, y))
@@ -191,7 +192,11 @@ const ProductDetails: React.FC = () => {
   };
 
   const handleMouseEnter = () => setIsZooming(true);
-  const handleMouseLeave = () => setIsZooming(false);
+  const handleMouseLeave = () => {
+      setIsZooming(false);
+      // Optional: Reset mouse position slightly off-center on leave for a smoother exit transition
+      // setMousePosition({ x: 50, y: 50 });
+  };
   // --- End Image Zoom Handlers ---
 
 
@@ -300,34 +305,36 @@ const ProductDetails: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* --- ENHANCED Image Gallery --- */}
         <div className="space-y-4 sticky top-20 self-start">
-          {/* Main Image Display with Arrows & Zoom */}
-          <motion.div
-            layout // Animate layout changes smoothly
-            className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group cursor-zoom-in" // Added cursor
+          {/* Main Image Display with Enhanced Zoom */}
+          <div // Changed from motion.div to regular div, motion applied to img
+            className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group cursor-zoom-in" // Keep overflow-hidden here
             onMouseMove={handleMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <motion.img
-              key={selectedImage} // Add key for smooth transition
+              key={selectedImage} // Key for transition between images
               ref={imageRef}
               src={product.images[selectedImage]}
               alt={product.title}
-              className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300" // Use contain
+              className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300 ease-out" // Use contain, ensure transition for smooth exit
               style={{
-                transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`, // Set transform origin
+                transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`, // Set origin based on mouse
               }}
-              initial={{ opacity: 0.8, scale: 0.98 }}
+              initial={{ opacity: 0.8, scale: 1 }} // Initial state (no scale)
               animate={{
                 opacity: 1,
-                scale: isZooming ? 2 : 1, // Apply zoom scale
+                scale: isZooming ? 2.5 : 1, // Apply scale only when zooming (adjust scale factor as needed)
               }}
-              transition={{ duration: 0.3, ease: 'easeOut' }} // Smooth transition
+              transition={{ // Fine-tune transitions
+                scale: { duration: 0.2, ease: "easeOut" }, // Quick zoom-in
+                opacity: { duration: 0.3 }
+              }}
             />
 
-             {/* Navigation Buttons (Appear on Hover) */}
-              <AnimatePresence> {/* <-- Corrected */}
-                 {!isZooming && ( // Hide arrows when zooming
+             {/* Navigation Buttons (Appear on Hover, Hidden during Zoom) */}
+              <AnimatePresence>
+                 {!isZooming && ( // Only show arrows when not zooming
                     <>
                        {/* Previous Image Button */}
                        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
@@ -335,7 +342,7 @@ const ProductDetails: React.FC = () => {
                                 variant="outline"
                                 size="icon"
                                 onClick={handlePrevImage}
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" // Ensure button is above image
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
                                 aria-label="Previous image"
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -347,7 +354,7 @@ const ProductDetails: React.FC = () => {
                                 variant="outline"
                                 size="icon"
                                 onClick={handleNextImage}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" // Ensure button is above image
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
                                 aria-label="Next image"
                             >
                                 <ChevronRight className="h-5 w-5" />
@@ -355,14 +362,14 @@ const ProductDetails: React.FC = () => {
                         </motion.div>
                      </>
                  )}
-               </AnimatePresence> {/* <-- Corrected */}
-                {/* Zoom Indicator (Optional) */}
+               </AnimatePresence>
+                {/* Optional: Zoom Indicator */}
                 {isZooming && (
                   <div className="absolute bottom-2 right-2 bg-black/50 text-white p-1 rounded-full pointer-events-none z-10">
                       <ZoomIn className="h-4 w-4" />
                   </div>
                 )}
-          </motion.div>
+          </div>
 
           {/* Thumbnail Images */}
           <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted"> {/* More thumbnails */}
