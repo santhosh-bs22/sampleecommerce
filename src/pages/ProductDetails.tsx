@@ -1,7 +1,6 @@
 // src/pages/ProductDetails.tsx
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-// Corrected paths: Changed ../../ to ../
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -9,7 +8,7 @@ import { Separator } from '../components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Minus, Plus, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Truck, Shield, ArrowLeft, Minus, Plus, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'; // Added ZoomOut
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useUserStore } from '../store/useUserStore';
@@ -23,6 +22,14 @@ import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRecentlyViewedStore } from '../store/useRecentlyViewedStore';
 import RecentlyViewed from '../components/RecentlyViewed';
+
+// Dialog for full-screen zoom on mobile
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../components/ui/dialog"
+
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,13 +50,15 @@ const ProductDetails: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [userRating, setUserRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
-  const [submittedReviews, setSubmittedReviews] = useState<any[]>([]); // Keep 'any' for mock flexibility
+  const [submittedReviews, setSubmittedReviews] = useState<any[]>([]);
 
-  const [isZooming, setIsZooming] = useState(false);
+  const [isHoverZooming, setIsHoverZooming] = useState(false); // Zoom state for desktop hover
+  const [isMobileZoomOpen, setIsMobileZoomOpen] = useState(false); // State for mobile zoom dialog
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const imageRef = useRef<HTMLImageElement>(null);
 
   const fetchProduct = useCallback(async (combinedId: string) => {
+    // ... (keep existing fetch logic)
     setIsLoading(true);
     setProduct(null);
     setSimilarProducts([]);
@@ -60,7 +69,8 @@ const ProductDetails: React.FC = () => {
     setUserRating(0);
     setReviewText('');
     setSubmittedReviews([]);
-    setIsZooming(false);
+    setIsHoverZooming(false); // Reset zoom state
+    setIsMobileZoomOpen(false); // Reset mobile zoom state
 
     if (!combinedId || !combinedId.includes('-')) {
         console.error("Invalid product ID format:", combinedId);
@@ -96,7 +106,8 @@ const ProductDetails: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
+  // ... (keep existing useEffects for fetchProduct, addRecentlyViewed, quantity reset) ...
+    useEffect(() => {
     if (id) {
       fetchProduct(id);
     } else {
@@ -117,7 +128,8 @@ const ProductDetails: React.FC = () => {
    }, [product?.id, product?.source]);
 
 
-  const handleRating = (rating: number) => {
+  // ... (keep existing handlers: handleRating, handleReviewSubmit) ...
+    const handleRating = (rating: number) => {
     setUserRating(rating);
   };
 
@@ -146,6 +158,7 @@ const ProductDetails: React.FC = () => {
     toast({ title: "Review Submitted!", description: "Thank you for your feedback." });
   };
 
+
   const handlePrevImage = () => {
     if (product) {
       setSelectedImage((prevIndex) =>
@@ -162,7 +175,9 @@ const ProductDetails: React.FC = () => {
     }
   };
 
+  // Desktop hover zoom handlers
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 1024) return; // Only apply on desktop (lg breakpoint)
     if (imageRef.current) {
       const rect = imageRef.current.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -171,11 +186,12 @@ const ProductDetails: React.FC = () => {
     }
   };
 
-  const handleMouseEnter = () => setIsZooming(true);
-  const handleMouseLeave = () => setIsZooming(false);
+  const handleMouseEnter = () => { if (window.innerWidth >= 1024) setIsHoverZooming(true); };
+  const handleMouseLeave = () => { if (window.innerWidth >= 1024) setIsHoverZooming(false); };
 
 
-  if (isLoading) {
+  // ... (keep isLoading, !product checks) ...
+    if (isLoading) {
      return (
       <div className="container mx-auto px-4 py-16 text-center min-h-[50vh] flex flex-col justify-center items-center">
         <LoadingSpinner size="lg" />
@@ -202,7 +218,8 @@ const ProductDetails: React.FC = () => {
   const isWishlisted = isInWishlist(product.id);
   const discountedPrice = calculateDiscount(product.price, product.discountPercentage);
 
-  const handleAddToCart = () => {
+  // ... (keep handleAddToCart, handleBuyNow, handleWishlistToggle, increaseQuantity, decreaseQuantity) ...
+    const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       toast({ title: "Please select a size", variant: "destructive" }); return;
     }
@@ -238,12 +255,12 @@ const ProductDetails: React.FC = () => {
 
   const decreaseQuantity = () => { if (quantity > 1) { setQuantity(quantity - 1); } };
 
-  // Corrected: Add optional chaining for safety
+
   const specificationsArray = Object.entries(product?.specifications || {}).filter(([key, value]) => value !== undefined && value !== null && value !== '');
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Breadcrumbs */}
+      {/* ... (keep Breadcrumbs) ... */}
        <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground">Home</Link>
         <span>/</span>
@@ -253,48 +270,77 @@ const ProductDetails: React.FC = () => {
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* --- ENHANCED Image Gallery --- */}
+        {/* --- MODIFIED Image Gallery --- */}
         <div className="space-y-4 sticky top-20 self-start">
           {/* Main Image Display */}
-          <div
-            className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group cursor-zoom-in"
-            onMouseMove={handleMouseMove}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <motion.img
-              key={selectedImage}
-              ref={imageRef}
-              src={product.images[selectedImage]}
-              alt={product.title}
-              className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300 ease-out"
-              style={{ transformOrigin: `${mousePosition.x}% ${mousePosition.y}%` }}
-              initial={{ opacity: 0.8, scale: 1 }}
-              animate={{ opacity: 1, scale: isZooming ? 2.5 : 1 }}
-              transition={{ scale: { duration: 0.2, ease: "easeOut" }, opacity: { duration: 0.3 } }}
-            />
-             {/* Navigation Buttons */}
-              <AnimatePresence>
-                 {!isZooming && (
-                    <>
-                       <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.2 }}>
-                            <Button variant="outline" size="icon" onClick={handlePrevImage} className="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" aria-label="Previous image">
-                                <ChevronLeft className="h-5 w-5" />
-                            </Button>
-                        </motion.div>
-                        <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.2 }}>
-                            <Button variant="outline" size="icon" onClick={handleNextImage} className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10" aria-label="Next image">
-                                <ChevronRight className="h-5 w-5" />
-                            </Button>
-                        </motion.div>
-                     </>
-                 )}
-               </AnimatePresence>
-                {isZooming && ( <div className="absolute bottom-2 right-2 bg-black/50 text-white p-1 rounded-full pointer-events-none z-10"><ZoomIn className="h-4 w-4" /></div> )}
-          </div>
+          <Dialog open={isMobileZoomOpen} onOpenChange={setIsMobileZoomOpen}>
+             <DialogTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon" className="absolute top-3 right-3 z-10 bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10">
+                    <ZoomIn className="h-5 w-5" />
+                </Button>
+            </DialogTrigger>
+             <div
+                className="relative aspect-square overflow-hidden rounded-lg border bg-muted/20 group lg:cursor-zoom-in" // Only zoom cursor on desktop
+                onMouseMove={handleMouseMove}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+             >
+                <motion.img
+                  key={selectedImage} // Ensures animation runs on image change
+                  ref={imageRef}
+                  src={product.images[selectedImage]}
+                  alt={product.title}
+                  className="absolute top-0 left-0 h-full w-full object-contain transition-transform duration-300 ease-out lg:group-hover:opacity-100" // Apply hover opacity on desktop
+                   style={{ transformOrigin: `${mousePosition.x}% ${mousePosition.y}%` }}
+                  initial={{ opacity: 0.8, scale: 1 }}
+                  animate={{ opacity: 1, scale: isHoverZooming ? 2.5 : 1 }} // Use isHoverZooming state
+                  transition={{ scale: { duration: 0.2, ease: "easeOut" }, opacity: { duration: 0.3 } }}
+                />
+
+                {/* Always visible Navigation Buttons */}
+                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.3 }}>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handlePrevImage}
+                        // Make always visible, adjust background/blur
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
+                        aria-label="Previous image"
+                    >
+                        <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                </motion.div>
+                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.3 }}>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleNextImage}
+                         // Make always visible, adjust background/blur
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
+                        aria-label="Next image"
+                    >
+                        <ChevronRight className="h-5 w-5" />
+                    </Button>
+                </motion.div>
+
+                 {/* Desktop Zoom Indicator */}
+                 {isHoverZooming && ( <div className="hidden lg:block absolute bottom-2 right-2 bg-black/50 text-white p-1 rounded-full pointer-events-none z-10"><ZoomIn className="h-4 w-4" /></div> )}
+
+             </div>
+
+             {/* Mobile Zoom Dialog Content */}
+             <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 sm:p-4 bg-background/90 backdrop-blur-md overflow-hidden flex items-center justify-center">
+                 <img
+                    src={product.images[selectedImage]}
+                    alt={`${product.title} - zoomed`}
+                    className="max-w-full max-h-full object-contain rounded-md"
+                />
+                 {/* Optional: Add close button or rely on overlay click */}
+             </DialogContent>
+           </Dialog>
+
           {/* Thumbnail Images */}
           <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted">
-            {/* Corrected: Added types for map parameters */}
             {product.images.map((image: string, index: number) => (
               <button
                 key={index}
@@ -307,9 +353,11 @@ const ProductDetails: React.FC = () => {
             ))}
           </div>
         </div>
+        {/* --- END MODIFIED Image Gallery --- */}
 
-        {/* Product Details */}
-        <div className="space-y-6">
+
+        {/* ... (keep Product Details section: Title, Price, Brand, Size, Features, Quantity, Buttons, Delivery Info) ... */}
+         <div className="space-y-6">
            <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
             <p className="text-lg text-muted-foreground">{product.description}</p>
@@ -358,7 +406,6 @@ const ProductDetails: React.FC = () => {
             <div>
               <h3 className="font-semibold text-lg mb-2">Size</h3>
               <div className="flex flex-wrap gap-2">
-                {/* Corrected: Added type for size */}
                 {product.sizes.map((size: string) => (
                   <Button
                     key={size}
@@ -379,7 +426,6 @@ const ProductDetails: React.FC = () => {
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Key Features</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 text-sm">
-              {/* Corrected: Added types for map parameters */}
               {product.features && product.features.length > 0 ? product.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-center text-muted-foreground">
                   <svg className="h-4 w-4 text-primary mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -438,8 +484,8 @@ const ProductDetails: React.FC = () => {
         </div>
       </div>
 
-       {/* Tabs Section */}
-       <div className="mt-16">
+       {/* ... (keep Tabs Section: Description, Specifications, Reviews) ... */}
+        <div className="mt-16">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 border-b rounded-none p-0 bg-transparent mb-6 justify-start">
             <TabsTrigger value="description" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0 mr-6">Description</TabsTrigger>
@@ -486,11 +532,9 @@ const ProductDetails: React.FC = () => {
                    {specificationsArray.length > 0 ? (
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                          {/* Corrected: Added types for map parameters */}
                           {specificationsArray.map(([key, value]: [string, string | number | undefined]) => (
                             <div key={key} className="border-b pb-2">
                               <h4 className="font-medium text-sm text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</h4>
-                              {/* Corrected: Ensure value is treated as ReactNode */}
                               <span className="text-base text-foreground">{value ?? 'N/A'}</span>
                             </div>
                           ))}
@@ -512,7 +556,6 @@ const ProductDetails: React.FC = () => {
                              <div className="text-5xl font-bold">{product.rating.toFixed(1)}</div>
                              <div>
                                 <div className="flex items-center gap-1">
-                                    {/* Corrected: Added type number for star */}
                                     {[1, 2, 3, 4, 5].map((star: number) => (<Star key={star} className={`h-5 w-5 ${star <= Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />))}
                                 </div>
                                 <p className="text-sm text-muted-foreground mt-1">{Math.floor(Math.random() * 1000) + 100} reviews</p>
@@ -523,7 +566,6 @@ const ProductDetails: React.FC = () => {
                       {/* Reviews List & Form */}
                        <div className="md:col-span-2 space-y-6">
                          {/* Submitted Reviews */}
-                         {/* Corrected: Added type 'any' for mock review */}
                          {submittedReviews.map((review: any) => (
                            <div key={review.id} className="border-b pb-4">
                               <div className="flex items-center gap-4 mb-2">
@@ -533,7 +575,6 @@ const ProductDetails: React.FC = () => {
                                 <div>
                                     <p className="font-semibold">{review.author}</p>
                                     <div className="flex items-center gap-1">
-                                    {/* Corrected: Added type number for star */}
                                     {[1, 2, 3, 4, 5].map((star: number) => (
                                         <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
                                     ))}
@@ -551,7 +592,6 @@ const ProductDetails: React.FC = () => {
                                 <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-semibold">JD</div>
                                 <div>
                                 <p className="font-semibold">John Doe</p>
-                                {/* Corrected: Added type number for star */}
                                 <div className="flex items-center gap-1">{[1, 2, 3, 4, 5].map((star: number) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}</div>
                                 </div>
                                 <span className="ml-auto text-xs text-muted-foreground">10/10/2025</span>
@@ -564,7 +604,6 @@ const ProductDetails: React.FC = () => {
                                 <div>
                                 <p className="font-semibold">Sarah Johnson</p>
                                 <div className="flex items-center gap-1">
-                                    {/* Corrected: Added type number for star */}
                                     {[1, 2, 3, 4].map((star: number) => (<Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />))}
                                     <Star className="h-3 w-3 text-gray-300" />
                                 </div>
@@ -581,7 +620,6 @@ const ProductDetails: React.FC = () => {
                               <div className="space-y-2">
                                 <Label>Your Rating</Label>
                                 <div className="flex items-center gap-1">
-                                {/* Corrected: Added type number for star */}
                                 {[1, 2, 3, 4, 5].map((star: number) => (
                                     <Button
                                     key={star}
@@ -621,12 +659,11 @@ const ProductDetails: React.FC = () => {
          </Tabs>
        </div>
 
-      {/* Similar Products Section */}
+      {/* ... (keep Similar Products & Recently Viewed sections) ... */}
        <section className="mt-16 pt-10 border-t">
         <h2 className="text-3xl font-bold mb-8 text-center">You Might Also Like</h2>
         {similarProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-             {/* Corrected: Added types for map parameters */}
              {similarProducts.map((similarProduct: Product, i: number) => (
                 <ProductCard
                    key={`${similarProduct.source}-${similarProduct.id}`}
@@ -646,4 +683,4 @@ const ProductDetails: React.FC = () => {
   );
 };
 
-export default ProductDetails;
+export default ProductDetails;  
