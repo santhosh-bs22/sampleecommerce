@@ -1,73 +1,34 @@
-# React + TypeScript + Vite
+# EcomX - Sample E-commerce Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a sample e-commerce frontend application built using React, TypeScript, and Vite. It demonstrates various features commonly found in online stores, including product browsing, filtering, searching, cart management, wishlists, user authentication, and order history.
 
-Currently, two official plugins are available:
+## Features ✨
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Product Browsing:** View products in grid or list format on the Home page.
+* **Search & Suggestions:** Search for products with real-time suggestions.
+* **Filtering & Sorting:** Filter products by category and price range, and sort by popularity, price, rating, or name.
+* **Product Details:** View detailed information about a product, including images (with zoom), specifications, features, and reviews.
+* **Shopping Cart:** Add/remove items, update quantities, and view the cart total.
+* **Wishlist:** Save favorite products for later.
+* **Product Comparison:** Compare specifications of up to 4 products side-by-side.
+* **Checkout Process:** Simulated checkout flow with address entry and payment method selection (Credit Card, Debit Card, UPI, COD).
+* **User Authentication:** Mock login and registration flow.
+* **User Profile:** View account details and edit basic information.
+* **Order History:** View past orders with status tracking and details.
+* **Recently Viewed:** See products you've recently looked at.
+* **Dark Mode:** Toggle between light and dark themes.
+* **Responsive Design:** Adapts to various screen sizes.
+* **Animations:** Smooth page transitions and UI animations using Framer Motion.
 
-## React Compiler
+## Tech Stack 🛠️
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Framework:** React
+* **Language:** TypeScript
+* **Build Tool:** Vite
+* **State Management:** Zustand (for Cart, Wishlist, User, Theme, Comparison, Recently Viewed)
+* **Routing:** React Router DOM
+* **Styling:** Tailwind CSS
+* **UI Components:** Shadcn/ui (customized components like Button, Card, Input, Badge, Dialog, etc.)
+* **Animations:** Framer Motion
+* **Form Handling:** React Hook Form with Zod for validation
+* **Notifications:** React Hot Toast (via `useToast` hook)
