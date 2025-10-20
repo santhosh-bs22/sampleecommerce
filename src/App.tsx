@@ -18,14 +18,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Compare from './pages/Compare';
 import Profile from './pages/Profile';
-// --- Admin Imports ---
-// Corrected: Ensure this file exists at src/components/admin/AdminLayout.tsx
-import AdminLayout from './components/admin/AdminLayout';
-// Corrected: Ensure these files exist in src/pages/admin/
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminProducts from './pages/admin/AdminProducts';
-import AdminOrders from './pages/admin/AdminOrders';
-// --- End Admin Imports ---
 import './App.css';
 
 // Enhanced Page Transition Variants
@@ -79,14 +71,8 @@ const AnimatedRoutes = () => {
         <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
 
         {/* --- Admin Routes (Protected by AdminLayout) --- */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} /> {/* Default admin page */}
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          {/* Add future admin routes here */}
-          {/* <Route path="users" element={<AdminUsers />} /> */}
-          {/* <Route path="settings" element={<AdminSettings />} /> */}
-        </Route>
+        
+          
 
         {/* --- Not Found Route --- */}
         <Route path="*" element={

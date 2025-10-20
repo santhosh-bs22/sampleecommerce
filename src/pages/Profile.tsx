@@ -1,19 +1,20 @@
 // src/pages/Profile.tsx
-import React, { useState, useEffect } from 'react'; // Import useState
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../store/useUserStore';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input'; // Import Input
-import { Label } from '../components/ui/label'; // Import Label
-import { Separator } from '../components/ui/separator';
-import { User, LogOut, ShoppingBag, Heart, MapPin, CreditCard, Edit, Save, XCircle } from 'lucide-react'; // Added Save, XCircle
-import { useToast } from '../hooks/use-toast';
+import { useUserStore } from '../store/useUserStore'; //
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'; //
+import { Button } from '../components/ui/button'; //
+import { Input } from '../components/ui/input'; //
+import { Label } from '../components/ui/label'; //
+import { Separator } from '../components/ui/separator'; //
+// Removed ShieldCheck icon
+import { User, LogOut, ShoppingBag, Heart, MapPin, CreditCard, Edit, Save, XCircle } from 'lucide-react'; //
+import { useToast } from '../hooks/use-toast'; //
 
 const Profile: React.FC = () => {
     const navigate = useNavigate();
-    // Destructure updateUser from the store
-    const { user, isAuthenticated, logout, updateUser } = useUserStore();
+    // Destructure updateUser from the store, remove isAdmin
+    const { user, isAuthenticated, /*isAdmin,*/ logout, updateUser } = useUserStore(); // <-- Removed isAdmin
     const { toast } = useToast();
 
     // State for editing mode and form inputs
@@ -68,37 +69,12 @@ const Profile: React.FC = () => {
              return;
         }
 
-        // --- REAL API CALL NEEDED HERE ---
-        // In a real application, you would make an API call here
-        // to update the user's details on the backend.
-        /*
-        try {
-            const response = await fetch(`/api/user/${user?.id}`, { // Your backend update endpoint
-                method: 'PUT', // Or PATCH
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${your_auth_token}` },
-                body: JSON.stringify({ firstName, lastName }), // Only send fields that can be updated
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update profile');
-            }
-            const updatedUser = await response.json();
-            updateUser(updatedUser); // Update store with response from backend
-
-        } catch (error) {
-            console.error("Profile update error:", error);
-            toast({ title: "Update Failed", description: "Could not save profile changes.", variant: "destructive" });
-            return; // Exit if API call fails
-        }
-        */
-
-        // --- Mock Update (REMOVE FOR REAL IMPLEMENTATION) ---
+        // --- Mock Update (Replace with API call if needed) ---
         console.log("Simulating profile update:", { firstName, lastName });
         if (user) {
              updateUser({ firstName, lastName }); // Update store directly
         }
         // --- End Mock Update ---
-
 
         setIsEditing(false); // Exit editing mode
         toast({ title: "Profile Updated", description: "Your changes have been saved." });
@@ -132,6 +108,7 @@ const Profile: React.FC = () => {
                                 <>
                                     <CardTitle>{firstName} {lastName}</CardTitle>
                                     <CardDescription>{email}</CardDescription>
+                                    {/* Removed Admin Badge */}
                                 </>
                             ) : (
                                 <div className="w-full space-y-2 mt-2">
@@ -196,13 +173,14 @@ const Profile: React.FC = () => {
                     </Card>
                 </div>
 
-                {/* Right Column - Dashboard Links (No changes needed here) */}
+                {/* Right Column - Dashboard Links */}
                 <div className="md:col-span-2 space-y-6">
                     <Card>
                         <CardHeader>
                             <CardTitle>My Dashboard</CardTitle>
                             <CardDescription>Manage your orders, wishlist, and settings.</CardDescription>
                         </CardHeader>
+                        {/* Adjusted grid back to 2 columns as admin link removed */}
                         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Link to="/orders">
                                 <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
@@ -237,6 +215,7 @@ const Profile: React.FC = () => {
                                     <p className="text-xs text-muted-foreground">Manage saved cards & UPI</p>
                                 </CardContent>
                             </Card>
+                            {/* Removed Admin Panel Link */}
                         </CardContent>
                     </Card>
                 </div>
