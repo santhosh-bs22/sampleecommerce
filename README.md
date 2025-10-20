@@ -1,6 +1,6 @@
-# EcomX - Sample E-commerce Frontend
+# EcomX - EcomX Frontend
 
-This project is a sample e-commerce frontend application built using React, TypeScript, and Vite. It demonstrates various features commonly found in online stores, including product browsing, filtering, searching, cart management, wishlists, user authentication, and order history.
+This project is a EcomX frontend application built using React, TypeScript, and Vite. It demonstrates various features commonly found in online stores, including product browsing, filtering, searching, cart management, wishlists, user authentication, and order history.
 
 ## Features ✨
 
