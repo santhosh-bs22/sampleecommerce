@@ -1,25 +1,27 @@
+// src/types/index.ts
+
+// Keep existing interfaces like Product, CartItem, User, Order, ThemeState, etc.
+// Example: Ensure Product interface exists
 export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  images: string[];
-  tags?: string[];
-  features?: string[];
-  sizes?: string[]; // Added sizes property
-  // Updated specification field for flexibility with external API data
-  specifications: {
-    [key: string]: string | number | undefined;
-  };
-  // New: Source API to ensure unique IDs across multiple sources
-  source: 'dummyjson' | 'platzi' | 'mock';
-}
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage: number;
+    rating: number;
+    stock: number;
+    brand: string;
+    category: string;
+    thumbnail: string;
+    images: string[];
+    tags?: string[];
+    features?: string[];
+    sizes?: string[];
+    specifications: {
+      [key: string]: string | number | undefined;
+    };
+    source: 'dummyjson' | 'platzi' | 'mock';
+  }
 
 export interface CartItem {
   product: Product;
@@ -80,6 +82,7 @@ export interface UserState {
   isAuthenticated: boolean;
   login: (userData: User) => void;
   logout: () => void;
+  updateUser: (updatedData: Partial<User>) => void; // Keep this if you added it
 }
 
 export interface CheckoutFormData {
@@ -97,11 +100,17 @@ export interface CheckoutFormData {
   upiId?: string;
 }
 
-// NEW: Comparison State Interface
 export interface ComparisonState {
   products: Product[];
   addProduct: (product: Product) => void;
   removeProduct: (productId: number) => void;
   clearComparison: () => void;
   isInComparison: (productId: number) => boolean;
+}
+
+// NEW: Recently Viewed State Interface
+export interface RecentlyViewedState {
+  items: Product[];
+  addItem: (product: Product) => void;
+  clearItems: () => void;
 }
