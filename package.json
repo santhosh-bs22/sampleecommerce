@@ -1,5 +1,5 @@
 {
-  "homepage": "https://santhosh-bs22.github.io/sampleecommerce",
+  "homepage": "https://santhosh-bs22.github.io/ecommerce",
   "name": "ecomx-frontend",
   "private": true,
   "version": "1.0.0",
@@ -31,6 +31,7 @@
     "react-hot-toast": "^2.6.0",
     "react-i18next": "^16.1.0",
     "react-router-dom": "^6.30.1",
+    "swiper": "^12.0.3",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.1.12",

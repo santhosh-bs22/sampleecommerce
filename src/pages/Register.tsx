@@ -1,3 +1,5 @@
+// src/pages/Register.tsx
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,6 +12,7 @@ import { Label } from '../components/ui/label';
 import { useUserStore } from '../store/useUserStore';
 import { useToast } from '../hooks/use-toast';
 import { User } from '../types';
+import AuthLayout from '../components/AuthLayout';
 
 // 1. Define the validation schema
 const registerSchema = z.object({
@@ -77,16 +80,26 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-screen">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="text-center">
+    <AuthLayout title="Join EcomX Today. Quick & Easy Sign Up.">
+      {/* START: Redesigned Form Content Structure */}
+      <div className="w-full">
+
+        {/* Tab Switcher */}
+        <div className="flex justify-start text-lg font-semibold border-b mb-6">
+            <Link to="/login" className="pb-3 text-muted-foreground hover:text-foreground transition-colors">Sign In</Link>
+            <div className="ml-6 pb-3 border-b-2 border-primary text-primary cursor-default">Sign Up</div>
+        </div>
+        
+        <CardHeader className="text-left p-0 mb-6">
           <CardTitle className="text-2xl">Create Your Account</CardTitle>
           <CardDescription>
             Enter your details below to get started with EcomX
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <CardContent className="p-0">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            
+            {/* First Name / Last Name in a Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -94,9 +107,10 @@ const Register: React.FC = () => {
                   id="firstName"
                   placeholder="John"
                   {...register('firstName')}
+                  className={errors.firstName ? 'border-destructive' : ''}
                 />
                 {errors.firstName && (
-                  <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                  <p className="text-xs text-destructive mt-1">{errors.firstName.message}</p>
                 )}
               </div>
               <div className="space-y-2">
@@ -105,9 +119,10 @@ const Register: React.FC = () => {
                   id="lastName"
                   placeholder="Doe"
                   {...register('lastName')}
+                  className={errors.lastName ? 'border-destructive' : ''}
                 />
                 {errors.lastName && (
-                  <p className="text-sm text-red-500">{errors.lastName.message}</p>
+                  <p className="text-xs text-destructive mt-1">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
@@ -119,9 +134,10 @@ const Register: React.FC = () => {
                 type="email"
                 placeholder="you@example.com"
                 {...register('email')}
+                className={errors.email ? 'border-destructive' : ''}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+                <p className="text-xs text-destructive mt-1">{errors.email.message}</p>
               )}
             </div>
             
@@ -132,9 +148,10 @@ const Register: React.FC = () => {
                 type="password"
                 placeholder="Minimum 8 characters"
                 {...register('password')}
+                 className={errors.password ? 'border-destructive' : ''}
               />
               {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
+                <p className="text-xs text-destructive mt-1">{errors.password.message}</p>
               )}
             </div>
 
@@ -145,13 +162,14 @@ const Register: React.FC = () => {
                 type="password"
                 placeholder="Re-enter password"
                 {...register('confirmPassword')}
+                 className={errors.confirmPassword ? 'border-destructive' : ''}
               />
               {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                <p className="text-xs text-destructive mt-1">{errors.confirmPassword.message}</p>
               )}
             </div>
             
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full h-11 text-base mt-6" disabled={isSubmitting}>
               {isSubmitting ? 'Registering...' : 'Sign Up'}
             </Button>
           </form>
@@ -163,10 +181,11 @@ const Register: React.FC = () => {
                 Sign in
               </Link>
             </p>
-          </div>
+          </div >
         </CardContent>
-      </Card>
-    </div>
+      </div>
+      {/* END: Redesigned Form Content Structure */}
+    </AuthLayout>
   );
 };
 

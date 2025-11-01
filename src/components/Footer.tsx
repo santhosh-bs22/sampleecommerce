@@ -68,26 +68,12 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <h3 className="font-semibold">Contact Info</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>123 Business Street</p>
-              <p>Mumbai, MH 400001</p>
+              <p>123 sheet poonamallee</p>
+              <p>chennai, ch 600056</p>
               <p>India</p>
               <p>Email: support@ecomx.com</p>
-              <p>Phone: +91 98765 43210</p>
+              <p>Phone: +91 98353 92023</p>
             </div>
-          </div>
-        </div>
-
-        <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            © 2024 EcomX. All rights reserved.
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary">
-              Terms of Service
-            </Link>
           </div>
         </div>
       </div>

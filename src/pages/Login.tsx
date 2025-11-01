@@ -1,6 +1,6 @@
 // src/pages/Login.tsx
+
 import React from 'react';
-// Import useLocation
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,10 +8,11 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useUserStore } from '../store/useUserStore';
 import { useToast } from '../hooks/use-toast';
+import AuthLayout from '../components/AuthLayout';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get location object
+  const location = useLocation();
   const { login } = useUserStore();
   const { toast } = useToast();
 
@@ -21,11 +22,7 @@ const Login: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  // *** Determine where to redirect after login ***
-  // If state.from exists (passed during redirection), use it, otherwise default to home '/'
   const from = location.state?.from?.pathname || '/';
-  // *** END REDIRECT LOGIC ***
-
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -37,13 +34,13 @@ const Login: React.FC = () => {
 
     try {
       // Mock login - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const mockUser = {
         id: 1,
         email: formData.email,
         username: formData.email.split('@')[0],
-        firstName: 'John', // Replace with actual data if API provides it
+        firstName: 'John',
         lastName: 'Doe',
         image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       };
@@ -54,8 +51,7 @@ const Login: React.FC = () => {
         description: "Welcome back to EcomX!",
       });
 
-      // *** Navigate back to the 'from' location ***
-      navigate(from, { replace: true }); // Use replace to avoid login page in browser history
+      navigate(from, { replace: true });
 
     } catch (error) {
       toast({
@@ -69,16 +65,25 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-screen">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+    <AuthLayout title="Seamless Shopping Awaits. Sign In.">
+      {/* START: Redesigned Form Content Structure */}
+      <div className="w-full">
+
+        {/* Tab Switcher */}
+        <div className="flex justify-start text-lg font-semibold border-b mb-6">
+            <div className="pb-3 border-b-2 border-primary text-primary cursor-default">Sign In</div>
+            <Link to="/register" className="ml-6 pb-3 text-muted-foreground hover:text-foreground transition-colors">Sign Up</Link>
+        </div>
+
+        <CardHeader className="text-left p-0 mb-6">
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
             Sign in to your EcomX account
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+        <CardContent className="p-0">
+          <form onSubmit={handleSubmit} className="space-y-6"> {/* Increased spacing for better look */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -88,12 +93,16 @@ const Login: React.FC = () => {
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 required
-                disabled={isSubmitting} // Disable during submit
+                disabled={isSubmitting}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex justify-between">
+                <Label htmlFor="password">Password</Label>
+                {/* Added Forgot Password Link */}
+                <Link to="/forgot-password" className="text-xs text-primary hover:underline">Forgot Password?</Link>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -101,12 +110,12 @@ const Login: React.FC = () => {
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 required
-                minLength={6} // Example min length
-                disabled={isSubmitting} // Disable during submit
+                minLength={6}
+                disabled={isSubmitting}
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full h-11 text-base" disabled={isSubmitting}> {/* Slightly taller button */}
               {isSubmitting ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
@@ -119,25 +128,10 @@ const Login: React.FC = () => {
               </Link>
             </p>
           </div>
-
-          {/* <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Demo Credentials
-                </span>
-              </div>
-            </div>
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              <p>Use any valid email and password (min 6 chars)</p>
-            </div>
-          </div> */}
         </CardContent>
-      </Card>
-    </div>
+      </div>
+      {/* END: Redesigned Form Content Structure */}
+    </AuthLayout>
   );
 };
 

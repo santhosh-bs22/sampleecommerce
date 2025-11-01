@@ -112,7 +112,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
-      <Router basename="/sampleecommerce">
+      <Router basename="/EcomX-website">
         <Header />
         <main className="pt-4 pb-16">
           <AnimatedRoutes />
