@@ -4,18 +4,18 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import {
-  ShoppingCart, Heart, User, LogOut, Moon, Sun, Search, Package, X, Phone, Mail, Globe, DollarSign, ChevronDown, Menu
+  ShoppingCart, Heart, User, LogOut, Moon, Sun, Search, Package, X, Phone, Mail, Globe, DollarSign, ChevronDown, Menu
 } from 'lucide-react';
 
 // @ts-ignore: Cannot find module '../assets/logo.png' or its corresponding type declarations.
-import EcomxLogo from '../assets/logo.png'; 
+import EcomxLogo from '../assets/logo.png';
 
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import MiniCart from './MiniCart';
 import { useCartStore } from '../store/useCartStore';
@@ -29,178 +29,176 @@ import { cn } from '../lib/utils';
 import { Input } from './ui/input';
 
 interface Suggestion {
-  id: string;
-  title: string;
+  id: string;
+  title: string;
 }
 
 // Debounce function
 function debounce<F extends (...args: any[]) => any>(func: F, wait: number): (...args: Parameters<F>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
-  return function(this: ThisParameterType<F>, ...args: Parameters<F>) {
-    const context = this;
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      func.apply(context, args);
-    }, wait);
-  };
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return function(this: ThisParameterType<F>, ...args: Parameters<F>) {
+    const context = this;
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
 }
 
 const Header: React.FC = () => {
-  const { getTotalItems } = useCartStore();
-  const { items: wishlistItems } = useWishlistStore();
-  const { user, isAuthenticated, logout } = useUserStore();
-  const { isDark, toggleTheme } = useThemeStore();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const querySearchTerm = searchParams.get('q') || '';
+  const { getTotalItems } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
+  const { user, isAuthenticated, logout } = useUserStore();
+  const { isDark, toggleTheme } = useThemeStore();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const querySearchTerm = searchParams.get('q') || '';
 
-  const [headerSearchTerm, setHeaderSearchTerm] = useState(querySearchTerm);
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [headerSearchTerm, setHeaderSearchTerm] = useState(querySearchTerm);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const desktopSearchInputRef = useRef<HTMLInputElement>(null); // Ref for desktop
-  const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false); // This will now be for mobile search
+  const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // This will now be for mobile search
 
-  const cartItemsCount = getTotalItems();
-  const wishlistItemsCount = wishlistItems.length;
+  const cartItemsCount = getTotalItems();
+  const wishlistItemsCount = wishlistItems.length;
 
-  useEffect(() => {
+  useEffect(() => {
     // Sync header search bar if URL search param changes (e.g., back button)
     const urlSearchTerm = searchParams.get('q') || '';
-    if (urlSearchTerm !== headerSearchTerm) {
-      setHeaderSearchTerm(urlSearchTerm);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]); // Depend on searchParams
+    if (urlSearchTerm !== headerSearchTerm) {
+      setHeaderSearchTerm(urlSearchTerm);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Depend on searchParams
 
-  const debouncedFetchSuggestions = useCallback(
-    debounce(async (term: string) => {
-      const inputHasFocus = document.activeElement === searchInputRef.current || 
+  const debouncedFetchSuggestions = useCallback(
+    debounce(async (term: string) => {
+      const inputHasFocus = document.activeElement === searchInputRef.current ||
                               document.activeElement === desktopSearchInputRef.current;
-      if (term.trim().length < 2) {
-        setSuggestions([]);
-        setIsSuggestionsLoading(false);
-        setShowSuggestions(inputHasFocus);
-        return;
-      }
-      setIsSuggestionsLoading(true);
-      if (inputHasFocus) setShowSuggestions(true);
-      try {
-        const results = await fetchSearchSuggestions(term);
-        const stillHasFocus = document.activeElement === searchInputRef.current ||
+      if (term.trim().length < 2) {
+        setSuggestions([]);
+        setIsSuggestionsLoading(false);
+        setShowSuggestions(inputHasFocus);
+        return;
+      }
+      setIsSuggestionsLoading(true);
+      if (inputHasFocus) setShowSuggestions(true);
+      try {
+        const results = await fetchSearchSuggestions(term);
+        const stillHasFocus = document.activeElement === searchInputRef.current ||
                                 document.activeElement === desktopSearchInputRef.current;
-        setSuggestions(results);
-        setShowSuggestions(results.length > 0 || (stillHasFocus && term.trim().length >= 2));
-      } catch (error) {
-        console.error("Failed to fetch suggestions:", error);
-        setSuggestions([]);
-        setShowSuggestions(false);
-      } finally {
-        setIsSuggestionsLoading(false);
-      }
-    }, 300),
-    []
-  );
+        setSuggestions(results);
+        setShowSuggestions(results.length > 0 || (stillHasFocus && term.trim().length >= 2));
+      } catch (error) {
+        console.error("Failed to fetch suggestions:", error);
+        setSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setIsSuggestionsLoading(false);
+      }
+    }, 300),
+    []
+  );
 
-  useEffect(() => {
-    debouncedFetchSuggestions(headerSearchTerm);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerSearchTerm]);
+  useEffect(() => {
+    debouncedFetchSuggestions(headerSearchTerm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [headerSearchTerm]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-        setIsSearchOpen(false); // This closes the mobile search
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+        setIsSearchOpen(false); // This closes the mobile search
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/'); };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setShowSuggestions(false);
-    setIsSearchOpen(false); // Close mobile search on submit
-    const trimmedTerm = headerSearchTerm.trim();
-    
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setShowSuggestions(false);
+    setIsSearchOpen(false); // Close mobile search on submit
+    const trimmedTerm = headerSearchTerm.trim();
+
     if (trimmedTerm) {
-      navigate(`/search?q=${encodeURIComponent(trimmedTerm)}`); // <-- Navigate to /search
-    } else {
-      navigate('/search'); // <-- Navigate to empty /search page
-    }
+      navigate(`/search?q=${encodeURIComponent(trimmedTerm)}`); // <-- Navigate to /search
+    } else {
+      navigate('/search'); // <-- Navigate to empty /search page
+    }
 
-    searchInputRef.current?.blur(); // Blur mobile input
+    searchInputRef.current?.blur(); // Blur mobile input
     desktopSearchInputRef.current?.blur(); // Blur desktop input
-  };
+  };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTerm = event.target.value;
-    setHeaderSearchTerm(newTerm);
-    const hasFocus = document.activeElement === searchInputRef.current || 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newTerm = event.target.value;
+    setHeaderSearchTerm(newTerm);
+    const hasFocus = document.activeElement === searchInputRef.current ||
                      document.activeElement === desktopSearchInputRef.current;
-    if (newTerm.trim().length >= 2 && hasFocus) {
-      setShowSuggestions(true);
-    } else {
-      setShowSuggestions(false);
-    }
-  };
+    if (newTerm.trim().length >= 2 && hasFocus) {
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
 
-  const handleSuggestionSelect = (title: string) => {
-    setHeaderSearchTerm(title);
-    setShowSuggestions(false);
-    setIsSearchOpen(false);
-    navigate(`/search?q=${encodeURIComponent(title)}`); // <-- Navigate to /search
-    searchInputRef.current?.blur();
+  const handleSuggestionSelect = (title: string) => {
+    setHeaderSearchTerm(title);
+    setShowSuggestions(false);
+    setIsSearchOpen(false);
+    navigate(`/search?q=${encodeURIComponent(title)}`); // <-- Navigate to /search
+    searchInputRef.current?.blur();
     desktopSearchInputRef.current?.blur();
-  };
+  };
 
-  const handleInputFocus = () => {
-    if (headerSearchTerm.trim().length >= 2) {
-      setShowSuggestions(true);
-      debouncedFetchSuggestions(headerSearchTerm);
-    }
-  }
+  const handleInputFocus = () => {
+    if (headerSearchTerm.trim().length >= 2) {
+      setShowSuggestions(true);
+      debouncedFetchSuggestions(headerSearchTerm);
+    }
+  }
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const toggleSearch = () => setIsSearchOpen(!isSearchOpen); // This is now for mobile only
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen); // This is now for mobile only
 
-  return (
-    <header ref={searchContainerRef} className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+  return (
+    <header ref={searchContainerRef} className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
 
-      {/* Main Navbar */}
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between gap-4">
-          {/* Logo */}
-           <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            <img src={EcomxLogo} alt="EcomX Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold hidden sm:inline">EcomX</span>
-          </Link>
+      {/* Main Navbar */}
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between gap-4">
+          {/* Logo */}
+           <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
+             <img src={EcomxLogo} alt="EcomX Logo" className="h-8 w-8" />
+             <span className="text-xl font-bold hidden sm:inline">EcomX</span>
+           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <Link to="/products" className="hover:text-primary transition-colors">Shop</Link>
-            <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center hover:text-primary transition-colors focus-visible:ring-0 focus-visible:outline-none">Pages <ChevronDown className="h-4 w-4 ml-1" /></DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem asChild><Link to="/about">About Us</Link></DropdownMenuItem>
-                    <DropdownMenuItem asChild><Link to="/contact">Contact Us</Link></DropdownMenuItem>
-                    <DropdownMenuItem asChild><Link to="/faq">FAQ</Link></DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-            <Link to="/blog" className="hover:text-primary transition-colors">Blog</Link>
-            <Link to="/elements" className="hover:text-primary transition-colors">Elements</Link>
-            <Link to="/buy" className="hover:text-primary transition-colors">Buy</Link>
-          </nav>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
+            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <Link to="/products" className="hover:text-primary transition-colors">Shop</Link>
+            <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center hover:text-primary transition-colors focus-visible:ring-0 focus-visible:outline-none">Pages <ChevronDown className="h-4 w-4 ml-1" /></DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem asChild><Link to="/about">About Us</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/contact">Contact Us</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/faq">FAQ</Link></DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            {/* REMOVED Blog, Elements, Buy links */}
+          </nav>
 
           {/* Desktop Search Bar (Visible LG and up) */}
           <div className="hidden lg:flex flex-1 justify-center px-8">
@@ -208,27 +206,27 @@ const Header: React.FC = () => {
               <div className="relative w-full">
                 <label htmlFor="desktop-search" className="sr-only">Search Products</label>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
-                <Input 
-                  id="desktop-search" 
-                  ref={desktopSearchInputRef} 
-                  type="search" 
-                  placeholder="Search products..." 
-                  value={headerSearchTerm} 
-                  onChange={handleInputChange} 
-                  onFocus={handleInputFocus} 
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background" 
-                  aria-label="Search products" 
-                  autoComplete="off" 
-                  aria-haspopup="listbox" 
-                  aria-expanded={showSuggestions} 
+                <Input
+                  id="desktop-search"
+                  ref={desktopSearchInputRef}
+                  type="search"
+                  placeholder="Search products..."
+                  value={headerSearchTerm}
+                  onChange={handleInputChange}
+                  onFocus={handleInputFocus}
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background"
+                  aria-label="Search products"
+                  autoComplete="off"
+                  aria-haspopup="listbox"
+                  aria-expanded={showSuggestions}
                   aria-controls="search-suggestions-desktop"
                 />
                 <div id="search-suggestions-desktop" className="relative">
                   {showSuggestions && (
-                    <SearchSuggestions 
-                      suggestions={suggestions} 
-                      isLoading={isSuggestionsLoading} 
-                      onSuggestionSelect={handleSuggestionSelect} 
+                    <SearchSuggestions
+                      suggestions={suggestions}
+                      isLoading={isSuggestionsLoading}
+                      onSuggestionSelect={handleSuggestionSelect}
                       className="w-full left-0 right-0 max-h-60"
                     />
                   )}
@@ -237,83 +235,81 @@ const Header: React.FC = () => {
             </form>
           </div>
 
-          {/* Actions: Search (Mobile), Wishlist, Cart, Theme, User, Mobile Menu */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
-             <Button variant="ghost" size="icon" onClick={toggleSearch} className="relative flex-shrink-0 h-9 w-9 lg:hidden" aria-label="Search"><Search className="h-5 w-5" /></Button>
-            <Button variant="ghost" size="icon" asChild className="relative flex-shrink-0 h-9 w-9"><Link to="/wishlist" aria-label={`Wishlist items: ${wishlistItemsCount}`}><Heart className="h-5 w-5" />{wishlistItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{wishlistItemsCount}</Badge>)}</Link></Button>
-            <Popover open={isMiniCartOpen} onOpenChange={setIsMiniCartOpen}>
-              <PopoverTrigger asChild><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label={`Cart items: ${cartItemsCount}`}><ShoppingCart className="h-5 w-5" />{cartItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{cartItemsCount}</Badge>)}</Button></PopoverTrigger>
-              <PopoverContent className="w-80 p-0 mr-4 mt-2" align="end"><MiniCart onClose={() => setIsMiniCartOpen(false)} /></PopoverContent>
-            </Popover>
-             <div className="hidden md:flex">
-                 {isAuthenticated && user ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label="User Menu"><User className="h-5 w-5" /></Button></DropdownMenuTrigger>
-                        <DropdownMenuContent align="end"><DropdownMenuItem asChild><Link to="/profile">My Profile</Link></DropdownMenuItem><DropdownMenuItem asChild><Link to="/orders">My Orders</Link></DropdownMenuItem><DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem></DropdownMenuContent>
-                    </DropdownMenu>
-                 ) : (<Link to="/login"><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label="Login"><User className="h-5 w-5" /></Button></Link>)}
-            </div>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="relative flex-shrink-0 h-9 w-9" aria-label={isDark ? "Activate light mode" : "Activate dark mode"}>
-              <AnimatePresence mode="wait" initial={false}>{isDark ? (<motion.div key="sun" initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.2 }}> <Sun className="h-5 w-5" /> </motion.div>) : (<motion.div key="moon" initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.2 }}> <Moon className="h-5 w-5" /> </motion.div>)}</AnimatePresence>
-            </Button>
-            <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="lg:hidden relative flex-shrink-0 h-9 w-9" aria-label="Toggle Menu"><Menu className="h-5 w-5" /></Button>
-          </div>
-        </div>
-      </div>
+          {/* Actions: Search (Mobile), Wishlist, Cart, Theme, User, Mobile Menu */}
+          <div className="flex items-center space-x-1 sm:space-x-2">
+             <Button variant="ghost" size="icon" onClick={toggleSearch} className="relative flex-shrink-0 h-9 w-9 lg:hidden" aria-label="Search"><Search className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" asChild className="relative flex-shrink-0 h-9 w-9"><Link to="/wishlist" aria-label={`Wishlist items: ${wishlistItemsCount}`}><Heart className="h-5 w-5" />{wishlistItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{wishlistItemsCount}</Badge>)}</Link></Button>
+            <Popover open={isMiniCartOpen} onOpenChange={setIsMiniCartOpen}>
+              <PopoverTrigger asChild><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label={`Cart items: ${cartItemsCount}`}><ShoppingCart className="h-5 w-5" />{cartItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{cartItemsCount}</Badge>)}</Button></PopoverTrigger>
+              <PopoverContent className="w-80 p-0 mr-4 mt-2" align="end"><MiniCart onClose={() => setIsMiniCartOpen(false)} /></PopoverContent>
+            </Popover>
+             <div className="hidden md:flex">
+                {isAuthenticated && user ? (
+                   <DropdownMenu>
+                       <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label="User Menu"><User className="h-5 w-5" /></Button></DropdownMenuTrigger>
+                       <DropdownMenuContent align="end"><DropdownMenuItem asChild><Link to="/profile">My Profile</Link></DropdownMenuItem><DropdownMenuItem asChild><Link to="/orders">My Orders</Link></DropdownMenuItem><DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem></DropdownMenuContent>
+                   </DropdownMenu>
+                ) : (<Link to="/login"><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label="Login"><User className="h-5 w-5" /></Button></Link>)}
+            </div>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="relative flex-shrink-0 h-9 w-9" aria-label={isDark ? "Activate light mode" : "Activate dark mode"}>
+              <AnimatePresence mode="wait" initial={false}>{isDark ? (<motion.div key="sun" initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.2 }}> <Sun className="h-5 w-5" /> </motion.div>) : (<motion.div key="moon" initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }} transition={{ duration: 0.2 }}> <Moon className="h-5 w-5" /> </motion.div>)}</AnimatePresence>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="lg:hidden relative flex-shrink-0 h-9 w-9" aria-label="Toggle Menu"><Menu className="h-5 w-5" /></Button>
+          </div>
+        </div>
+      </div>
 
-       {/* Mobile Search Input Area */}
-        <AnimatePresence>
-            {isSearchOpen && (
+       {/* Mobile Search Input Area */}
+       <AnimatePresence>
+           {isSearchOpen && (
               // --- *** FIX: REMOVED style={{ overflow: 'hidden' }} *** ---
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }} 
-                  animate={{ height: 'auto', opacity: 1 }} 
-                  exit={{ height: 0, opacity: 0 }} 
-                  transition={{ duration: 0.2 }} 
+              <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   className="absolute top-full left-0 right-0 bg-background border-b shadow-md z-40 lg:hidden px-4 pb-3 pt-1"
                 >
-                    <form onSubmit={handleSearchSubmit} className="w-full" role="search">
-                        <div className="relative w-full">
-                            <label htmlFor="mobile-search" className="sr-only">Search Products</label>
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
-                            <Input id="mobile-search" ref={searchInputRef} type="search" placeholder="Search products..." value={headerSearchTerm} onChange={handleInputChange} onFocus={handleInputFocus} className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background" aria-label="Search products" autoComplete="off" aria-haspopup="listbox" aria-expanded={showSuggestions} aria-controls="search-suggestions-mobile"/>
-                        </div>
-                    </form>
-                  {/* This div is 'relative' so the 'absolute' SearchSuggestions 
+                   <form onSubmit={handleSearchSubmit} className="w-full" role="search">
+                       <div className="relative w-full">
+                           <label htmlFor="mobile-search" className="sr-only">Search Products</label>
+                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+                           <Input id="mobile-search" ref={searchInputRef} type="search" placeholder="Search products..." value={headerSearchTerm} onChange={handleInputChange} onFocus={handleInputFocus} className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background" aria-label="Search products" autoComplete="off" aria-haspopup="listbox" aria-expanded={showSuggestions} aria-controls="search-suggestions-mobile"/>
+                       </div>
+                   </form>
+                  {/* This div is 'relative' so the 'absolute' SearchSuggestions
                     component renders correctly relative to it.
                   */}
-                    <div id="search-suggestions-mobile" className="relative">
-                        {showSuggestions && (
-                      <SearchSuggestions 
-                        suggestions={suggestions} 
-                        isLoading={isSuggestionsLoading} 
-                        onSuggestionSelect={handleSuggestionSelect} 
+                   <div id="search-suggestions-mobile" className="relative">
+                       {showSuggestions && (
+                      <SearchSuggestions
+                        suggestions={suggestions}
+                        isLoading={isSuggestionsLoading}
+                        onSuggestionSelect={handleSuggestionSelect}
                         className="w-full left-0 right-0 max-h-48"
                       />
                     )}
-                  	</div>
-      	        </motion.div>
-            )}
-      	</AnimatePresence>
+                  </div>
+              </motion.div>
+            )}
+        </AnimatePresence>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.2 }} className="lg:hidden absolute top-full left-0 right-0 bg-background border-b shadow-lg z-40">
-            <nav className="flex flex-col space-y-2 p-4">
-              <Link to="/" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Home</Link>
-              <Link to="/products" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Shop</Link>
-              <Link to="/blog" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Blog</Link>
-              <Link to="/about" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>About</Link>
-              <Link to="/contact" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Contact</Link>
-              <hr className="my-2"/>
-               {isAuthenticated && user ? (<><Link to="/profile" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Profile</Link><Link to="/orders" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Orders</Link><Button variant="ghost" onClick={() => { handleLogout(); toggleMobileMenu(); }} className="justify-start py-2 text-red-500 hover:text-red-600">Logout</Button></>) : (<><Link to="/login" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Login</Link><Link to="/register" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Register</Link></>)}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
-  );
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.2 }} className="lg:hidden absolute top-full left-0 right-0 bg-background border-b shadow-lg z-40">
+            <nav className="flex flex-col space-y-2 p-4">
+              <Link to="/" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Home</Link>
+              <Link to="/products" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Shop</Link>
+              {/* REMOVED Blog, About, Contact links */}
+              <hr className="my-2"/>
+               {isAuthenticated && user ? (<><Link to="/profile" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Profile</Link><Link to="/orders" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Orders</Link><Button variant="ghost" onClick={() => { handleLogout(); toggleMobileMenu(); }} className="justify-start py-2 text-red-500 hover:text-red-600">Logout</Button></>) : (<><Link to="/login" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Login</Link><Link to="/register" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Register</Link></>)}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
 };
 
 export default Header;
