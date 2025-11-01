@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  // Common Card Content
+  // Common Card Content (for Grid View)
   const CardInnerContent = () => (
     <>
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30 group-hover:bg-secondary/50 transition-colors rounded-t-lg"> {/* Aspect Ratio */}
@@ -223,114 +223,103 @@ const ProductCard: React.FC<ProductCardProps> = ({
     );
   }
 
-  // List View Specific Structure
+  // --- NEW List View Specific Structure (matches screenshot) ---
    return (
     <motion.div
-       variants={cardVariants}
-       initial="hidden"
-       animate="visible"
-       custom={index}
-       className={cn(className)}
-     >
-        <Link to={productLink} className="block">
-          <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-xl border dark:border-muted/50 flex flex-col sm:flex-row rounded-lg">
-             {/* Image container with fixed width in list view */}
-             <div className="sm:w-1/4 aspect-[4/3] sm:aspect-square flex-shrink-0">
-               {/* Simplified image section for list view */}
-                <div className="relative h-full overflow-hidden bg-secondary/30 rounded-l-lg">
-                  <motion.img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="h-full w-full object-contain"
-                    whileHover={{ scale: 1.05 }}
-                  />
-                  {product.discountPercentage > 0 && (
-                    <Badge variant="destructive" className="absolute top-2 left-2 shadow">
-                      -{Math.round(product.discountPercentage)}%
-                    </Badge>
-                  )}
-                 </div>
-              </div>
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      custom={index}
+      className={cn("w-full", className)} // Ensure it takes full width
+    >
+      <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg border dark:border-muted/50 flex flex-row relative rounded-lg">
+        {/* Image container */}
+        <Link to={productLink} className="block w-1/3 flex-shrink-0 aspect-square">
+          <div className="relative h-full overflow-hidden bg-secondary/30 rounded-l-lg">
+            <motion.img
+              src={product.thumbnail}
+              alt={product.title}
+              className="h-full w-full object-contain"
+              whileHover={{ scale: 1.05 }}
+            />
+            {product.discountPercentage > 0 && (
+              <Badge variant="destructive" className="absolute top-2 left-2 shadow text-xs px-1.5 py-0.5">
+                -{Math.round(product.discountPercentage)}%
+              </Badge>
+            )}
+            {product.stock > 0 && product.stock <= 5 && (
+              <Badge variant="destructive" className="absolute bottom-2 left-2 animate-pulse shadow text-xs px-1.5 py-0.5">
+                ⚡ Only {product.stock} left!
+              </Badge>
+            )}
+            {product.stock === 0 && (
+               <Badge variant="destructive" className="absolute top-2 left-2 shadow text-xs px-1.5 py-0.5">
+                 Out of Stock
+               </Badge>
+            )}
+          </div>
+        </Link>
 
-             {/* Content container taking remaining space */}
-             <div className="flex flex-1 flex-col sm:flex-row">
-               <CardContent className="p-4 flex-1 flex flex-col">
-                 <div className="mb-2">
-                    <Link to={productLink} className="group/link">
-                      <h3 className="font-semibold text-lg mb-1 line-clamp-1 group-hover/link:text-primary transition-colors leading-tight">
-                        {product.title}
-                      </h3>
-                    </Link>
-                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-3">
-                      {product.description}
-                    </p>
-                 </div>
-                 <div className="mt-auto space-y-1">
-                   <div className="flex items-baseline gap-2">
-                      <span className="text-xl font-bold text-green-600">
-                        {formatCurrency(discountedPrice)}
-                      </span>
-                      {product.discountPercentage > 0 && (
-                         <span className="text-sm text-muted-foreground line-through">
-                          {formatCurrency(product.price)}
-                         </span>
-                      )}
-                    </div>
-                     {product.discountPercentage > 0 && (
-                       <div className="flex items-center justify-between text-xs">
-                          <Badge variant="outline" className="text-green-600 border-green-600/50">
-                            Save {formatCurrency(savings)}
-                          </Badge>
-                       </div>
-                     )}
-                   {/* Brand and Stock for List View */}
-                   <div className="flex items-center justify-between text-sm text-muted-foreground pt-2">
-                       <span className="font-medium capitalize">
-                         {product.brand}
-                       </span>
-                       <div className="flex items-center gap-1">
-                          <div className={cn(
-                           "w-2 h-2 rounded-full",
-                           product.stock > 10 ? "bg-green-500" :
-                           product.stock > 0 ? "bg-yellow-500" : "bg-red-500"
-                          )} />
-                          <span className={cn(product.stock === 0 && "text-destructive font-semibold")}>
-                            {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
-                          </span>
-                       </div>
-                   </div>
-                  </div>
-               </CardContent>
-               {/* Action Buttons & Add to Cart */}
-                <div className="flex flex-col justify-between p-4 pt-0 sm:pt-4 sm:w-40 flex-shrink-0 space-y-2">
-                  <div className="flex sm:flex-col items-center sm:items-end gap-2 justify-end">
-                     <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                        <Button variant="ghost" size="icon" onClick={handleWishlistToggle} className="h-8 w-8 rounded-full">
-                         <Heart className={cn("h-4 w-4", isWishlisted ? "fill-red-500 text-red-500" : "text-foreground/70")} />
-                        </Button>
-                      </motion.div>
-                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                        <Button variant="ghost" size="icon" onClick={handleCompareToggle} className="h-8 w-8 rounded-full">
-                          <Scale className={cn("h-4 w-4", isCompared ? "text-primary" : "text-foreground/70")} />
-                        </Button>
-                       </motion.div>
-                  </div>
-                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full">
-                     <Button
-                        onClick={handleAddToCart}
-                        disabled={product.stock === 0}
-                        className="w-full h-10 font-semibold text-sm transition-all duration-200"
-                        size="sm"
-                     >
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                       {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                      </Button>
-                   </motion.div>
-                 </div>
-              </div>
-          </Card>
-       </Link>
-     </motion.div>
+        {/* Content container */}
+        <div className="flex-1 flex flex-col p-3 min-w-0">
+          <Link to={productLink} className="group/link mb-1 pr-12"> {/* Add padding for button */}
+            <h3 className="font-semibold text-sm line-clamp-2 group-hover/link:text-primary transition-colors leading-tight">
+              {product.title}
+            </h3>
+          </Link>
+          
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <Badge variant="secondary" className="bg-green-600 text-white shadow text-xs px-1.5 py-0.5 rounded">
+              {product.rating.toFixed(1)} ★
+            </Badge>
+            {/* Mocking rating count */}
+            <span className="text-xs text-muted-foreground">({Math.floor(product.rating * 1234) + 50})</span>
+          </div>
+
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-1.5">
+            <span className="text-base font-bold text-green-600">
+              {formatCurrency(discountedPrice)}
+            </span>
+            {product.discountPercentage > 0 && (
+              <span className="text-xs text-muted-foreground line-through">
+                {formatCurrency(product.price)}
+              </span>
+            )}
+          </div>
+
+          {/* Mocking bank/exchange offers from image */}
+          {product.discountPercentage > 10 && (
+               <p className="text-xs font-medium text-green-700 dark:text-green-500 line-clamp-1">Bank Offer</p>
+          )}
+
+          <p className="text-xs text-muted-foreground mt-auto pt-1">
+            {product.stock > 0 ? `Delivery by Tomorrow` : <span className="text-destructive font-semibold">Out of Stock</span>}
+          </p>
+        </div>
+        
+        {/* Action Buttons (Top Right) */}
+        <div className="absolute top-1 right-1 flex flex-col items-end">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleWishlistToggle}
+            className="h-8 w-8 rounded-full"
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart className={cn("h-5 w-5", isWishlisted ? "fill-red-500 text-red-500" : "text-foreground/60")} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCompareToggle}
+            className="h-8 w-8 rounded-full"
+            aria-label={isCompared ? "Remove from comparison" : "Add to comparison"}
+          >
+            <Scale className={cn("h-5 w-5", isCompared ? "text-primary" : "text-foreground/60")} />
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
   );
 };
 

@@ -5,10 +5,8 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import {
   ShoppingCart, Heart, User, LogOut, Moon, Sun, Search, Package, X, Phone, Mail, Globe, DollarSign, ChevronDown, Menu
-} from 'lucide-react'; // Keep icons, some might be unused now but okay
+} from 'lucide-react';
 
-// 1. IMPORT THE LOGO IMAGE
-// If you don't have a declaration for image modules, ignore TS error for this import
 // @ts-ignore: Cannot find module '../assets/logo.png' or its corresponding type declarations.
 import EcomxLogo from '../assets/logo.png'; 
 
@@ -64,23 +62,27 @@ const Header: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null); // Ref for desktop
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // This will now be for mobile search
 
   const cartItemsCount = getTotalItems();
   const wishlistItemsCount = wishlistItems.length;
 
   useEffect(() => {
-    if (querySearchTerm !== headerSearchTerm) {
-      setHeaderSearchTerm(querySearchTerm);
+    // Sync header search bar if URL search param changes (e.g., back button)
+    const urlSearchTerm = searchParams.get('q') || '';
+    if (urlSearchTerm !== headerSearchTerm) {
+      setHeaderSearchTerm(urlSearchTerm);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [querySearchTerm]);
+  }, [searchParams]); // Depend on searchParams
 
   const debouncedFetchSuggestions = useCallback(
     debounce(async (term: string) => {
-      const inputHasFocus = document.activeElement === searchInputRef.current;
+      const inputHasFocus = document.activeElement === searchInputRef.current || 
+                              document.activeElement === desktopSearchInputRef.current;
       if (term.trim().length < 2) {
         setSuggestions([]);
         setIsSuggestionsLoading(false);
@@ -91,7 +93,8 @@ const Header: React.FC = () => {
       if (inputHasFocus) setShowSuggestions(true);
       try {
         const results = await fetchSearchSuggestions(term);
-        const stillHasFocus = document.activeElement === searchInputRef.current;
+        const stillHasFocus = document.activeElement === searchInputRef.current ||
+                                document.activeElement === desktopSearchInputRef.current;
         setSuggestions(results);
         setShowSuggestions(results.length > 0 || (stillHasFocus && term.trim().length >= 2));
       } catch (error) {
@@ -114,7 +117,7 @@ const Header: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
-        setIsSearchOpen(false);
+        setIsSearchOpen(false); // This closes the mobile search
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -126,20 +129,25 @@ const Header: React.FC = () => {
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setShowSuggestions(false);
-    setIsSearchOpen(false);
+    setIsSearchOpen(false); // Close mobile search on submit
     const trimmedTerm = headerSearchTerm.trim();
-    if (trimmedTerm) {
-      navigate(`/?q=${encodeURIComponent(trimmedTerm)}`);
+    
+    if (trimmedTerm) {
+      navigate(`/search?q=${encodeURIComponent(trimmedTerm)}`); // <-- Navigate to /search
     } else {
-      navigate('/');
+      navigate('/search'); // <-- Navigate to empty /search page
     }
-    searchInputRef.current?.blur();
+
+    searchInputRef.current?.blur(); // Blur mobile input
+    desktopSearchInputRef.current?.blur(); // Blur desktop input
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTerm = event.target.value;
     setHeaderSearchTerm(newTerm);
-    if (newTerm.trim().length >= 2 && document.activeElement === searchInputRef.current) {
+    const hasFocus = document.activeElement === searchInputRef.current || 
+                     document.activeElement === desktopSearchInputRef.current;
+    if (newTerm.trim().length >= 2 && hasFocus) {
       setShowSuggestions(true);
     } else {
       setShowSuggestions(false);
@@ -150,8 +158,9 @@ const Header: React.FC = () => {
     setHeaderSearchTerm(title);
     setShowSuggestions(false);
     setIsSearchOpen(false);
-    navigate(`/?q=${encodeURIComponent(title)}`);
+    navigate(`/search?q=${encodeURIComponent(title)}`); // <-- Navigate to /search
     searchInputRef.current?.blur();
+    desktopSearchInputRef.current?.blur();
   };
 
   const handleInputFocus = () => {
@@ -162,19 +171,16 @@ const Header: React.FC = () => {
   }
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen); // This is now for mobile only
 
   return (
     <header ref={searchContainerRef} className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-
-      {/* Top Bar Removed */}
 
       {/* Main Navbar */}
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
            <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            {/* 2. CUSTOM LOGO IMAGE REPLACEMENT */}
             <img src={EcomxLogo} alt="EcomX Logo" className="h-8 w-8" />
             <span className="text-xl font-bold hidden sm:inline">EcomX</span>
           </Link>
@@ -196,9 +202,44 @@ const Header: React.FC = () => {
             <Link to="/buy" className="hover:text-primary transition-colors">Buy</Link>
           </nav>
 
-          {/* Actions: Search, Wishlist, Cart, Theme, User, Mobile Menu */}
+          {/* Desktop Search Bar (Visible LG and up) */}
+          <div className="hidden lg:flex flex-1 justify-center px-8">
+            <form onSubmit={handleSearchSubmit} className="w-full max-w-md" role="search">
+              <div className="relative w-full">
+                <label htmlFor="desktop-search" className="sr-only">Search Products</label>
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+                <Input 
+                  id="desktop-search" 
+                  ref={desktopSearchInputRef} 
+                  type="search" 
+                  placeholder="Search products..." 
+                  value={headerSearchTerm} 
+                  onChange={handleInputChange} 
+                  onFocus={handleInputFocus} 
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background" 
+                  aria-label="Search products" 
+                  autoComplete="off" 
+                  aria-haspopup="listbox" 
+                  aria-expanded={showSuggestions} 
+                  aria-controls="search-suggestions-desktop"
+                />
+                <div id="search-suggestions-desktop" className="relative">
+                  {showSuggestions && (
+                    <SearchSuggestions 
+                      suggestions={suggestions} 
+                      isLoading={isSuggestionsLoading} 
+                      onSuggestionSelect={handleSuggestionSelect} 
+                      className="w-full left-0 right-0 max-h-60"
+                    />
+                  )}
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Actions: Search (Mobile), Wishlist, Cart, Theme, User, Mobile Menu */}
           <div className="flex items-center space-x-1 sm:space-x-2">
-             <Button variant="ghost" size="icon" onClick={toggleSearch} className="relative flex-shrink-0 h-9 w-9" aria-label="Search"><Search className="h-5 w-5" /></Button>
+             <Button variant="ghost" size="icon" onClick={toggleSearch} className="relative flex-shrink-0 h-9 w-9 lg:hidden" aria-label="Search"><Search className="h-5 w-5" /></Button>
             <Button variant="ghost" size="icon" asChild className="relative flex-shrink-0 h-9 w-9"><Link to="/wishlist" aria-label={`Wishlist items: ${wishlistItemsCount}`}><Heart className="h-5 w-5" />{wishlistItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{wishlistItemsCount}</Badge>)}</Link></Button>
             <Popover open={isMiniCartOpen} onOpenChange={setIsMiniCartOpen}>
               <PopoverTrigger asChild><Button variant="ghost" size="icon" className="relative flex-shrink-0 h-9 w-9" aria-label={`Cart items: ${cartItemsCount}`}><ShoppingCart className="h-5 w-5" />{cartItemsCount > 0 && (<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs rounded-full">{cartItemsCount}</Badge>)}</Button></PopoverTrigger>
@@ -223,7 +264,14 @@ const Header: React.FC = () => {
        {/* Mobile Search Input Area */}
         <AnimatePresence>
             {isSearchOpen && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="absolute top-full left-0 right-0 bg-background border-b shadow-md z-40 lg:hidden px-4 pb-3 pt-1" style={{ overflow: 'hidden' }}>
+              // --- *** FIX: REMOVED style={{ overflow: 'hidden' }} *** ---
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }} 
+                  animate={{ height: 'auto', opacity: 1 }} 
+                  exit={{ height: 0, opacity: 0 }} 
+                  transition={{ duration: 0.2 }} 
+                  className="absolute top-full left-0 right-0 bg-background border-b shadow-md z-40 lg:hidden px-4 pb-3 pt-1"
+                >
                     <form onSubmit={handleSearchSubmit} className="w-full" role="search">
                         <div className="relative w-full">
                             <label htmlFor="mobile-search" className="sr-only">Search Products</label>
@@ -231,12 +279,22 @@ const Header: React.FC = () => {
                             <Input id="mobile-search" ref={searchInputRef} type="search" placeholder="Search products..." value={headerSearchTerm} onChange={handleInputChange} onFocus={handleInputFocus} className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-input focus:bg-background" aria-label="Search products" autoComplete="off" aria-haspopup="listbox" aria-expanded={showSuggestions} aria-controls="search-suggestions-mobile"/>
                         </div>
                     </form>
+                  {/* This div is 'relative' so the 'absolute' SearchSuggestions 
+                    component renders correctly relative to it.
+                  */}
                     <div id="search-suggestions-mobile" className="relative">
-                        {showSuggestions && (<SearchSuggestions suggestions={suggestions} isLoading={isSuggestionsLoading} onSuggestionSelect={handleSuggestionSelect} className="w-full left-0 right-0 max-h-48"/>)}
-                    </div>
-                </motion.div>
+                        {showSuggestions && (
+                      <SearchSuggestions 
+                        suggestions={suggestions} 
+                        isLoading={isSuggestionsLoading} 
+                        onSuggestionSelect={handleSuggestionSelect} 
+                        className="w-full left-0 right-0 max-h-48"
+                      />
+                    )}
+                  	</div>
+      	        </motion.div>
             )}
-        </AnimatePresence>
+      	</AnimatePresence>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -248,7 +306,6 @@ const Header: React.FC = () => {
               <Link to="/blog" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Blog</Link>
               <Link to="/about" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>About</Link>
               <Link to="/contact" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Contact</Link>
-              {/* Add more links based on your 'Pages', 'Elements', 'Buy' structure */}
               <hr className="my-2"/>
                {isAuthenticated && user ? (<><Link to="/profile" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Profile</Link><Link to="/orders" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>My Orders</Link><Button variant="ghost" onClick={() => { handleLogout(); toggleMobileMenu(); }} className="justify-start py-2 text-red-500 hover:text-red-600">Logout</Button></>) : (<><Link to="/login" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Login</Link><Link to="/register" className="block py-2 hover:text-primary" onClick={toggleMobileMenu}>Register</Link></>)}
             </nav>

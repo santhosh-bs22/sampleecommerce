@@ -12,12 +12,12 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Wishlist from './pages/Wishlist';
 import Orders from './pages/Orders';
-// Corrected: Ensure this file exists at src/pages/OrderDetails.tsx
 import OrderDetails from './pages/OrderDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Compare from './pages/Compare';
 import Profile from './pages/Profile';
+import Search from './pages/Search'; // <-- 1. IMPORT NEW PAGE
 import './App.css';
 
 // Enhanced Page Transition Variants
@@ -63,11 +63,12 @@ const AnimatedRoutes = () => {
         <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
         <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
         <Route path="/compare" element={<PageWrapper><Compare /></PageWrapper>} />
+        <Route path="/search" element={<PageWrapper><Search /></PageWrapper>} /> {/* <-- 2. ADD NEW ROUTE */}
 
         {/* --- Protected User Routes --- */}
         <Route path="/checkout" element={<PageWrapper><Checkout /></PageWrapper>} />
         <Route path="/orders" element={<PageWrapper><Orders /></PageWrapper>} />
-        <Route path="/order/:orderId" element={<PageWrapper><OrderDetails /></PageWrapper>} /> {/* OrderDetails route */}
+        <Route path="/order/:orderId" element={<PageWrapper><OrderDetails /></PageWrapper>} />
         <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
 
         {/* --- Admin Routes (Protected by AdminLayout) --- */}

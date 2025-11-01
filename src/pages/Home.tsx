@@ -1,12 +1,9 @@
 // src/pages/Home.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom'; // Import useSearchParams and useNavigate
-
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Card, CardContent } from '../components/ui/card';
-// Removed Tabs imports
 import {
   Scale,
   Minus,
@@ -14,14 +11,14 @@ import {
   ShieldCheck,
   BadgeDollarSign,
   MessageSquare,
-  PackagePlus,
   X,
-  Star,
+  LayoutGrid,
+  List,
 } from 'lucide-react';
 import { Product } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { fetchProducts } from '../api/productApi'; // Keep this
-import { categories } from '../mockData'; // Import categories
+import { fetchProducts } from '../api/productApi';
+import { categories } from '../mockData';
 import { cn } from '../lib/utils';
 import { useComparisonStore } from '../store/useComparisonStore';
 import { motion, AnimatePresence, Transition } from 'framer-motion';
@@ -33,8 +30,6 @@ import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
-
-// Removed TabProducts types
 
 // Shared animation variants with proper typing
 const sectionFadeIn = {
@@ -55,14 +50,9 @@ const containerVariants = {
   },
 };
 
-// ** FINAL FIX: Explicitly join base path with asset path **
-// This uses the hardcoded base path '/ecommerce/' defined in your vite.config.ts
-// for deployments that struggle with automatic asset resolution.
 const ASSET_BASE_PATH = '/EcomX-website/'; // Your configured base path
 const getAssetPath = (path: string) => {
-    // 1. Start with the base path
     let url = ASSET_BASE_PATH;
-    // 2. Add the asset path, ensuring no double slashes
     if (path.startsWith('/')) {
         url += path.substring(1);
     } else {
@@ -71,119 +61,119 @@ const getAssetPath = (path: string) => {
     return url;
 };
 
-// Hero Slide Data using explicit base path utility
+// Hero Slide Data
 const heroSlides = [
-  {
-    id: 1,
-    bgImageUrl: getAssetPath("images/hero/hero-bg-1.jpg"), 
-    altText: "Hero Background 1"
-  },
-  {
-    id: 2,
-    bgImageUrl: getAssetPath("images/hero/hero-bg-2.jpg"), 
-    altText: "Hero Background 2"
-  },
-  {
-    id: 3,
-    bgImageUrl: getAssetPath("images/hero/hero-bg-3.jpg"), 
-    altText: "Hero Background 3"
-  },
-  {
-    id: 4,
-    bgImageUrl: getAssetPath("images/hero/hero-bg-4.jpg"), 
-    altText: "Hero Background 4"
-  },
-  {
-    id: 5,
-    bgImageUrl: getAssetPath("images/hero/hero-bg-5.jpg"), 
-    altText: "Hero Background 5"
-  }
+  { id: 1, bgImageUrl: getAssetPath("images/hero/hero-bg-1.jpg"), altText: "Hero Background 1" },
+  { id: 2, bgImageUrl: getAssetPath("images/hero/hero-bg-2.jpg"), altText: "Hero Background 2" },
+  { id: 3, bgImageUrl: getAssetPath("images/hero/hero-bg-3.jpg"), altText: "Hero Background 3" },
+  { id: 4, bgImageUrl: getAssetPath("images/hero/hero-bg-4.jpg"), altText: "Hero Background 4" },
+  { id: 5, bgImageUrl: getAssetPath("images/hero/hero-bg-5.jpg"), altText: "Hero Background 5" }
 ];
 
-// Category data for featured categories section
+// Category data
 const featuredCategories = [
   { name: "Mobile", img: getAssetPath("images/categories/Mobile.jpg"), link: "/?category=smartphones" },
-  { name: "home appliances", img: getAssetPath("images/categories/home appliances.jpg"), link: "/?category=home-appliances" }, // Corrected link
-  { name: "Women's Wear", img: getAssetPath("images/categories/women.jpg"), link: "/?category=womens-clothing" }, // Corrected link
+  { name: "home appliances", img: getAssetPath("images/categories/home appliances.jpg"), link: "/?category=home-appliances" },
+  { name: "Women's Wear", img: getAssetPath("images/categories/women.jpg"), link: "/?category=womens-clothing" },
   { name: "Men's Wear", img: getAssetPath("images/categories/men.jpg"), link: "/?category=mens-clothing" },
   { name: "Accessories", img: getAssetPath("images/categories/Accessories.jpg"), link: "/?category=accessories" },
   { name: "Laptops", img: getAssetPath("images/categories/laptop.jpg"), link: "/?category=laptops" },
 ];
 
 const Home: React.FC = () => {
-  // Comparison Bar State
   const { products: productsToCompare, removeProduct, clearComparison } = useComparisonStore();
-
-  // --- NEW: State for main product list ---
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const selectedCategory = searchParams.get('category') || 'all';
-  const searchTerm = searchParams.get('q') || '';
+  const currentViewMode = isMobile ? viewMode : 'grid'; // Desktop always grid
 
-  // --- NEW: Fetch products based on URL params ---
-  const loadProducts = useCallback(async (category: string, term: string) => {
-    setIsLoading(true);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const loadProducts = useCallback(async (pageNum: number, category: string) => {
+    if (pageNum === 0) setIsLoading(true);
+    else setIsLoadingMore(true);
     
-    // --- SPECIAL CHECK FOR HOME APPLIANCES ---
-    // If this category is selected, don't fetch, just set loading to false and products to empty.
-    if (category === 'home-appliances' && !term) {
+    if (category === 'home-appliances') {
       setProducts([]);
+      setHasMore(false);
       setIsLoading(false);
+      setIsLoadingMore(false);
       return;
     }
-    // --- END SPECIAL CHECK ---
 
     try {
       const filters = {
         category: category === 'all' ? undefined : category,
-        searchTerm: term || undefined,
         sortBy: 'popular' as const
       };
-      // Fetch a larger list for the main page
-      const data = await fetchProducts(0, 20, filters); 
-      setProducts(data.products);
+      
+      const limit = isMobile ? 12 : 20;
+      const data = await fetchProducts(pageNum, limit, filters); 
+      
+      if (pageNum === 0) {
+        setProducts(data.products);
+      } else {
+        setProducts(prev => [...prev, ...data.products]);
+      }
+      setHasMore(data.hasMore && isMobile); 
+
     } catch (error) {
       console.error("Failed to fetch products:", error);
-      setProducts([]); // Clear products on error
+      setProducts([]);
+      setHasMore(false);
     } finally {
       setIsLoading(false);
+      setIsLoadingMore(false);
     }
-  }, []);
+  }, [isMobile]);
 
-  // --- NEW: useEffect to trigger fetch ---
   useEffect(() => {
-    // Scroll to top when category or search changes
     window.scrollTo(0, 0);
-    loadProducts(selectedCategory, searchTerm);
-  }, [selectedCategory, searchTerm, loadProducts]);
+    setPage(0);
+    loadProducts(0, selectedCategory);
+  }, [selectedCategory, loadProducts]);
 
-  // --- NEW: Handler for category buttons ---
+  useEffect(() => {
+    if (page > 0) {
+      loadProducts(page, selectedCategory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]); 
+  
+  const handleLoadMore = () => {
+    if (!isLoadingMore && hasMore) {
+      setPage(prev => prev + 1);
+    }
+  };
+
   const handleCategoryClick = (category: string) => {
-    // Keep the existing search term when changing category
     setSearchParams(params => {
       params.set('category', category);
-      if (searchTerm) {
-        params.set('q', searchTerm);
-      } else {
-        params.delete('q');
-      }
+      params.delete('q'); // Clear search term when changing category
       return params;
     });
   };
   
-  // Define fallback image paths using the utility
   const fallbackAssetPath = getAssetPath("images/hero/hero-bg-1");
   const fallbackAssetPath2 = getAssetPath("images/hero/hero-bg-2");
   const fallbackAssetPath3 = getAssetPath("images/hero/hero-bg-3");
   const fallbackAssetPath4 = getAssetPath("images/hero/hero-bg-4");
 
-
   return (
     <>
-      {/* Enhanced Swiper Hero Banner (No changes) */}
+      {/* Hero Banner */}
       <section className="relative w-full overflow-hidden group">
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
@@ -221,7 +211,7 @@ const Home: React.FC = () => {
         <div className="swiper-pagination-custom-simple absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 flex space-x-2"></div>
       </section>
 
-      {/* Service Highlights Bar (No changes) */}
+      {/* Service Highlights Bar */}
       <section className="border-b border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:border-gray-800">
         <div className="container mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 text-center md:text-left">
           {[
@@ -249,7 +239,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Category Promo Section (No changes) */}
+      {/* Category Promo Section */}
       <section className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-auto"> 
           <motion.div
@@ -372,7 +362,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* --- NEW: Category Filter Section --- */}
+      {/* --- Category Filter Section --- */}
       <motion.section
         className="container mx-auto px-4 py-8"
         {...sectionFadeIn}
@@ -381,15 +371,12 @@ const Home: React.FC = () => {
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Products</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            {searchTerm 
-              ? `Showing results for "${searchTerm}"`
-              : 'Browse our collection by category or see what\'s new.'
-            }
+            Browse our collection by category or see what's new.
           </p>
         </div>
         
         {/* Category Buttons */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           <Button
             variant={selectedCategory === 'all' ? 'default' : 'outline'}
             onClick={() => handleCategoryClick('all')}
@@ -408,9 +395,43 @@ const Home: React.FC = () => {
             </Button>
           ))}
         </div>
+        
+        {/* --- View Mode Switcher (Mobile Only) --- */}
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold">
+            {selectedCategory === 'all' 
+                ? 'All Products' 
+                : `Products in ${selectedCategory.replace('-', ' ')}`
+            }
+          </h3>
+          {/* This block will only render if isMobile is true */}
+          {isMobile && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="icon"
+                onClick={() => setViewMode('grid')}
+                aria-label="Grid View"
+                className="h-9 w-9"
+              >
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="icon"
+                onClick={() => setViewMode('list')}
+                aria-label="List View"
+                className="h-9 w-9"
+              >
+                <List className="h-5 w-5" />
+              </Button>
+            </div>
+          )}
+        </div>
+        
       </motion.section>
 
-      {/* --- MODIFIED: Products Section (Replaces Featured Products Tabs) --- */}
+      {/* --- MODIFIED: Products Section --- */}
       <motion.section
         className="container mx-auto px-4 py-8 md:pt-0 md:pb-16"
         initial={{ opacity: 0 }}
@@ -419,65 +440,77 @@ const Home: React.FC = () => {
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedCategory + searchTerm} // Re-animate when category or search changes
+            key={selectedCategory + currentViewMode} // Use currentViewMode in key
             initial={{ opacity: 0, y: 10 }} 
             animate={{ opacity: 1, y: 0 }} 
             exit={{ opacity: 0, y: -10 }} 
             transition={{ duration: 0.3 } as Transition} 
-            className="min-h-[400px]" // Set a min-height to avoid layout jump
+            className="min-h-[400px]" 
           >
             {isLoading ? (
               <div className="flex justify-center items-center h-[400px]">
                 <LoadingSpinner size="lg" />
               </div>
             ) : products.length > 0 ? (
-              <motion.div 
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                {products.map((product, i) => (
-                  <ProductCard 
-                    key={`${product.source}-${product.id}-${i}`} 
-                    product={product} 
-                    viewMode="grid" 
-                    index={i} // Pass index for stagger animation
-                  />
-                ))}
-              </motion.div>
+              <>
+                <motion.div 
+                  className={cn(
+                    "grid gap-4", // Base gap
+                    currentViewMode === 'list'
+                      ? "grid-cols-1" // List view (mobile only)
+                      : "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6" // Grid view
+                  )}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {products.map((product, i) => (
+                    <ProductCard 
+                      key={`${product.source}-${product.id}-${i}`} 
+                      product={product} 
+                      viewMode={currentViewMode} // Pass the dynamic currentViewMode
+                      index={i} 
+                    />
+                  ))}
+                </motion.div>
+
+                {/* --- Load More Button (Only on mobile) --- */}
+                {isMobile && (
+                  <div className="mt-12 text-center">
+                    {!isLoadingMore && hasMore && (
+                      <Button onClick={handleLoadMore} size="lg" variant="outline" className="w-full sm:w-auto">
+                        Load More Products
+                      </Button>
+                    )}
+                    {isLoadingMore && (
+                      <Button size="lg" disabled className="w-full sm:w-auto">
+                        <LoadingSpinner size="sm" className="mr-2" />
+                        Loading...
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </>
             ) : (
-              // --- THIS IS THE MODIFIED BLOCK ---
+              // No products found message
               <div className="text-center text-muted-foreground pt-16 text-lg">
-                {(() => {
-                  if (searchTerm) {
-                    // Case 1: A search is active
-                    return `No products found for "${searchTerm}"`;
-                  
-                  } else if (selectedCategory === 'home-appliances') {
-                    // Case 2: "home-appliances" is selected, no search
-                    return (
-                      <div className="flex flex-col items-center gap-4">
-                        <span className="text-4xl">⏳</span>
-                        <p className="text-xl font-semibold text-foreground">Coming Soon!</p>
-                        <p>Our Home Appliances section is under construction. Check back soon!</p>
-                      </div>
-                    );
-                  
-                  } else {
-                    // Case 3: Any other category is selected, no search
-                    return `No products found in "${selectedCategory.replace('-', ' ')}".`;
-                  }
-                })()}
+                {selectedCategory === 'home-appliances' ? (
+                    <div className="flex flex-col items-center gap-4">
+                      <span className="text-4xl">⏳</span>
+                      <p className="text-xl font-semibold text-foreground">Coming Soon!</p>
+                      <p>Our Home Appliances section is under construction. Check back soon!</p>
+                    </div>
+                  ) : (
+                    `No products found in "${selectedCategory.replace('-', ' ')}".`
+                  )
+                }
               </div>
-              // --- END MODIFIED BLOCK ---
             )}
           </motion.div>
         </AnimatePresence>
       </motion.section>
 
-
-      {/* Weekly Offers Section (No changes) */}
+      {/* Weekly Offers Section */}
       <section className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div
@@ -535,7 +568,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Categories Section (Grid) (No changes) */}
+      {/* Featured Categories Section (Grid) */}
       <motion.section
         className="container mx-auto px-4 py-12 md:py-16"
         {...sectionFadeIn}
@@ -584,10 +617,10 @@ const Home: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* Recently Viewed Section (No changes) */}
+      {/* Recently Viewed Section */}
       <RecentlyViewed />
 
-      {/* Comparison Bar (No changes) */}
+      {/* Comparison Bar */}
       <AnimatePresence>
         {productsToCompare.length > 0 && (
           <motion.div 

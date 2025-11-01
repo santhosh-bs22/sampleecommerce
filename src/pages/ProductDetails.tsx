@@ -260,8 +260,8 @@ const ProductDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* ... (keep Breadcrumbs) ... */}
-       <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-8">
+      {/* Breadcrumbs */}
+       <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-4 md:mb-8">
         <Link to="/" className="hover:text-foreground">Home</Link>
         <span>/</span>
         <Link to={`/?category=${product.category}`} className="hover:text-foreground capitalize">{product.category.replace('-', ' ')}</Link>
@@ -269,9 +269,10 @@ const ProductDetails: React.FC = () => {
         <span className="text-foreground line-clamp-1">{product.title}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* --- MODIFIED Image Gallery --- */}
-        <div className="space-y-4 sticky top-20 self-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        
+        {/* --- MODIFIED Image Gallery (No longer sticky on mobile) --- */}
+        <div className="space-y-4 lg:sticky lg:top-20 self-start">
           {/* Main Image Display */}
           <Dialog open={isMobileZoomOpen} onOpenChange={setIsMobileZoomOpen}>
              <DialogTrigger asChild className="lg:hidden">
@@ -303,7 +304,6 @@ const ProductDetails: React.FC = () => {
                         variant="outline"
                         size="icon"
                         onClick={handlePrevImage}
-                        // Make always visible, adjust background/blur
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
                         aria-label="Previous image"
                     >
@@ -315,7 +315,6 @@ const ProductDetails: React.FC = () => {
                         variant="outline"
                         size="icon"
                         onClick={handleNextImage}
-                         // Make always visible, adjust background/blur
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-opacity bg-background/60 hover:bg-background/90 backdrop-blur-sm rounded-full h-10 w-10 z-10"
                         aria-label="Next image"
                     >
@@ -335,7 +334,6 @@ const ProductDetails: React.FC = () => {
                     alt={`${product.title} - zoomed`}
                     className="max-w-full max-h-full object-contain rounded-md"
                 />
-                 {/* Optional: Add close button or rely on overlay click */}
              </DialogContent>
            </Dialog>
 
@@ -356,24 +354,25 @@ const ProductDetails: React.FC = () => {
         {/* --- END MODIFIED Image Gallery --- */}
 
 
-        {/* ... (keep Product Details section: Title, Price, Brand, Size, Features, Quantity, Buttons, Delivery Info) ... */}
+        {/* --- MODIFIED Product Details section --- */}
          <div className="space-y-6">
            <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
-            <p className="text-lg text-muted-foreground">{product.description}</p>
+            {/* Responsive Typography */}
+            <h1 className="text-2xl md:text-4xl font-bold mb-2">{product.title}</h1>
+            <p className="text-base text-muted-foreground">{product.description}</p>
             <div className="flex items-center gap-4 my-4">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{product.rating}</span>
-                <span className="text-muted-foreground">({Math.floor(Math.random() * 1000) + 100} ratings)</span>
+                <span className="text-muted-foreground text-sm">({Math.floor(Math.random() * 1000) + 100} ratings)</span>
               </div>
-              <Badge variant="secondary" className={cn(product.stock > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
+              <Badge variant="secondary" className={cn("text-xs", product.stock > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
                 {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock'}
               </Badge>
             </div>
           </div>
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="text-3xl font-bold text-green-600">
                 {formatCurrency(discountedPrice)}
               </span>
@@ -382,7 +381,7 @@ const ProductDetails: React.FC = () => {
                   <span className="text-xl text-muted-foreground line-through">
                     {formatCurrency(product.price)}
                   </span>
-                  <Badge variant="destructive" className="text-base px-2 py-0.5">
+                  <Badge variant="destructive" className="text-sm px-2 py-0.5">
                     {Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 </>
@@ -404,7 +403,7 @@ const ProductDetails: React.FC = () => {
           {/* Size Selection */}
           {product.sizes && product.sizes.length > 0 && (
             <div>
-              <h3 className="font-semibold text-lg mb-2">Size</h3>
+              <h3 className="font-semibold text-base md:text-lg mb-2">Size</h3>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size: string) => (
                   <Button
@@ -424,7 +423,7 @@ const ProductDetails: React.FC = () => {
 
           {/* Key Features */}
           <div className="space-y-2">
-            <h3 className="font-semibold text-lg">Key Features</h3>
+            <h3 className="font-semibold text-base md:text-lg">Key Features</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 text-sm">
               {product.features && product.features.length > 0 ? product.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-center text-muted-foreground">
@@ -458,7 +457,7 @@ const ProductDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons: Responsive stacking */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button onClick={handleAddToCart} disabled={product.stock === 0} className="flex-1 h-12 text-lg" size="lg">
               <ShoppingCart className="h-5 w-5 mr-2" /> Add to Cart
@@ -466,7 +465,7 @@ const ProductDetails: React.FC = () => {
             <Button onClick={handleBuyNow} disabled={product.stock === 0} variant="secondary" className="flex-1 h-12 text-lg" size="lg">
               Buy Now
             </Button>
-            <Button variant="outline" size="icon" onClick={handleWishlistToggle} className="h-12 w-12 shrink-0 border-2" title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}>
+            <Button variant="outline" size="icon" onClick={handleWishlistToggle} className="h-12 w-full sm:w-12 shrink-0 border-2" title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}>
               <Heart className={`h-5 w-5 transition-colors duration-200 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
             </Button>
           </div>
@@ -484,13 +483,35 @@ const ProductDetails: React.FC = () => {
         </div>
       </div>
 
-       {/* ... (keep Tabs Section: Description, Specifications, Reviews) ... */}
+       {/* --- MODIFIED Tabs Section (Scrolling on mobile) --- */}
         <div className="mt-16">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 border-b rounded-none p-0 bg-transparent mb-6 justify-start">
-            <TabsTrigger value="description" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0 mr-6">Description</TabsTrigger>
-            <TabsTrigger value="specifications" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0 mr-6">Specifications</TabsTrigger>
-            <TabsTrigger value="reviews" className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-0">Reviews</TabsTrigger>
+          {/* MODIFIED: 
+            - Removed grid layout
+            - Added overflow-x-auto, flex, and flex-nowrap
+            - Added scrollbar-thin
+            - Made TabsTriggers shrink-0
+          */}
+          <TabsList className="w-full p-0 bg-transparent mb-6 border-b rounded-none
+                               flex flex-nowrap overflow-x-auto scrollbar-thin scrollbar-thumb-muted">
+            <TabsTrigger 
+              value="description" 
+              className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-1 mr-6 shrink-0"
+            >
+              Description
+            </TabsTrigger>
+            <TabsTrigger 
+              value="specifications" 
+              className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-1 mr-6 shrink-0"
+            >
+              Specifications
+            </TabsTrigger>
+            <TabsTrigger 
+              value="reviews" 
+              className="rounded-none pb-2 border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none bg-transparent data-[state=active]:bg-transparent text-lg font-semibold justify-start px-1 shrink-0"
+            >
+              Reviews
+            </TabsTrigger>
           </TabsList>
 
            <motion.div
@@ -548,6 +569,7 @@ const ProductDetails: React.FC = () => {
 
                <TabsContent value="reviews" className="mt-6">
                  <Card className="border-none shadow-none"><CardContent className="p-0">
+                   {/* MODIFIED: Stacks on mobile */}
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                       {/* Overall Rating Summary */}
                       <div className="md:col-span-1 border-b md:border-b-0 md:border-r md:pr-8 pb-8 md:pb-0">
@@ -659,7 +681,7 @@ const ProductDetails: React.FC = () => {
          </Tabs>
        </div>
 
-      {/* ... (keep Similar Products & Recently Viewed sections) ... */}
+      {/* Similar Products (already responsive) */}
        <section className="mt-16 pt-10 border-t">
         <h2 className="text-3xl font-bold mb-8 text-center">You Might Also Like</h2>
         {similarProducts.length > 0 ? (
@@ -683,4 +705,4 @@ const ProductDetails: React.FC = () => {
   );
 };
 
-export default ProductDetails;  
+export default ProductDetails;

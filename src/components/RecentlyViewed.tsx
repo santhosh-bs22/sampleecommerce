@@ -1,10 +1,10 @@
 // src/components/RecentlyViewed.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useRecentlyViewedStore } from '../store/useRecentlyViewedStore';
 import ProductCard from './ProductCard';
 import { motion } from 'framer-motion';
-import { Eye } from 'lucide-react'; // Example icon
+import { Eye } from 'lucide-react';
+import { cn } from '../lib/utils'; // Import cn for utility classes
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,21 +35,33 @@ const RecentlyViewed: React.FC = () => {
         <Eye className="h-7 w-7 text-primary" />
         Recently Viewed
       </h2>
+      {/* MODIFICATION: 
+        - Removed grid classes
+        - Added flex, flex-nowrap, and overflow-x-auto for horizontal scrolling
+        - Added custom scrollbar styles
+      */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        className={cn(
+          "flex flex-nowrap overflow-x-auto gap-6 py-4",
+          "scrollbar-thin scrollbar-thumb-muted scrollbar-track-background"
+        )}
         variants={containerVariants}
         initial="hidden"
         whileInView="visible" // Animate when section scrolls into view
         viewport={{ once: true, amount: 0.2 }} // Trigger animation once when 20% is visible
       >
         {items.map((product, index) => (
-          <motion.div key={`${product.source}-${product.id}`} variants={itemVariants}>
-            {/* Using ProductCard in grid mode */}
+          <motion.div 
+            key={`${product.source}-${product.id}`} 
+            variants={itemVariants}
+            // MODIFICATION: Set a fixed width and ensure it doesn't shrink
+            className="w-72 flex-shrink-0 h-auto" 
+          >
             <ProductCard
               product={product}
               viewMode="grid"
-              className="h-full hover:shadow-lg" // Ensure card takes full height
-              // index={index} // Pass index if ProductCard animation needs it
+              className="h-full" // Ensure card takes full height of its wrapper
+              index={index} // Pass index for stagger animation
             />
           </motion.div>
         ))}
