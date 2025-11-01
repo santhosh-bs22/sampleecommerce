@@ -58,7 +58,7 @@ const containerVariants = {
 // ** FINAL FIX: Explicitly join base path with asset path **
 // This uses the hardcoded base path '/ecommerce/' defined in your vite.config.ts
 // for deployments that struggle with automatic asset resolution.
-const ASSET_BASE_PATH = '/ecommerce/'; // Your configured base path
+const ASSET_BASE_PATH = '/EcomX-website/'; // Your configured base path
 const getAssetPath = (path: string) => {
     // 1. Start with the base path
     let url = ASSET_BASE_PATH;

@@ -8,7 +8,7 @@ import 'swiper/css';
 import 'swiper/css/effect-fade';
 
 // --- Asset Path Utility (Matches logic in Home.tsx) ---
-const ASSET_BASE_PATH = '/ecommerce/'; 
+const ASSET_BASE_PATH = '/EcomX-website/'; 
 const getAssetPath = (path: string) => {
     let url = ASSET_BASE_PATH;
     if (path.startsWith('/')) {
