@@ -74,7 +74,7 @@ const heroSlides = [
 const featuredCategories = [
   { name: "Mobile", img: getAssetPath("images/categories/Mobile.jpg"), link: "/?category=smartphones" },
   { name: "home appliances", img: getAssetPath("images/categories/home appliances.jpg"), link: "/?category=home-appliances" },
-  { name: "Women's Wear", img: getAssetPath("images/categories/women.jpg"), link: "/?category=womens-clothing" },
+  { name: "Women's Wear", img: getAssetPath("images/categories/women.png"), link: "/?category=womens-clothing" },
   { name: "Men's Wear", img: getAssetPath("images/categories/men.jpg"), link: "/?category=mens-clothing" },
   { name: "Accessories", img: getAssetPath("images/categories/Accessories.jpg"), link: "/?category=accessories" },
   { name: "Laptops", img: getAssetPath("images/categories/laptop.jpg"), link: "/?category=laptops" },
@@ -248,7 +248,7 @@ const Home: React.FC = () => {
             transition={{ ...sectionFadeIn.transition, delay: 0.1 } as Transition}
           >
             <img
-              src={getAssetPath("images/promos/women.jpg ")}
+              src={getAssetPath("images/promos/women.png ")}
               alt="Women's Style"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               loading="lazy"
